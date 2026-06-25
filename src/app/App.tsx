@@ -110,6 +110,61 @@ const agriDB: { k: string[]; r: string }[] = [
     r: "🎋 Sugarcane Cultivation:\n• Varieties: Co 86032, Co 0238\n• Planting: Oct-Nov or Jan-Feb\n• NPK: 250:60:120 kg/ha\n• Duration: 10-12 months\n• Yield: 80-120 tonnes/ha\n• FRP: ₹285-315/quintal" },
 ];
 
+// Calls Google's Gemini AI for real farming-intelligence responses.
+// Falls back to the offline agriDB lookup if the API key is missing or the request fails.
+async function callGeminiOnce(query: string, apiKey: string): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `You are THINAI, an AI farming assistant for Indian farmers. Answer this farming question clearly and concisely, with practical advice. Question: ${query}`,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      console.warn("Gemini API request failed:", response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return text || null;
+  } catch (err) {
+    console.warn("Gemini API error:", err);
+    return null;
+  }
+}
+
+async function askGemini(query: string): Promise<string> {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn("No Gemini API key found, using offline fallback.");
+    return getAgriResponse(query);
+  }
+
+  let result = await callGeminiOnce(query, apiKey);
+  if (result) return result;
+
+  console.warn("Retrying Gemini request once...");
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  result = await callGeminiOnce(query, apiKey);
+  if (result) return result;
+
+  console.warn("Gemini API still unavailable after retry, using offline fallback.");
+  return getAgriResponse(query);
+}
 function getAgriResponse(query: string): string {
   const q = query.toLowerCase().trim();
   for (const entry of agriDB) {
@@ -1340,12 +1395,15 @@ function AIScreen({ navigate }: { navigate: (s: Screen) => void }) {
   const [input, setInput] = useState(""); const [isTyping, setIsTyping] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
-  const send = useCallback((text?: string) => {
-    const q = (text || input).trim(); if (!q) return;
-    setMsgs(m => [...m, { from: "user", text: q, ts: new Date() }]);
-    setInput(""); setIsTyping(true);
-    setTimeout(() => { setIsTyping(false); setMsgs(m => [...m, { from: "ai", text: getAgriResponse(q), ts: new Date() }]); }, 1000 + Math.random() * 800);
-  }, [input]);
+const send = useCallback((text?: string) => {
+      const q = (text || input).trim(); if (!q) return;
+      setMsgs(m => [...m, { from: "user", text: q, ts: new Date() }]);
+      setInput(""); setIsTyping(true);
+      askGemini(q).then(answer => {
+        setIsTyping(false);
+        setMsgs(m => [...m, { from: "ai", text: answer, ts: new Date() }]);
+      });
+    }, [input]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs, isTyping]);
 
