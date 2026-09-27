@@ -1,0 +1,37 @@
+{
+  "dataset": "ICAR-FAO Agronomic Crop Suitability Benchmark (3,000 samples, 10 crop classes)",
+  "features": [
+    "Nitrogen",
+    "Phosphorus",
+    "Potassium",
+    "Temperature",
+    "Humidity",
+    "pH",
+    "Rainfall"
+  ],
+  "classes": [
+    "Rice (Paddy)",
+    "Maize",
+    "Cotton",
+    "Wheat",
+    "Blackgram",
+    "Tomato",
+    "Chilli",
+    "Groundnut",
+    "Sugarcane",
+    "Banana"
+  ],
+  "models": {
+    "RandomForest": {
+      "validation_accuracy": 0.8911,
+      "test_accuracy": 0.8867,
+      "test_f1_score": 0.8858
+    },
+    "GradientBoosting": {
+      "validation_accuracy": 0.8822,
+      "test_accuracy": 0.8622,
+      "test_f1_score": 0.8603
+    }
+  },
+  "model_version": "THINAI-ML-Ensemble-v2.0"
+}

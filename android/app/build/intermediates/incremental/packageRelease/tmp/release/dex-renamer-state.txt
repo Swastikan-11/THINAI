@@ -1,0 +1,4 @@
+#Sat Sep 26 08:18:10 IST 2026
+base.0=C\:\\Users\\cswas\\Documents\\THINAI\\android\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

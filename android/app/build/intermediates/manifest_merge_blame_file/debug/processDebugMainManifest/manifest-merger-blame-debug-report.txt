@@ -1,0 +1,194 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.thinai.agriapp"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="36" />
+10
+11    <!-- Permissions -->
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:39:5-67
+12-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:39:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:40:5-79
+13-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:40:22-76
+14    <uses-permission android:name="android.permission.CAMERA" />
+14-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:41:5-65
+14-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:41:22-62
+15    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+15-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:42:5-71
+15-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:42:22-68
+16    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+16-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:43:5-80
+16-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:43:22-77
+17    <uses-permission
+17-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:44:5-107
+18        android:name="android.permission.READ_EXTERNAL_STORAGE"
+18-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:44:22-77
+19        android:maxSdkVersion="32" />
+19-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:44:78-104
+20    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+20-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:45:5-76
+20-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:45:22-73
+21
+22    <uses-feature
+22-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:47:5-85
+23        android:name="android.hardware.camera"
+23-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:47:19-57
+24        android:required="false" />
+24-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:47:58-82
+25    <uses-feature
+25-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:48:5-95
+26        android:name="android.hardware.camera.autofocus"
+26-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:48:19-67
+27        android:required="false" />
+27-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:48:68-92
+28    <uses-feature
+28-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:49:5-89
+29        android:name="android.hardware.microphone"
+29-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:49:19-61
+30        android:required="false" />
+30-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:49:62-86
+31
+32    <permission
+32-->[androidx.core:core:1.17.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\11094a199bb7945826b161d8a9c17beb\transformed\core-1.17.0\AndroidManifest.xml:22:5-24:47
+33        android:name="com.thinai.agriapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+33-->[androidx.core:core:1.17.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\11094a199bb7945826b161d8a9c17beb\transformed\core-1.17.0\AndroidManifest.xml:23:9-81
+34        android:protectionLevel="signature" />
+34-->[androidx.core:core:1.17.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\11094a199bb7945826b161d8a9c17beb\transformed\core-1.17.0\AndroidManifest.xml:24:9-44
+35
+36    <uses-permission android:name="com.thinai.agriapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+36-->[androidx.core:core:1.17.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\11094a199bb7945826b161d8a9c17beb\transformed\core-1.17.0\AndroidManifest.xml:26:5-97
+36-->[androidx.core:core:1.17.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\11094a199bb7945826b161d8a9c17beb\transformed\core-1.17.0\AndroidManifest.xml:26:22-94
+37
+38    <application
+38-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:4:5-36:19
+39        android:allowBackup="true"
+39-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:5:9-35
+40        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+40-->[androidx.core:core:1.17.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\11094a199bb7945826b161d8a9c17beb\transformed\core-1.17.0\AndroidManifest.xml:28:18-86
+41        android:debuggable="true"
+42        android:extractNativeLibs="false"
+43        android:icon="@mipmap/ic_launcher"
+43-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:6:9-43
+44        android:label="@string/app_name"
+44-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:7:9-41
+45        android:roundIcon="@mipmap/ic_launcher_round"
+45-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:8:9-54
+46        android:supportsRtl="true"
+46-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:9:9-35
+47        android:theme="@style/AppTheme" >
+47-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:10:9-40
+48        <activity
+48-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:12:9-25:20
+49            android:name="com.thinai.agriapp.MainActivity"
+49-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:14:13-41
+50            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
+50-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:13:13-148
+51            android:exported="true"
+51-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:18:13-36
+52            android:label="@string/title_activity_main"
+52-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:15:13-56
+53            android:launchMode="singleTask"
+53-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:17:13-44
+54            android:theme="@style/AppTheme.NoActionBarLaunch" >
+54-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:16:13-62
+55            <intent-filter>
+55-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:20:13-23:29
+56                <action android:name="android.intent.action.MAIN" />
+56-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:21:17-69
+56-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:21:25-66
+57
+58                <category android:name="android.intent.category.LAUNCHER" />
+58-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:22:17-77
+58-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:22:27-74
+59            </intent-filter>
+60        </activity>
+61
+62        <provider
+63            android:name="androidx.core.content.FileProvider"
+63-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:28:13-62
+64            android:authorities="com.thinai.agriapp.fileprovider"
+64-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:29:13-64
+65            android:exported="false"
+65-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:30:13-37
+66            android:grantUriPermissions="true" >
+66-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:31:13-47
+67            <meta-data
+67-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:32:13-34:64
+68                android:name="android.support.FILE_PROVIDER_PATHS"
+68-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:33:17-67
+69                android:resource="@xml/file_paths" />
+69-->C:\Users\cswas\Documents\THINAI\android\app\src\main\AndroidManifest.xml:34:17-51
+70        </provider>
+71        <provider
+71-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+72            android:name="androidx.startup.InitializationProvider"
+72-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+73            android:authorities="com.thinai.agriapp.androidx-startup"
+73-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+74            android:exported="false" >
+74-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+75            <meta-data
+75-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+76                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+76-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+77                android:value="androidx.startup" />
+77-->[androidx.emoji2:emoji2:1.3.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\353d69426d62513a7e19e841051a3a44\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+78            <meta-data
+78-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\cswas\.gradle\caches\8.14.3\transforms\14a3b51da1167f75215e7e32d2231e74\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+79                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+79-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\cswas\.gradle\caches\8.14.3\transforms\14a3b51da1167f75215e7e32d2231e74\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+80                android:value="androidx.startup" />
+80-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\cswas\.gradle\caches\8.14.3\transforms\14a3b51da1167f75215e7e32d2231e74\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+81            <meta-data
+81-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+82                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+82-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+83                android:value="androidx.startup" />
+83-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+84        </provider>
+85
+86        <receiver
+86-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+87            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+87-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+88            android:directBootAware="false"
+88-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+89            android:enabled="true"
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+90            android:exported="true"
+90-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+91            android:permission="android.permission.DUMP" >
+91-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+92            <intent-filter>
+92-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+93                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+94            </intent-filter>
+95            <intent-filter>
+95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+96                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+97            </intent-filter>
+98            <intent-filter>
+98-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+99                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+99-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+99-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+100            </intent-filter>
+101            <intent-filter>
+101-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+102                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+102-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+102-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\cswas\.gradle\caches\8.14.3\transforms\f95ab50c54d3211c648684c462933e30\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92
+103            </intent-filter>
+104        </receiver>
+105    </application>
+106
+107</manifest>
