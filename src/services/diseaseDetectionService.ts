@@ -144,19 +144,18 @@ function extractVisualFeatures(imageData: ImageData): VisualFeatureMetrics {
 
       const [h, s, v] = rgbToHsv(r, g, b);
 
-      // Plant foliage detection:
-      // Green chlorophyll hues (30° - 175°) with minimum saturation
-      // or yellowish-green foliage with positive ExG
-      const isFoliage =
-        (h >= 30 && h <= 175 && s > 0.15 && v > 0.15) ||
-        (exg > 8 && s > 0.12 && v > 0.12) ||
-        (gcc > 0.36 && v > 0.15);
+      // Strict Plant Foliage Detection (Chlorophyll Green signature):
+      // Must have authentic leaf green chromaticity (Hue 50° to 165°, saturation > 0.18, value > 0.18)
+      // and green channel distinctly exceeding red and blue (ExG = 2*G - R - B > 15)
+      const hasLeafGreenHue = (h >= 50 && h <= 165 && s > 0.18 && v > 0.18);
+      const hasExcessGreen = (exg > 15 && g > r && g > b);
+      const isFoliage = hasLeafGreenHue || (hasExcessGreen && s > 0.20);
 
       if (isFoliage) {
         foliagePixels++;
 
-        // Chlorosis: yellow tissue discoloration (high R + G, low B, Hue 40° - 65°)
-        const isChlorosis = (h >= 40 && h <= 65 && s > 0.28 && v > 0.35) || (r > 140 && g > 130 && b < 100);
+        // Chlorosis: localized yellow discoloration on foliage (Hue 42° - 62°, high saturation)
+        const isChlorosis = (h >= 42 && h <= 62 && s > 0.35 && v > 0.40);
         if (isChlorosis) {
           chloroticPixels++;
           totalLesions++;
@@ -165,10 +164,8 @@ function extractVisualFeatures(imageData: ImageData): VisualFeatureMetrics {
           }
         }
 
-        // Necrosis: dark brown/gray dead tissue lesions (low V, Hue 10° - 35° or low contrast grayish center)
-        const isNecrosis =
-          (h >= 10 && h <= 38 && s > 0.25 && v < 0.55 && v > 0.12) ||
-          (r > 70 && r < 140 && g > 50 && g < 110 && b < 80 && Math.abs(r - g) < 35);
+        // Necrosis: necrotic brownish dead spots on green foliage (Hue 15° - 38°, moderate saturation)
+        const isNecrosis = (h >= 15 && h <= 38 && s > 0.30 && v < 0.60 && v > 0.15 && r > b);
         if (isNecrosis) {
           necroticPixels++;
           totalLesions++;
@@ -188,14 +185,15 @@ function extractVisualFeatures(imageData: ImageData): VisualFeatureMetrics {
   const necrosisIdx = (necroticPixels / safeFoliage) * 100;
   const marginRatio = totalLesions > 0 ? marginLesions / totalLesions : 0;
 
-  // Determine image quality
+  // Determine image quality:
+  // Requires at least 32% authentic plant foliage to prevent bags, walls, carpets, clothing from getting classified as plant disease
   let qualityCheck: VisualFeatureMetrics["qualityCheck"] = "PASSED";
-  if (avgLum < 30) {
+  if (avgLum < 35) {
     qualityCheck = "LOW_LIGHT";
-  } else if (avgLum > 238) {
+  } else if (avgLum > 240) {
     qualityCheck = "OVEREXPOSED";
-  } else if (foliageCoverage < 14.0) {
-    // Non-vegetation check: Reject pictures of desks, walls, human faces, floors
+  } else if (foliageCoverage < 32.0) {
+    // Non-vegetation check: Reject pictures of bags, desks, walls, human faces, floors
     qualityCheck = "NON_VEGETATION";
   }
 
@@ -248,11 +246,11 @@ export async function detectCropDisease(
       healthyStatus: "Inconclusive",
       severity: "None",
       symptoms: [
-        `Only ${metrics.foliageCoveragePercent}% plant foliage detected (minimum required is 15%).`,
-        "The uploaded photograph appears to contain non-agricultural objects, background noise, or bare soil.",
-        "Color distribution does not match plant leaf chlorophyll profiles."
+        `Only ${metrics.foliageCoveragePercent}% plant foliage detected (minimum required is 32%).`,
+        "The uploaded photograph appears to contain non-agricultural objects (e.g. bag, floor, furniture), background noise, or bare soil.",
+        "Optical chromatic profile does not match plant leaf chlorophyll signatures."
       ],
-      immediateAction: "Please take a well-lit, close-up photograph directly of the affected crop leaf blade or stem.",
+      immediateAction: "Please take a well-lit, close-up photograph directly of an actual crop leaf blade or stem.",
       organicTreatment: ["N/A - Image quality insufficient for pathological assessment."],
       chemicalTreatment: ["Do not apply any chemical without confirmed diagnosis."],
       preventiveMeasures: [
