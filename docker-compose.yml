@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  # ─── THINAI FastAPI Core Backend ──────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: thinai_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - API_V1_STR=/api/v1
+      - PROJECT_NAME=THINAI Agricultural Intelligence
+      - DATABASE_URL=sqlite:////app/data/thinai.db
+      - CORS_ORIGINS=*
+      - OFFLINE_SYNC_GRACE_PERIOD_HOURS=72
+    volumes:
+      - thinai_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  thinai_data:
+    driver: local

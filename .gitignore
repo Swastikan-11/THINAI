@@ -4,3 +4,22 @@
 !.env.example
 
 node_modules/
+dist/
+.vscode/
+
+# Android build outputs
+android/app/build/
+android/.gradle/
+android/capacitor-cordova-android-plugins/build/
+android/capacitor-android/build/
+android/capacitor-camera/build/
+
+# Python / backend caches
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/thinai.db
+
+# Test screenshots
+test_screen.jpg
+thinai_screen_dashboard.jpg
