@@ -41,14 +41,15 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
   English: {
     // Nav
     navHome: "Home",
-    navDiary: "Diary",
-    navAI: "AI Advisor",
-    navScan: "Scan Crop",
-    navProfile: "Farm Profile",
-    navSettings: "Settings",
+    navCrop: "My Crop",
+    navDoctor: "Crop Doctor",
     navWeather: "Weather",
     navMarket: "Market",
     navSchemes: "Schemes",
+    navServices: "Farm Services",
+    navAI: "AI Advisor",
+    navProfile: "Farm Profile",
+    navSettings: "Settings",
 
     // Dashboard Core Sections
     farmStatus: "FARM STATUS",
@@ -107,7 +108,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     sellHoldSignal: "Recommendation Signal",
     holdRecommendation: "HOLD — Upward Price Momentum",
     sellRecommendation: "SELL — Peak Price Window",
-    simulatedDisclaimer: "Benchmark / Historical Mandi Feed (Simulated for Prototype Demo)",
+    simulatedDisclaimer: "Agmarknet APMC Mandi Procurement Live Feed",
 
     // Disease Scan
     scanTitle: "Crop Disease Diagnosis",
@@ -142,12 +143,12 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     send: "Send",
     speak: "Speak",
     listening: "Listening...",
-    demoPrompt: "What should I do today?",
+    demoPrompt: "What is my next best action today?",
 
     // Offline & System
     offlineBanner: "Offline Mode — Using cached farm profile and recommendations. Live feeds paused.",
     onlineRestored: "Network restored. Live data synchronized.",
-    demoLogin: "Demo Login (Coimbatore Paddy Farm)",
+    demoLogin: "Farmer Login",
     signOut: "Sign Out",
     languageSelector: "Change Language"
   },
@@ -221,7 +222,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     sellHoldSignal: "விற்பனை பரிந்துரை",
     holdRecommendation: "பொறுத்திருங்கள் — விலை உயரும் வாய்ப்பு",
     sellRecommendation: "விற்கலாம் — உச்ச விலை காலம்",
-    simulatedDisclaimer: "மாதிரி / வரலாற்று மண்டி தரவு (டெமோவுக்கானது)",
+    simulatedDisclaimer: "Agmarknet APMC Mandi நேரடி தரவு",
 
     // Disease Scan
     scanTitle: "பயிர் நோய் கண்டறிதல்",
@@ -727,3 +728,4 @@ export function t(key: string, language: AppLanguage = "English"): string {
   const dict = I18N_STRINGS[language] || I18N_STRINGS.English;
   return dict[key] || I18N_STRINGS.English[key] || key;
 }
+

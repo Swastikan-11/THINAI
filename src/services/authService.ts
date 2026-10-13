@@ -138,6 +138,20 @@ export async function getCurrentAuthToken(): Promise<string | null> {
 }
 
 /**
+ * Returns the current Firebase User object or null if not logged in.
+ */
+export function getCurrentUser(): FirebaseUser | null {
+  return auth.currentUser;
+}
+
+/**
+ * Returns the current User ID or null if not logged in.
+ */
+export function getCurrentUserId(): string | null {
+  return auth.currentUser?.uid || (window as any)._currentFirebaseUid || null;
+}
+
+/**
  * Subscribes to Firebase Authentication state.
  */
 export function onAuthStateChange(callback: (user: FirebaseUser | null) => void) {

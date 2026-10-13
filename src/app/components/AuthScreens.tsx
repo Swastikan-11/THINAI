@@ -17,6 +17,8 @@ import {
 import { db } from "../../services/db";
 import { apiClient } from "../../services/apiClient";
 import { UserState } from "../App";
+import { t as tAuth } from "../translations";
+import { AppLanguage } from "../../services/i18n";
 
 const P = "#2E7D32";
 const PD = "#1B5E20";
@@ -27,11 +29,15 @@ const BG = "#F4F7F4";
 export function LoginScreen({
   onSuccess,
   onNavigateRegister,
-  showToast
+  showToast,
+  language = "English",
+  onLanguageChange
 }: {
   onSuccess: (user: UserState) => void;
   onNavigateRegister: () => void;
   showToast: (msg: string, type?: "success" | "error" | "info" | "warning") => void;
+  language?: AppLanguage;
+  onLanguageChange?: (lang: AppLanguage) => void;
 }) {
   const [tab, setTab] = useState<"email" | "phone">("email");
   const [loading, setLoading] = useState(false);
@@ -234,16 +240,26 @@ export function LoginScreen({
       <div
         className="h-48 flex flex-col justify-end px-6 pb-6 text-white"
         style={{ background: `linear-gradient(160deg, ${PD} 0%, ${P} 100%)`, borderRadius: "0 0 32px 32px" }}>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
-            <Sprout size={24} color="#fff" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
+              <Sprout size={24} color="#fff" />
+            </div>
+            <div>
+              <h1 className="font-black text-2xl tracking-wide leading-none">THINAI</h1>
+              <p className="text-[10px] text-white/80 font-medium">Agricultural Decision Intelligence</p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-black text-2xl tracking-wide leading-none">THINAI</h1>
-            <p className="text-[10px] text-white/80 font-medium">Agricultural Decision Intelligence</p>
-          </div>
+          {onLanguageChange && (
+            <button
+              onClick={() => onLanguageChange(language === "Tamil" ? "English" : "Tamil")}
+              className="px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition-all border border-white/20 flex items-center gap-1">
+              <span>🌐</span>
+              <span>{language === "Tamil" ? "English" : "தமிழ்"}</span>
+            </button>
+          )}
         </div>
-        <p className="text-xs text-white/90">Sign in to access your farm intelligence & advisory.</p>
+        <p className="text-xs text-white/90">{tAuth("loginSubtitle", language)}</p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-4" style={{ scrollbarWidth: "none" }}>
@@ -254,26 +270,26 @@ export function LoginScreen({
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               tab === "email" ? "bg-white text-green-900 shadow-xs" : "text-gray-600"
             }`}>
-            Email & Password
+            {tAuth("emailPasswordTab", language)}
           </button>
           <button
             onClick={() => setTab("phone")}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               tab === "phone" ? "bg-white text-green-900 shadow-xs" : "text-gray-600"
             }`}>
-            Mobile Phone OTP
+            {tAuth("phoneOtp", language)}
           </button>
         </div>
 
         {tab === "email" ? (
           <form onSubmit={handleEmailLogin} className="flex flex-col gap-3">
             <div>
-              <label className="text-xs font-bold text-gray-700 block mb-1">Email Address</label>
+              <label className="text-xs font-bold text-gray-700 block mb-1">{tAuth("emailAddressLabel", language)}</label>
               <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-green-600">
                 <Mail size={16} className="text-gray-400 mr-2" />
                 <input
                   type="email"
-                  placeholder="farmer@example.com"
+                  placeholder={tAuth("emailPlaceholder", language)}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full text-xs outline-hidden text-gray-900"
@@ -284,19 +300,19 @@ export function LoginScreen({
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-xs font-bold text-gray-700">Password</label>
+                <label className="text-xs font-bold text-gray-700">{tAuth("passwordLabel", language)}</label>
                 <button
                   type="button"
                   onClick={handleForgotPassword}
                   className="text-[11px] font-semibold text-green-700 hover:underline">
-                  Forgot Password?
+                  {tAuth("forgotPassword", language)}
                 </button>
               </div>
               <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-green-600">
                 <Lock size={16} className="text-gray-400 mr-2" />
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder={tAuth("passwordPlaceholder", language)}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="w-full text-xs outline-hidden text-gray-900"
@@ -316,19 +332,19 @@ export function LoginScreen({
               disabled={loading}
               className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50 mt-1">
               {loading ? <RefreshCw size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
-              <span>Sign In with Email</span>
+              <span>{tAuth("signIn", language)}</span>
             </button>
           </form>
         ) : (
           <div className="flex flex-col gap-3">
             <div>
-              <label className="text-xs font-bold text-gray-700 block mb-1">Mobile Number (India)</label>
+              <label className="text-xs font-bold text-gray-700 block mb-1">{tAuth("mobileNumberLabel", language)}</label>
               <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-green-600">
                 <Phone size={16} className="text-gray-400 mr-2" />
                 <span className="text-xs font-bold text-gray-600 mr-1.5">+91</span>
                 <input
                   type="tel"
-                  placeholder="98765 43210"
+                  placeholder={tAuth("mobileNumberPlaceholder", language)}
                   maxLength={10}
                   value={phoneNumber}
                   onChange={e => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
@@ -345,19 +361,19 @@ export function LoginScreen({
                 disabled={loading || phoneNumber.length !== 10}
                 className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50">
                 {loading ? <RefreshCw size={16} className="animate-spin" /> : <ArrowRight size={16} />}
-                <span>Send Verification OTP</span>
+                <span>{tAuth("sendOtp", language)}</span>
               </button>
             ) : (
               <div className="flex flex-col gap-3">
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <label className="text-xs font-bold text-gray-700">Enter 6-Digit OTP</label>
+                    <label className="text-xs font-bold text-gray-700">{tAuth("enterOtpPlaceholder", language)}</label>
                     <button
                       type="button"
                       disabled={resendCooldown > 0}
                       onClick={handleSendOtp}
                       className="text-[11px] font-bold text-green-700 disabled:text-gray-400">
-                      {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
+                      {resendCooldown > 0 ? `${tAuth("resendIn", language)} ${resendCooldown}s` : tAuth("resendOtp", language)}
                     </button>
                   </div>
                   <input
@@ -376,17 +392,22 @@ export function LoginScreen({
                   disabled={loading || otpCode.length !== 6}
                   className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50">
                   {loading ? <RefreshCw size={16} className="animate-spin" /> : <Check size={16} />}
-                  <span>Verify OTP & Sign In</span>
+                  <span>{tAuth("verifyOtp", language)}</span>
                 </button>
               </div>
             )}
+
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-[11px] text-amber-800 flex items-start gap-2">
+              <AlertTriangle size={14} className="shrink-0 mt-0.5 text-amber-600" />
+              <span>{tAuth("recaptchaNotice", language)}</span>
+            </div>
           </div>
         )}
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-1">
           <div className="flex-1 h-px bg-gray-200"></div>
-          <span className="text-[11px] font-medium text-gray-400 uppercase">Or continue with</span>
+          <span className="text-[11px] font-medium text-gray-400 uppercase">{tAuth("orContinueWith", language)}</span>
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
@@ -414,16 +435,16 @@ export function LoginScreen({
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
             />
           </svg>
-          <span>Sign In with Google</span>
+          <span>{tAuth("google", language)}</span>
         </button>
 
         {/* Footer Link */}
         <p className="text-xs text-center text-gray-500 mt-2">
-          New farmer to THINAI?{" "}
+          {tAuth("noAccount", language)}
           <button
             onClick={onNavigateRegister}
             className="font-bold text-green-800 underline">
-            Register Account
+            {tAuth("register", language)}
           </button>
         </p>
       </div>
@@ -436,11 +457,15 @@ export function LoginScreen({
 export function RegisterScreen({
   onSuccess,
   onNavigateLogin,
-  showToast
+  showToast,
+  language = "English",
+  onLanguageChange
 }: {
   onSuccess: (user: UserState) => void;
   onNavigateLogin: () => void;
   showToast: (msg: string, type?: "success" | "error" | "info" | "warning") => void;
+  language?: AppLanguage;
+  onLanguageChange?: (lang: AppLanguage) => void;
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -451,22 +476,22 @@ export function RegisterScreen({
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      showToast("Please enter your full name", "error");
+      showToast(tAuth("fullNameRequired", language), "error");
       return;
     }
     if (password.length < 6) {
-      showToast("Password must be at least 6 characters", "error");
+      showToast(tAuth("minChars", language), "error");
       return;
     }
     if (password !== confirmPassword) {
-      showToast("Passwords do not match", "error");
+      showToast(tAuth("passwordsNoMatch", language), "error");
       return;
     }
 
     setLoading(true);
     try {
       const fbUser = await registerWithEmail(email, password);
-      showToast("Account created! A verification link has been sent to your email.", "success");
+      showToast(tAuth("accountCreated", language), "success");
       // Advance to Onboarding to collect farm profile
       onSuccess({
         name,
@@ -485,7 +510,7 @@ export function RegisterScreen({
         farmingMethod: "Integrated",
         waterSource: "",
         mainCrops: "",
-        language: "English"
+        language: language === "Tamil" ? "Tamil" : "English"
       });
     } catch (err: any) {
       showToast(getFriendlyAuthErrorMessage(err), "error");
@@ -499,19 +524,29 @@ export function RegisterScreen({
       <div
         className="h-36 flex flex-col justify-end px-6 pb-4 text-white"
         style={{ background: `linear-gradient(160deg, ${PD} 0%, ${P} 100%)`, borderRadius: "0 0 28px 28px" }}>
-        <h1 className="font-black text-2xl tracking-wide">Register Account</h1>
-        <p className="text-xs text-white/80">Join THINAI to receive personalized farm decision intelligence.</p>
+        <div className="flex items-center justify-between mb-1">
+          <h1 className="font-black text-2xl tracking-wide">{tAuth("createAccount", language)}</h1>
+          {onLanguageChange && (
+            <button
+              onClick={() => onLanguageChange(language === "Tamil" ? "English" : "Tamil")}
+              className="px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition-all border border-white/20 flex items-center gap-1">
+              <span>🌐</span>
+              <span>{language === "Tamil" ? "English" : "தமிழ்"}</span>
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-white/80">{tAuth("joinFarmers", language)}</p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-3" style={{ scrollbarWidth: "none" }}>
         <form onSubmit={handleRegister} className="flex flex-col gap-3">
           <div>
-            <label className="text-xs font-bold text-gray-700 block mb-1">Full Name</label>
+            <label className="text-xs font-bold text-gray-700 block mb-1">{tAuth("fullNameLabel", language)}</label>
             <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5">
               <User size={16} className="text-gray-400 mr-2" />
               <input
                 type="text"
-                placeholder="e.g. Selvam Murugan"
+                placeholder={tAuth("fullNamePlaceholder", language)}
                 value={name}
                 onChange={e => setName(e.target.value)}
                 className="w-full text-xs outline-hidden text-gray-900"
@@ -521,12 +556,12 @@ export function RegisterScreen({
           </div>
 
           <div>
-            <label className="text-xs font-bold text-gray-700 block mb-1">Email Address</label>
+            <label className="text-xs font-bold text-gray-700 block mb-1">{tAuth("emailAddressLabel", language)}</label>
             <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5">
               <Mail size={16} className="text-gray-400 mr-2" />
               <input
                 type="email"
-                placeholder="farmer@example.com"
+                placeholder={tAuth("emailAddressPlaceholder", language)}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="w-full text-xs outline-hidden text-gray-900"
@@ -536,12 +571,12 @@ export function RegisterScreen({
           </div>
 
           <div>
-            <label className="text-xs font-bold text-gray-700 block mb-1">Create Password (Min 6 chars)</label>
+            <label className="text-xs font-bold text-gray-700 block mb-1">{tAuth("passwordLabel", language)}</label>
             <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5">
               <Lock size={16} className="text-gray-400 mr-2" />
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder={tAuth("passwordMinPlaceholder", language)}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="w-full text-xs outline-hidden text-gray-900"
@@ -551,12 +586,12 @@ export function RegisterScreen({
           </div>
 
           <div>
-            <label className="text-xs font-bold text-gray-700 block mb-1">Confirm Password</label>
+            <label className="text-xs font-bold text-gray-700 block mb-1">{tAuth("confirmPasswordLabel", language)}</label>
             <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2.5">
               <Lock size={16} className="text-gray-400 mr-2" />
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder={tAuth("confirmPasswordPlaceholder", language)}
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
                 className="w-full text-xs outline-hidden text-gray-900"
@@ -570,16 +605,16 @@ export function RegisterScreen({
             disabled={loading}
             className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50 mt-2">
             {loading ? <RefreshCw size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
-            <span>Create Farmer Account</span>
+            <span>{tAuth("createAccount", language)}</span>
           </button>
         </form>
 
         <p className="text-xs text-center text-gray-500 mt-2">
-          Already registered?{" "}
+          {tAuth("alreadyAccount", language)}
           <button
             onClick={onNavigateLogin}
             className="font-bold text-green-800 underline">
-            Sign In
+            {tAuth("signInLink", language)}
           </button>
         </p>
       </div>

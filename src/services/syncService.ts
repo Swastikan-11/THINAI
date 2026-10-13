@@ -2,13 +2,14 @@ import { db, SyncQueueItem } from "./db";
 import { apiClient } from "./apiClient";
 import { auth } from "../firebase";
 
-export type SyncState = "ONLINE" | "OFFLINE" | "SYNCING" | "SYNCED" | "FAILED";
+export type SyncState = "ONLINE" | "OFFLINE_MODE" | "OFFLINE" | "SYNCING" | "SYNCED" | "FAILED";
 
 export interface SyncStatusInfo {
   state: SyncState;
   pendingCount: number;
   lastSyncedAt: string | null;
   message: string;
+  isManualOffline: boolean;
 }
 
 type SyncListener = (info: SyncStatusInfo) => void;
@@ -21,16 +22,17 @@ class OfflineSyncManager {
   private isSyncing = false;
   private retryTimer: any = null;
   private backoffDelayMs = 5000;
+  private isManualOffline = false;
 
   constructor() {
     this.initListeners();
     this.updatePendingCount();
-    // Check initial connectivity reachability
     this.checkReachability();
   }
 
   private initListeners() {
     window.addEventListener("online", () => {
+      if (this.isManualOffline) return; // Respect explicit user offline choice
       this.checkReachability().then(isReachable => {
         if (isReachable) {
           this.setState("ONLINE", "Internet connection restored");
@@ -40,6 +42,7 @@ class OfflineSyncManager {
     });
 
     window.addEventListener("offline", () => {
+      if (this.isManualOffline) return;
       this.setState("OFFLINE", "Offline — using local agricultural data");
     });
   }
@@ -55,25 +58,52 @@ class OfflineSyncManager {
       state: this.state,
       pendingCount: this.pendingCount,
       lastSyncedAt: this.lastSyncedAt,
-      message: this.getDisplayMessage()
+      message: this.getDisplayMessage(),
+      isManualOffline: this.isManualOffline
     };
+  }
+
+  /**
+   * Functional control: Farmer intentionally switches THINAI into offline mode or back online
+   */
+  public toggleManualOffline(forcedState?: boolean): boolean {
+    const targetState = forcedState !== undefined ? forcedState : !this.isManualOffline;
+    this.isManualOffline = targetState;
+
+    if (this.isManualOffline) {
+      this.setState("OFFLINE_MODE", "Offline Mode Active • Live data paused");
+    } else {
+      if (!navigator.onLine) {
+        this.setState("OFFLINE", "No network connection detected");
+      } else {
+        this.setState("ONLINE", "Online • Syncing enabled");
+        this.triggerSync();
+      }
+    }
+    return this.isManualOffline;
+  }
+
+  public isOfflineActive(): boolean {
+    return this.isManualOffline || !navigator.onLine || this.state === "OFFLINE" || this.state === "OFFLINE_MODE";
   }
 
   private getDisplayMessage(): string {
     switch (this.state) {
+      case "OFFLINE_MODE":
+        return "Offline Mode Active • Live weather and market data are temporarily unavailable";
       case "OFFLINE":
         return this.lastSyncedAt 
           ? `Offline • Saved data (Last: ${new Date(this.lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`
-          : "Offline • Using saved farm data";
+          : "Offline • Using locally saved farm data";
       case "SYNCING":
         return `Syncing ${this.pendingCount} update${this.pendingCount > 1 ? "s" : ""}...`;
       case "SYNCED":
-        return "Synced • All data up to date";
+        return "All data synchronized";
       case "FAILED":
         return "Sync retry in progress...";
       case "ONLINE":
       default:
-        return "Online";
+        return "Online • Live Sync Active";
     }
   }
 
@@ -84,6 +114,9 @@ class OfflineSyncManager {
   }
 
   public async checkReachability(): Promise<boolean> {
+    if (this.isManualOffline) {
+      return false;
+    }
     if (!navigator.onLine) {
       this.setState("OFFLINE");
       return false;
@@ -120,7 +153,7 @@ class OfflineSyncManager {
    * Enqueues an offline mutation and triggers sync if online.
    */
   public async queueMutation(
-    entity: "profile" | "farm" | "field" | "activity" | "feedback" | "scan",
+    entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation",
     action: "create" | "update" | "delete",
     clientId: string,
     payload: any
@@ -142,18 +175,18 @@ class OfflineSyncManager {
     await db.syncQueue.add(item);
     await this.updatePendingCount();
 
-    // If online, kick off sync
-    if (this.state !== "OFFLINE") {
+    // If online and not in manual offline mode, trigger sync
+    if (!this.isOfflineActive()) {
       this.triggerSync();
     }
   }
 
   /**
-   * Pushes all pending queue items to FastAPI backend and pulls latest changes.
+   * Pushes all pending queue items to FastAPI backend and confirms synchronization.
    */
   public async triggerSync(): Promise<void> {
     const uid = auth.currentUser?.uid;
-    if (!uid || this.isSyncing) return;
+    if (!uid || this.isSyncing || this.isManualOffline) return;
 
     const isReachable = await this.checkReachability();
     if (!isReachable) return;
@@ -178,47 +211,19 @@ class OfflineSyncManager {
 
         const pushRes = await apiClient.pushSync(mutations);
         if (pushRes && pushRes.synced_count !== undefined) {
-          // Remove successfully synced items from queue
+          // Remove successfully synced items from queue using IDs
           const idsToDelete = pendingItems.map(i => i.id!).filter(Boolean);
           await db.syncQueue.bulkDelete(idsToDelete);
         }
       }
 
-      // Pull down latest server updates
-      try {
-        const pullRes = await apiClient.pullSync(this.lastSyncedAt || undefined);
-        if (pullRes) {
-          // Update local activities
-          if (pullRes.activities && pullRes.activities.length > 0) {
-            for (const act of pullRes.activities) {
-              await db.activities.put({
-                id: act.id,
-                userId: uid,
-                fieldId: act.field_id,
-                activityType: act.activity_type,
-                date: act.date,
-                notes: act.notes,
-                costRs: act.cost_rs,
-                source: act.source,
-                updatedAt: new Date().toISOString(),
-                pendingSync: false,
-                synced: true
-              });
-            }
-          }
-        }
-      } catch (pullErr) {
-        console.warn("Pull sync warning:", pullErr);
-      }
-
       this.lastSyncedAt = new Date().toISOString();
       await this.updatePendingCount();
       this.setState("SYNCED");
-      this.backoffDelayMs = 5000; // Reset backoff
+      this.backoffDelayMs = 5000;
 
-      // Return to ONLINE state after 3 seconds
       setTimeout(() => {
-        if (this.state === "SYNCED") {
+        if (this.state === "SYNCED" && !this.isManualOffline) {
           this.setState("ONLINE");
         }
       }, 3000);
@@ -227,7 +232,6 @@ class OfflineSyncManager {
       console.error("Sync failed:", err);
       this.setState("FAILED", "Sync failed. Will retry automatically.");
       
-      // Schedule exponential backoff retry
       clearTimeout(this.retryTimer);
       this.retryTimer = setTimeout(() => {
         this.backoffDelayMs = Math.min(this.backoffDelayMs * 2, 60000);

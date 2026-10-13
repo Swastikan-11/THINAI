@@ -22,22 +22,7 @@ export function getFeedbackHistory(): ActionFeedback[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // Default initial mock history to demonstrate loop
-      return [
-        {
-          id: "fb-1",
-          recommendationId: "soil_compost_addition",
-          recommendationTitle: "Apply 2t/ha Farmyard Manure to Boost Organic Carbon",
-          category: "Fertilizer",
-          actionTaken: "completed",
-          completedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
-          wasHelpful: true,
-          rating: 5,
-          cropConditionObservation: "Improved",
-          notes: "Applied well-decomposed FYM before field preparation. Soil moisture retention visibly improved.",
-          costSavedEstimate: "₹850"
-        }
-      ];
+      return [];
     }
     return JSON.parse(raw);
   } catch {
