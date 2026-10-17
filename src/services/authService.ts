@@ -10,6 +10,7 @@ import {
   ConfirmationResult,
   signOut,
   deleteUser,
+  updatePassword,
   onAuthStateChanged,
   User as FirebaseUser
 } from "firebase/auth";
@@ -130,6 +131,16 @@ export async function deleteCurrentUserAccount(): Promise<void> {
 }
 
 /**
+ * Updates the authenticated farmer's password.
+ */
+export async function updateUserPassword(newPass: string): Promise<void> {
+  if (!auth.currentUser) {
+    throw new Error("No active signed-in session.");
+  }
+  await updatePassword(auth.currentUser, newPass.trim());
+}
+
+/**
  * Retrieves the current Firebase ID token for attaching to API requests.
  */
 export async function getCurrentAuthToken(): Promise<string | null> {
@@ -182,8 +193,12 @@ export function getFriendlyAuthErrorMessage(err: any): string {
       return "The OTP has expired. Please request a new OTP.";
     case "auth/invalid-phone-number":
       return "Invalid mobile number. Please enter a valid 10-digit Indian phone number.";
+    case "auth/quota-exceeded":
+      return "Daily SMS limit reached (10 free SMS/day on Firebase Spark tier). Please sign in using Email or Google, or test numbers.";
     case "auth/too-many-requests":
-      return "Too many attempts. Please wait a few moments and try again.";
+      return "Daily SMS OTP limit reached (10/day) or too many attempts. Please use Email / Google login or wait before retrying.";
+    case "auth/requires-recent-login":
+      return "This operation requires recent authentication. Please sign out and log in again before changing password or deleting account.";
     case "auth/popup-closed-by-user":
       return "Google Sign-In was cancelled.";
     case "auth/network-request-failed":

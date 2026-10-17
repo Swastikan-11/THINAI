@@ -401,6 +401,15 @@ export function LoginScreen({
               <AlertTriangle size={14} className="shrink-0 mt-0.5 text-amber-600" />
               <span>{tAuth("recaptchaNotice", language)}</span>
             </div>
+
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-[11px] text-emerald-900 flex items-start gap-2">
+              <Sparkles size={14} className="shrink-0 mt-0.5 text-emerald-700" />
+              <span>
+                {language === "Tamil"
+                  ? "💡 சோதனை எண்கள்: Firebase கன்சோல் Test Phone Numbers-ல் சேர்க்கப்பட்ட எண்கள் (எ.கா. +91 9876543210 / OTP 123456) SMS ஒதுக்கீடு இல்லாமல் உடனடியாக உள்நுழைய உதவும்."
+                  : "💡 Demo & Testing: Test numbers configured in Firebase Console (e.g. +91 9876543210 with OTP 123456) bypass SMS limits and reCAPTCHA instantly."}
+              </span>
+            </div>
           </div>
         )}
 

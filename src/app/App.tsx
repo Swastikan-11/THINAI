@@ -74,7 +74,7 @@ import {
   getPersistedLanguage,
   persistLanguage
 } from "../services/i18n";
-import { onAuthStateChange, logoutUser, deleteCurrentUserAccount } from "../services/authService";
+import { onAuthStateChange, logoutUser, deleteCurrentUserAccount, updateUserPassword } from "../services/authService";
 import { db, LocalField } from "../services/db";
 import { apiClient } from "../services/apiClient";
 import { syncManager } from "../services/syncService";
@@ -1850,63 +1850,192 @@ function AIScreen({
 
 
 // ─── PROFILE & EDIT PROFILE SCREENS (PRIORITY 5) ──────────────────────────────
+// ─── PROFILE & EDIT PROFILE SCREENS (PHASE 5 AUTH HARDENING) ──────────────────
 function ProfileScreen({
   navigate,
   user,
   onLogout,
   onDeleteAccount,
-  onOpenLangModal
+  onOpenLangModal,
+  showToast
 }: {
   navigate: (s: Screen) => void;
   user: UserState;
   onLogout: () => void;
   onDeleteAccount: () => void;
   onOpenLangModal: () => void;
+  showToast?: (m: string, t?: ToastType) => void;
 }) {
   const lang = user.language;
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword.trim() || newPassword.length < 6) {
+      showToast?.("Password must be at least 6 characters.", "error");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      showToast?.("Passwords do not match.", "error");
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      await updateUserPassword(newPassword);
+      showToast?.(lang === "Tamil" ? "கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது!" : "Password updated successfully!", "success");
+      setNewPassword("");
+      setConfirmPassword("");
+      setShowPasswordSection(false);
+    } catch (err: any) {
+      const msg = err.code === "auth/requires-recent-login"
+        ? (lang === "Tamil" ? "பாதுகாப்பு காரணமாக மீண்டும் உள்நுழைந்து கடவுச்சொல்லை மாற்றவும்." : "Please sign out and sign in again before updating your password.")
+        : err.message;
+      showToast?.(msg, "error");
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
       <div className="pb-6" style={{ background: `linear-gradient(160deg, ${PD}, ${P})`, borderRadius: "0 0 32px 32px" }}>
         <SBar light />
         <div className="flex justify-between px-5 pt-2">
-          <button onClick={onOpenLangModal} className="px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-bold flex items-center gap-1">
+          <button onClick={onOpenLangModal} className="px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-bold flex items-center gap-1 cursor-pointer">
             <Globe size={13} /> {user.language}
           </button>
-          <button onClick={() => navigate("editprofile")} className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20">
+          <button onClick={() => navigate("editprofile")} className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20 cursor-pointer">
             <Edit3 size={15} color="#fff" />
           </button>
         </div>
         <div className="flex flex-col items-center mt-1">
-          <div className="w-16 h-16 rounded-full border-2 border-white/40 flex items-center justify-center bg-white/20 text-white font-black text-2xl">
+          <div className="w-16 h-16 rounded-full border-2 border-white/40 flex items-center justify-center bg-white/20 text-white font-black text-2xl shadow-md">
             {user.name.charAt(0) || "F"}
           </div>
           <h3 className="font-bold text-lg text-white mt-2">{user.name || "Farmer"}</h3>
-          <p className="text-xs text-white/80">{user.district}, {user.stateName}</p>
+          <p className="text-xs text-white/80">{user.village ? `${user.village}, ` : ""}{user.district}, {user.stateName}</p>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3" style={{ scrollbarWidth: "none" }}>
+        {/* Account Info Card */}
         <Card>
-          <h4 className="font-bold text-xs text-green-800 uppercase tracking-wide mb-3">Farm Parameters (Persistent)</h4>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">Farm Size</span><span className="font-semibold">{user.farmSize} Acres</span></div>
-            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">Primary Crop</span><span className="font-semibold">{user.primaryCrop}</span></div>
-            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">Variety</span><span className="font-semibold">{user.cropVariety}</span></div>
-            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">Crop Stage</span><span className="font-semibold text-amber-700">{user.cropStage}</span></div>
-            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">Soil Type</span><span className="font-semibold">{user.soilType}</span></div>
-            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">Irrigation</span><span className="font-semibold">{user.irrigationType}</span></div>
-            <div className="flex justify-between pb-0.5"><span className="text-gray-500">Advisory Language</span><span className="font-bold text-green-700">{user.language}</span></div>
+          <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-gray-100">
+            <span className="font-bold text-xs text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
+              <Shield size={14} className="text-emerald-700" />
+              {lang === "Tamil" ? "கணக்கு விவரங்கள்" : "Account Credentials"}
+            </span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              Verified
+            </span>
+          </div>
+          <div className="space-y-1.5 text-xs text-gray-700">
+            {user.email && (
+              <div className="flex justify-between py-1 border-b border-gray-100">
+                <span className="text-gray-500">{lang === "Tamil" ? "மின்னஞ்சல்" : "Email"}</span>
+                <span className="font-semibold text-gray-900">{user.email}</span>
+              </div>
+            )}
+            {user.phone && (
+              <div className="flex justify-between py-1 border-b border-gray-100">
+                <span className="text-gray-500">{lang === "Tamil" ? "கைபேசி எண்" : "Mobile Phone"}</span>
+                <span className="font-semibold text-gray-900">{user.phone}</span>
+              </div>
+            )}
+            <div className="flex justify-between py-1">
+              <span className="text-gray-500">{lang === "Tamil" ? "பாதுகாப்பு" : "Security"}</span>
+              <span className="font-semibold text-emerald-700">Firebase Spark</span>
+            </div>
           </div>
         </Card>
 
-        <PBtn variant="outline" onClick={() => navigate("editprofile")}>Edit Farm Profile</PBtn>
-        <PBtn variant="danger" onClick={onLogout}>Sign Out</PBtn>
+        {/* Farm Parameters Card */}
+        <Card>
+          <h4 className="font-bold text-xs text-green-800 uppercase tracking-wide mb-3">
+            {lang === "Tamil" ? "பண்ணை விவரங்கள் (சேமிக்கப்பட்டது)" : "Farm Parameters (Persistent)"}
+          </h4>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">{lang === "Tamil" ? "பரப்பளவு" : "Farm Size"}</span><span className="font-semibold">{user.farmSize} Acres</span></div>
+            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">{lang === "Tamil" ? "முதன்மைப் பயிர்" : "Primary Crop"}</span><span className="font-semibold">{user.primaryCrop}</span></div>
+            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">{lang === "Tamil" ? "ரகம்" : "Variety"}</span><span className="font-semibold">{user.cropVariety}</span></div>
+            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">{lang === "Tamil" ? "பயிர் பருவம்" : "Crop Stage"}</span><span className="font-semibold text-amber-700">{user.cropStage}</span></div>
+            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">{lang === "Tamil" ? "மண் வகை" : "Soil Type"}</span><span className="font-semibold">{user.soilType}</span></div>
+            <div className="flex justify-between border-b pb-1.5"><span className="text-gray-500">{lang === "Tamil" ? "பாசன முறை" : "Irrigation"}</span><span className="font-semibold">{user.irrigationType}</span></div>
+            <div className="flex justify-between pb-0.5"><span className="text-gray-500">{lang === "Tamil" ? "பயன்பாட்டு மொழி" : "Language"}</span><span className="font-bold text-green-700">{user.language}</span></div>
+          </div>
+        </Card>
+
+        {/* Change Password Section */}
+        <div className="bg-white rounded-2xl p-3 border border-emerald-100 shadow-xs">
+          <button
+            type="button"
+            onClick={() => setShowPasswordSection(!showPasswordSection)}
+            className="w-full flex items-center justify-between text-xs font-bold text-gray-800 cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <Lock size={15} className="text-emerald-700" />
+              <span>{lang === "Tamil" ? "கடவுச்சொல்லை மாற்றவும்" : "Change Password"}</span>
+            </div>
+            <span className="text-[11px] text-emerald-700 font-bold">
+              {showPasswordSection ? "▲" : "▼"}
+            </span>
+          </button>
+
+          {showPasswordSection && (
+            <form onSubmit={handlePasswordUpdate} className="mt-3 pt-3 border-t border-gray-100 space-y-2.5">
+              <div>
+                <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                  {lang === "Tamil" ? "புதிய கடவுச்சொல் (குறைந்தது 6 எழுத்துகள்):" : "New Password (min 6 characters):"}
+                </label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full p-2.5 text-xs rounded-xl border border-gray-200 outline-hidden focus:border-emerald-600"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                  {lang === "Tamil" ? "புதிய கடவுச்சொல்லை உறுதிப்படுத்தவும்:" : "Confirm New Password:"}
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full p-2.5 text-xs rounded-xl border border-gray-200 outline-hidden focus:border-emerald-600"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={passwordLoading}
+                className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {passwordLoading ? <RefreshCw size={14} className="animate-spin" /> : <Check size={14} />}
+                <span>{lang === "Tamil" ? "கடவுச்சொல் புதுப்பிக்கவும்" : "Update Password"}</span>
+              </button>
+            </form>
+          )}
+        </div>
+
+        <PBtn variant="outline" onClick={() => navigate("editprofile")}>
+          {lang === "Tamil" ? "பண்ணை சுயவிவரத்தைத் திருத்தவும்" : "Edit Farm Profile"}
+        </PBtn>
+        <PBtn variant="danger" onClick={onLogout}>
+          {lang === "Tamil" ? "வெளியேறு" : "Sign Out"}
+        </PBtn>
         <button
           onClick={onDeleteAccount}
-          className="w-full py-2.5 rounded-xl border border-red-200 text-red-600 text-xs font-bold hover:bg-red-50 active:scale-98 transition-all flex items-center justify-center gap-1.5 mt-1">
+          className="w-full min-h-[44px] py-2.5 rounded-xl border border-red-200 text-red-600 text-xs font-bold hover:bg-red-50 active:scale-98 transition-all flex items-center justify-center gap-1.5 mt-1 cursor-pointer">
           <Trash2 size={14} />
-          <span>Delete Farmer Account</span>
+          <span>{lang === "Tamil" ? "கணக்கை நிரந்தரமாக நீக்கு" : "Delete Farmer Account"}</span>
         </button>
       </div>
     </div>
@@ -1927,6 +2056,11 @@ function EditProfileScreen({
 }) {
   const [form, setForm] = useState<UserState>({ ...user });
 
+  const TN_DISTRICTS = [
+    "Coimbatore", "Thanjavur", "Madurai", "Tiruchirappalli", "Salem",
+    "Erode", "Tiruppur", "Dindigul", "Tirunelveli", "Vellore", "Cuddalore", "Nagapattinam"
+  ];
+
   const save = () => {
     onSave(form);
     showToast("Farm profile updated & persisted!", "success");
@@ -1937,62 +2071,78 @@ function EditProfileScreen({
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
       <div style={{ background: `linear-gradient(160deg, ${PD}, ${P})`, borderRadius: "0 0 24px 24px" }}>
         <SBar light />
-        <BkHdr title="Edit Farm Profile" navigate={navigate} dest="profile" light />
+        <BkHdr title={form.language === "Tamil" ? "பண்ணை சுயவிவரம் திருத்துதல்" : "Edit Farm Profile"} navigate={navigate} dest="profile" light />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3" style={{ scrollbarWidth: "none" }}>
-        <InputField placeholder="Farmer Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} label="Farmer Name:" />
-        <InputField placeholder="District" value={form.district} onChange={v => setForm(f => ({ ...f, district: v }))} label="District:" />
-        <InputField placeholder="State" value={form.stateName} onChange={v => setForm(f => ({ ...f, stateName: v }))} label="State:" />
-        <InputField placeholder="Farm Size (Acres)" value={form.farmSize} onChange={v => setForm(f => ({ ...f, farmSize: v }))} label="Farm Size (Acres):" />
+        <InputField placeholder="Farmer Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} label="Farmer Name / விவசாயி பெயர்:" />
+        
+        <div>
+          <label className="text-xs font-semibold text-gray-700 block mb-1">District / மாவட்டம்:</label>
+          <select
+            value={form.district}
+            onChange={e => setForm(f => ({ ...f, district: e.target.value }))}
+            className="w-full text-xs p-2.5 rounded-xl border border-gray-200 outline-hidden bg-white">
+            {TN_DISTRICTS.map(d => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </select>
+        </div>
+
+        <InputField placeholder="Village / கிராமம்" value={form.village} onChange={v => setForm(f => ({ ...f, village: v }))} label="Village / ஊர்:" />
+        <InputField placeholder="Farm Size (Acres)" value={form.farmSize} onChange={v => setForm(f => ({ ...f, farmSize: v }))} label="Farm Size (Acres) / பரப்பளவு:" />
 
         <div>
-          <label className="text-xs font-semibold text-gray-700 block mb-1">Primary Crop:</label>
+          <label className="text-xs font-semibold text-gray-700 block mb-1">Primary Crop / முதன்மைப் பயிர்:</label>
           <select
             value={form.primaryCrop}
             onChange={e => setForm(f => ({ ...f, primaryCrop: e.target.value }))}
             className="w-full text-xs p-2.5 rounded-xl border border-gray-200 outline-hidden bg-white">
-            <option value="Paddy (Rice)">Paddy (Rice)</option>
-            <option value="Tomato">Tomato</option>
-            <option value="Wheat">Wheat</option>
-            <option value="Maize">Maize</option>
-            <option value="Cotton">Cotton</option>
+            <option value="Paddy (Rice)">Paddy (Rice) / நெல்</option>
+            <option value="Tomato">Tomato / தக்காளி</option>
+            <option value="Maize (Corn)">Maize (Corn) / மக்காச்சோளம்</option>
+            <option value="Cotton">Cotton / பருத்தி</option>
+            <option value="Potato">Potato / உருளைக்கிழங்கு</option>
+            <option value="Chilli">Chilli / மிளகாய்</option>
+            <option value="Banana">Banana / வாழை</option>
+            <option value="Sugarcane">Sugarcane / கரும்பு</option>
+            <option value="Groundnut">Groundnut / நிலக்கடலை</option>
           </select>
         </div>
 
-        <InputField placeholder="Crop Variety (e.g. Ponni CO 51)" value={form.cropVariety} onChange={v => setForm(f => ({ ...f, cropVariety: v }))} label="Crop Variety:" />
+        <InputField placeholder="Crop Variety (e.g. Ponni CO 51)" value={form.cropVariety} onChange={v => setForm(f => ({ ...f, cropVariety: v }))} label="Crop Variety / பயிர் ரகம்:" />
 
         <div>
-          <label className="text-xs font-semibold text-gray-700 block mb-1">Crop Stage:</label>
+          <label className="text-xs font-semibold text-gray-700 block mb-1">Crop Stage / பயிர் பருவம்:</label>
           <select
             value={form.cropStage}
             onChange={e => setForm(f => ({ ...f, cropStage: e.target.value }))}
             className="w-full text-xs p-2.5 rounded-xl border border-gray-200 outline-hidden bg-white">
-            <option value="Sowing / Nursery">Sowing / Nursery</option>
-            <option value="Tillering Stage">Tillering Stage</option>
-            <option value="Panicle Initiation">Panicle Initiation</option>
-            <option value="Flowering Stage">Flowering Stage</option>
-            <option value="Maturity / Harvest">Maturity / Harvest</option>
+            <option value="Sowing / Nursery">Sowing / Nursery (விதைப்பு/நாற்றங்கால்)</option>
+            <option value="Tillering Stage">Tillering Stage (தூர்கட்டும் பருவம்)</option>
+            <option value="Panicle Initiation">Panicle Initiation (கதிர் உருவாகும் பருவம்)</option>
+            <option value="Flowering Stage">Flowering Stage (பூக்கும் பருவம்)</option>
+            <option value="Maturity / Harvest">Maturity / Harvest (அறுவடைப் பருவம்)</option>
           </select>
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-gray-700 block mb-1">Soil Type:</label>
+          <label className="text-xs font-semibold text-gray-700 block mb-1">Soil Type / மண் வகை:</label>
           <select
             value={form.soilType}
             onChange={e => setForm(f => ({ ...f, soilType: e.target.value }))}
             className="w-full text-xs p-2.5 rounded-xl border border-gray-200 outline-hidden bg-white">
-            <option value="Clay Loam">Clay Loam</option>
-            <option value="Red Sandy Loam">Red Sandy Loam</option>
-            <option value="Black Cotton Soil">Black Cotton Soil</option>
-            <option value="Alluvial Soil">Alluvial Soil</option>
+            <option value="Clay Loam">Clay Loam (களிமண் வண்டல்)</option>
+            <option value="Red Sandy Loam">Red Sandy Loam (செம்மண் வண்டல்)</option>
+            <option value="Black Cotton Soil">Black Cotton Soil (கரிசல் மண்)</option>
+            <option value="Alluvial Soil">Alluvial Soil (வண்டல் மண்)</option>
           </select>
         </div>
 
-        <InputField placeholder="Irrigation Type" value={form.irrigationType} onChange={v => setForm(f => ({ ...f, irrigationType: v }))} label="Irrigation Method:" />
+        <InputField placeholder="Irrigation Type" value={form.irrigationType} onChange={v => setForm(f => ({ ...f, irrigationType: v }))} label="Irrigation Method / பாசன முறை:" />
 
         <div>
-          <label className="text-xs font-semibold text-gray-700 block mb-1">Advisory Language:</label>
+          <label className="text-xs font-semibold text-gray-700 block mb-1">Advisory Language / மொழி:</label>
           <select
             value={form.language}
             onChange={e => setForm(f => ({ ...f, language: e.target.value as AppLanguage }))}
@@ -2003,7 +2153,9 @@ function EditProfileScreen({
           </select>
         </div>
 
-        <PBtn onClick={save}>Save Profile & Recalculate AI</PBtn>
+        <PBtn onClick={save}>
+          {form.language === "Tamil" ? "சுயவிவரத்தைச் சேமி & AI மறு கணக்கீடு" : "Save Profile & Recalculate AI"}
+        </PBtn>
       </div>
     </div>
   );
@@ -2696,6 +2848,7 @@ export default function App() {
             onLogout={handleLogout}
             onDeleteAccount={handleDeleteAccount}
             onOpenLangModal={() => setShowLangModal(true)}
+            showToast={showToast}
           />
         )}
 
