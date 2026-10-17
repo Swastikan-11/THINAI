@@ -58,3 +58,18 @@ THINAI is strictly bilingual: **English** and **Tamil (தமிழ்)**. Every
   - **Offline-First Resilience**: Dexie.js (IndexedDB) acts as the local offline cache. Any mutations made offline are written to the `syncQueue` and automatically synced to Firestore when network connectivity resumes.
 - **FastAPI Backend (`/backend`)**:
   - **OPTIONAL**: The FastAPI Python backend is purely optional and intended for local development or workstation experiments. It is **not deployed** to any cloud server, maintaining zero cost. All core functionality runs entirely client-side and via Firebase Spark.
+
+---
+
+## 5. MobileNetV2 Neural Vision Pathology (Phase 3)
+- **Runtime Engine**: Google LiteRT.js (`@litertjs/core`) executing compiled `.tflite` models directly on-device via WebAssembly (`wasm`) without cloud inference latency or recurring API costs.
+- **Trained Domain & Crop Coverage**:
+  - The vision classifier covers **Tomato**, **Potato**, **Pepper Bell**, and **Maize (Corn)**.
+  - Crops outside this calibrated set honestly trigger: *"photo saved, expert advice suggested"* and refer the farmer to the Assistant Agricultural Officer (AAO).
+- **Confidence Threshold & Retake Advisory**:
+  - Threshold set at **65%**. If model confidence falls below 65%, the system avoids misleading diagnoses and triggers *"not sure, retake photo"* with photo-quality tips (10-15 cm distance, daytime shade, single leaf, no soil background).
+- **Heuristic Fallback Truthfulness**:
+  - When the neural model flatbuffer is loading or unavailable, chromatic checks are explicitly labeled: *"basic colour check, low reliability"*.
+- **Retraining Pipeline**:
+  - Training pipeline script available in [`scripts/train_disease_model_colab.py`](file:///c:/Users/cswas/Documents/THINAI/scripts/train_disease_model_colab.py) for free Google Colab GPU training.
+  - Farmer Yes/No confirmation verdicts are recorded to Cloud Firestore (`diagnosis_confirmations`) as ground truth for continuous model retraining.

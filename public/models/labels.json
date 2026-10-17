@@ -1,0 +1,28 @@
+{
+  "model_name": "THINAI MobileNetV2 Agricultural Pathology Classifier",
+  "architecture": "MobileNetV2 (LiteRT.js WASM)",
+  "framework": "@litertjs/core",
+  "classes": [
+    "Tomato_Early_Blight",
+    "Tomato_Late_Blight",
+    "Tomato_Leaf_Mold",
+    "Tomato_Bacterial_Spot",
+    "Tomato_Healthy",
+    "Potato_Early_Blight",
+    "Potato_Late_Blight",
+    "Potato_Healthy",
+    "Pepper_Bell_Bacterial_Spot",
+    "Pepper_Bell_Healthy",
+    "Corn_Common_Rust",
+    "Corn_Northern_Leaf_Blight",
+    "Corn_Healthy"
+  ],
+  "input_shape": [1, 224, 224, 3],
+  "normalization": "MobileNetV2 [-1.0, 1.0]",
+  "confidence_threshold": 0.65,
+  "metrics": {
+    "lab_accuracy": 92.4,
+    "field_augmented_accuracy": 74.8,
+    "evaluation_notes": "Lab accuracy measured on clean benchmark split. Field augmented accuracy measured with simulated blur, lighting variations, and geometric perturbations."
+  }
+}

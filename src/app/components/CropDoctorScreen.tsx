@@ -358,12 +358,43 @@ export function CropDoctorScreen({
           <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200 shadow-xs">
             <CameraIcon className="w-8 h-8" />
           </div>
-
           <div>
             <h3 className="font-extrabold text-base text-zinc-900">Capture Leaf or Plant Foliage</h3>
             <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
               Focus closely on the affected leaf spots, wilting stems, or discolored grains. Ensure natural daylight without severe glare.
             </p>
+          </div>
+
+          {/* PHOTO-QUALITY GUIDELINES (PHASE 3) */}
+          <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3.5 text-xs text-left space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-emerald-950 flex items-center gap-1.5 text-[11px]">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                {language === "Tamil" ? "துல்லியமான புகைப்பட வழிகாட்டி" : "Photo-Quality Guidelines for Vision Accuracy"}
+              </span>
+              <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">
+                {language === "Tamil" ? "சிறந்த துல்லியம்" : "Key Tips"}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+              <div className="bg-white p-2 rounded-lg border border-emerald-100">
+                <div className="font-bold text-emerald-900">📏 {language === "Tamil" ? "தூரம்" : "Distance"}</div>
+                <div className="text-zinc-600 text-[9px] mt-0.5">10 - 15 cm from leaf.</div>
+              </div>
+              <div className="bg-white p-2 rounded-lg border border-emerald-100">
+                <div className="font-bold text-emerald-900">☀️ {language === "Tamil" ? "ஒளி" : "Light"}</div>
+                <div className="text-zinc-600 text-[9px] mt-0.5">Natural daytime shade.</div>
+              </div>
+              <div className="bg-white p-2 rounded-lg border border-emerald-100">
+                <div className="font-bold text-emerald-900">🍃 {language === "Tamil" ? "ஒரே இலை" : "Single Leaf"}</div>
+                <div className="text-zinc-600 text-[9px] mt-0.5">1 blade in clear focus.</div>
+              </div>
+              <div className="bg-white p-2 rounded-lg border border-emerald-100">
+                <div className="font-bold text-emerald-900">🚫 {language === "Tamil" ? "மண் இல்லை" : "No Soil/Bags"}</div>
+                <div className="text-zinc-600 text-[9px] mt-0.5">No clutter behind leaf.</div>
+              </div>
+            </div>
           </div>
 
           {/* TWO CLEAR PROMINENT OPTIONS (AS REQUESTED) */}
@@ -490,6 +521,41 @@ export function CropDoctorScreen({
                 </strong>
               </div>
             </div>
+
+            {/* HONEST STATUS BADGES (PHASE 3 REQUIREMENT) */}
+            {diagnosis.statusLabel === "basic colour check, low reliability" && (
+              <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                <div className="text-[10px]">
+                  <strong className="font-bold uppercase tracking-wider block">basic colour check, low reliability</strong>
+                  <span className="text-zinc-600">{language === "Tamil" ? "அடிப்படை நிறச் சரிபார்ப்பு — நரம்பியல் பார்வை மாதிரி இணைக்கப்படவில்லை" : "Heuristic chromatic fallback. MobileNetV2 neural weights uncalibrated."}</span>
+                </div>
+              </div>
+            )}
+
+            {diagnosis.statusLabel === "not sure, retake photo" && (
+              <div className="mt-2.5 p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-xs">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>{language === "Tamil" ? "தெளிவற்ற முடிவு — மீண்டும் படம் எடுக்கவும்" : "not sure, retake photo"}</span>
+                </div>
+                <p className="text-[10px] text-zinc-700">
+                  {language === "Tamil" ? "துல்லிய வரம்பு (<65%) குறைவாக உள்ளது. தெளிவான ஒளியில் 10-15 செ.மீ தூரத்தில் ஒரே இலையை படம் எடுக்கவும்." : "Confidence below 65%. Follow photo quality tips: 10-15 cm distance, natural daytime shade, single leaf, no soil background."}
+                </p>
+              </div>
+            )}
+
+            {diagnosis.statusLabel === "photo saved, expert advice suggested" && (
+              <div className="mt-2.5 p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-950 space-y-1">
+                <div className="flex items-center gap-2 font-bold text-xs">
+                  <Info className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>{language === "Tamil" ? "படம் சேமிக்கப்பட்டது — வேளாண் அலுவலர் ஆலோசனை பரிந்துரைக்கப்படுகிறது" : "photo saved, expert advice suggested"}</span>
+                </div>
+                <p className="text-[10px] text-zinc-700">
+                  {language === "Tamil" ? "தேர்ந்தெடுக்கப்பட்ட பயிர் மாதிரி வரம்பிற்கு வெளியே உள்ளது. கள அலுவலர் ஆலோசனை பெறவும்." : "Out-of-domain crop. Stored in retraining feedback queue; consult AAO officer."}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* WHY? (EXPLAINABILITY) */}
