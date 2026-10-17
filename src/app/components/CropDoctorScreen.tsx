@@ -18,7 +18,8 @@ import {
   Volume2,
   VolumeX,
   PhoneCall,
-  Save
+  Save,
+  Activity
 } from "lucide-react";
 import { Camera, CameraResultType, CameraSource, CameraDirection } from "@capacitor/camera";
 import { DataBadge, DataStatus } from "./DataBadge";
@@ -27,12 +28,14 @@ import { syncManager } from "../../services/syncService";
 import { DecisionEngineResult } from "../../services/decisionEngine";
 import { detectCropDisease, DiseaseDetectionResult } from "../../services/diseaseDetectionService";
 import { recordDiagnosisConfirmation } from "../../services/firestoreSync";
+import { computePhotoHash, recordFarmerVerdict } from "../../services/verdictService";
 
 interface CropDoctorProps {
   primaryCrop?: string;
   engineResult?: DecisionEngineResult;
   onOpenLibrary?: () => void;
   onOpenCalculator?: () => void;
+  onOpenFieldAccuracy?: () => void;
   showToast?: (msg: string, type?: "success" | "error" | "info" | "warning") => void;
   language?: string;
 }
@@ -42,6 +45,7 @@ export function CropDoctorScreen({
   engineResult,
   onOpenLibrary,
   onOpenCalculator,
+  onOpenFieldAccuracy,
   showToast,
   language = "English"
 }: CropDoctorProps) {
@@ -50,9 +54,12 @@ export function CropDoctorScreen({
   const [diagnosis, setDiagnosis] = useState<DiseaseDetectionResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savingRecord, setSavingRecord] = useState(false);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState<"correct" | "incorrect" | null>(null);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState<"YES" | "NO" | "NOT_SURE" | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [savedForExpert, setSavedForExpert] = useState(false);
+  const [showPickList, setShowPickList] = useState(false);
+  const [selectedActualClass, setSelectedActualClass] = useState("");
+  const [currentVerdict, setCurrentVerdict] = useState<"YES" | "NO" | "NOT_SURE" | null>(null);
 
   // Stop speech when component unmounts
   React.useEffect(() => {
@@ -278,23 +285,42 @@ export function CropDoctorScreen({
   };
 
   /**
-   * Field Confirmation Feedback Loop (Phase 3.1)
-   * Captures ground-truth verification from farmer in field conditions.
-   * Persisted locally to IndexedDB/LocalStorage for future model retraining.
+   * Field Confirmation Feedback Loop (Phase D)
+   * Captures crowd-sourced farmer validation records ("noisy weak labels"),
+   * computes cryptographic image hash, records tier, confidence, and actual class.
+   * Persisted locally to Dexie IndexedDB and synced to Firestore.
    */
-  const handleDiagnosisFeedback = async (isCorrect: boolean) => {
+  const submitVerdict = async (verdict: "YES" | "NO" | "NOT_SURE", actualChoice?: string) => {
     if (!diagnosis) return;
-    const verdict = isCorrect ? "correct" : "incorrect";
     setFeedbackSubmitted(verdict);
+    setShowPickList(false);
+    setCurrentVerdict(null);
 
     try {
+      const photoHash = photoPreview ? await computePhotoHash(photoPreview) : `nohash_${Date.now()}`;
+      const tier: "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE" =
+        diagnosis.tier || (diagnosis.confidence >= 0.78 ? "TIER_1_CONFIDENT" : diagnosis.confidence >= 0.45 ? "TIER_2_MODERATE" : "TIER_3_INCONCLUSIVE");
+
+      await recordFarmerVerdict({
+        photoHash,
+        predictedClass: diagnosis.diseaseName,
+        calibratedConfidence: diagnosis.confidence,
+        rawConfidence: diagnosis.rawConfidence,
+        tier,
+        verdict,
+        actualClassChoice: actualChoice || undefined,
+        model_version: "thinai-mobilenetv2-calibrated-v1"
+      });
+
+      // Backward-compatible record for local inspection
       const feedbackRecord = {
         id: `diag-fb-${Date.now()}`,
         crop: diagnosis.crop,
         predictedDisease: diagnosis.diseaseName,
         scientificName: diagnosis.scientificName,
         confidence: diagnosis.confidence,
-        verdict: verdict,
+        verdict,
+        actualClassChoice: actualChoice || null,
         timestamp: new Date().toISOString(),
         hasThumbnail: !!photoPreview
       };
@@ -302,37 +328,29 @@ export function CropDoctorScreen({
       const existingRaw = localStorage.getItem("thinai_disease_feedback_loop");
       const existing = existingRaw ? JSON.parse(existingRaw) : [];
       existing.unshift(feedbackRecord);
-      // Keep up to 100 recent feedback entries locally
       localStorage.setItem("thinai_disease_feedback_loop", JSON.stringify(existing.slice(0, 100)));
-
-      // Queue into syncManager so it can sync to backend/Firestore when connected
-      await syncManager.queueMutation("scan", "update", feedbackRecord.id, {
-        feedback: verdict,
-        predictedDisease: diagnosis.diseaseName,
-        crop: diagnosis.crop,
-        timestamp: feedbackRecord.timestamp
-      });
-
-      // Record to Firestore shared backend / Dexie queue for model retraining
-      await recordDiagnosisConfirmation({
-        predictedDisease: diagnosis.diseaseName,
-        crop: diagnosis.crop,
-        confidence: diagnosis.confidence,
-        farmerVerdict: isCorrect ? "CONFIRMED" : "REJECTED",
-        farmerComment: diagnosis.scientificName,
-        imageUrl: photoPreview && photoPreview.length < 50000 ? photoPreview : undefined
-      }).catch((e) => console.warn("Firestore diagnosis confirmation record failed:", e));
 
       if (showToast) {
         showToast(
-          isCorrect 
-            ? (language === "Tamil" ? "நோய் கண்டறிதல் உறுதிப்படுத்தப்பட்டது! நன்றி." : "Diagnosis confirmed as accurate! Thank you.") 
-            : (language === "Tamil" ? "கருத்து பதிவு செய்யப்பட்டது. மாதிரி மறுபயிற்சிக்கு அனுப்பப்படும்." : "Feedback recorded. Flagged for pathology review."),
+          verdict === "YES"
+            ? (language === "Tamil" ? "நோய் கண்டறிதல் உறுதிப்படுத்தப்பட்டது! கள கண்காணிப்பில் பதிவு செய்யப்பட்டது." : "Verdict recorded: Confirmed accurate in field!")
+            : verdict === "NO"
+            ? (language === "Tamil" ? "மறுப்பு பதிவு செய்யப்பட்டது! மறுபயிற்சி தரவுத்தொகுப்பில் சேர்க்கப்பட்டது." : "Verdict recorded: Rejected. Flagged for retraining.")
+            : (language === "Tamil" ? "கருத்து பதிவு செய்யப்பட்டது! கள ஆய்வுக்கு குறிக்கப்பட்டது." : "Verdict recorded: Inconclusive in field."),
           "success"
         );
       }
     } catch (fbErr) {
-      console.warn("Could not record diagnosis feedback:", fbErr);
+      console.warn("Could not record farmer verdict:", fbErr);
+    }
+  };
+
+  const handleVerdictClick = (verdict: "YES" | "NO" | "NOT_SURE") => {
+    if (verdict === "YES") {
+      submitVerdict("YES");
+    } else {
+      setCurrentVerdict(verdict);
+      setShowPickList(true);
     }
   };
 
@@ -851,48 +869,114 @@ export function CropDoctorScreen({
             </p>
           </div>
 
-          {/* FIELD DIAGNOSIS CONFIRMATION LOOP (PHASE 3.1) */}
-          <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 space-y-2">
+          {/* FARMER-VERDICT FIELD MONITOR (PHASE D) */}
+          <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
                 <FileCheck className="w-4 h-4 text-amber-700" />
-                {language === "Tamil" ? "கள நோய் கண்டறிதல் சரிபார்ப்பு" : "Field Diagnosis Verification"}
+                {language === "Tamil" ? "விவசாயி கள சரிபார்ப்பு (Farmer Verdict)" : "Farmer Field Verdict (Active Learning)"}
               </span>
               <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full">
-                {language === "Tamil" ? "தொடர் மறுபயிற்சி தரவு" : "Ground Truth Feedback"}
+                {language === "Tamil" ? "மறுபயிற்சி தரவு" : "Weak-Label Feedback"}
               </span>
             </div>
-            
+
             <p className="text-[11px] text-zinc-700 leading-relaxed">
               {language === "Tamil"
-                ? "இந்த நோய் கண்டறிதல் உங்கள் பயிரின் உண்மையான நிலைக்கு ஒத்துப்போகிறதா? உங்கள் சரிபார்ப்பு மாதிரி துல்லியத்தை மேம்படுத்த உதவுகிறது."
-                : "Does this diagnosis match your crop's actual field condition? Your feedback builds ground-truth data for continuous retraining."}
+                ? "இந்த கணிப்பு உங்கள் பயிரின் உண்மையான நிலைக்கு ஒத்துப்போகிறதா? உங்கள் சரிபார்ப்பு கள மாதிரியின் துல்லியத்தையும் கலிப்ரேஷன் மாற்றங்களையும் கண்காணிக்க உதவுகிறது."
+                : "Does this diagnosis match your crop's real field condition? Your feedback tracks deployment accuracy and calibration drift."}
             </p>
 
             {feedbackSubmitted ? (
-              <div className="p-2.5 rounded-lg bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-bold flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-700 shrink-0" />
-                <span>
-                  {feedbackSubmitted === "correct"
-                    ? (language === "Tamil" ? "நன்றி! இந்த முடிவு துல்லியமானதாக பதிவு செய்யப்பட்டது." : "Thank you! Confirmed as accurate in your field.")
-                    : (language === "Tamil" ? "கருத்து பதிவு செய்யப்பட்டது! மேலும் ஆய்வுக்கு குறிக்கப்பட்டது." : "Feedback recorded! Flagged for pathological review.")}
-                </span>
+              <div className="space-y-2">
+                <div className="p-2.5 rounded-lg bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-bold flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                  <span>
+                    {feedbackSubmitted === "YES"
+                      ? (language === "Tamil" ? "நன்றி! இந்த முடிவு துல்லியமானதாக பதிவு செய்யப்பட்டது." : "Verdict recorded: Confirmed accurate in your field.")
+                      : feedbackSubmitted === "NO"
+                      ? (language === "Tamil" ? "மறுப்பு பதிவு செய்யப்பட்டது! மாதிரி மறுபயிற்சிக்கு குறிக்கப்பட்டது." : "Verdict recorded: Rejected. Flagged for retraining candidate pool.")
+                      : (language === "Tamil" ? "உறுதியற்றதாக பதிவு செய்யப்பட்டது! கள ஆய்வுக்கு குறிக்கப்பட்டது." : "Verdict recorded: Inconclusive in field.")}
+                  </span>
+                </div>
+
+                <div className="text-[10px] text-zinc-500 italic bg-white/70 p-2 rounded-lg border border-amber-200/50">
+                  {language === "Tamil"
+                    ? "குறிப்பு: விவசாயிகளின் சரிபார்ப்புகள் 'ஒலியுள்ள பலவீனமான லேபிள்கள்' (noisy weak labels) ஆக பதிவு செய்யப்படுகின்றன; 10-க்கும் குறைவான பதிவுகள் இருக்கும் போது துல்லிய மதிப்பீடு காட்டப்படாது."
+                    : "Notice: Farmer verdicts are recorded as noisy weak labels. Minimum 10 verdicts per class are strictly required before estimating field accuracy."}
+                </div>
+
+                {onOpenFieldAccuracy && (
+                  <button
+                    onClick={onOpenFieldAccuracy}
+                    className="w-full py-2 px-3 rounded-lg bg-zinc-900 hover:bg-black text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  >
+                    <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>{language === "Tamil" ? "கள துல்லிய பலகை & கலிப்ரேஷன் நகர்வு காண" : "View Field Accuracy & Drift Monitor"}</span>
+                  </button>
+                )}
+              </div>
+            ) : showPickList && currentVerdict ? (
+              <div className="space-y-2.5 pt-1">
+                <div className="text-xs font-bold text-zinc-900">
+                  {language === "Tamil" ? "விருப்பத்தேர்வு: உண்மையான பாதிப்பு என்ன?" : "Optional: What is it really?"}
+                </div>
+                <select
+                  value={selectedActualClass}
+                  onChange={(e) => setSelectedActualClass(e.target.value)}
+                  className="w-full p-2.5 text-xs rounded-lg border border-zinc-300 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                >
+                  <option value="">{language === "Tamil" ? "-- உண்மையான நோயை தேர்வு செய்யவும் (விருப்பத்தேர்வு) --" : "-- Select actual condition (optional) --"}</option>
+                  <option value="Tomato Early Blight">{language === "Tamil" ? "தக்காளி தளிர் கருகல் (Tomato Early Blight)" : "Tomato Early Blight"}</option>
+                  <option value="Tomato Late Blight">{language === "Tamil" ? "தக்காளி பின்பருவ கருகல் (Tomato Late Blight)" : "Tomato Late Blight"}</option>
+                  <option value="Tomato Bacterial Spot">{language === "Tamil" ? "தக்காளி பாக்டீரியா புள்ளி (Tomato Bacterial Spot)" : "Tomato Bacterial Spot"}</option>
+                  <option value="Tomato Leaf Mold">{language === "Tamil" ? "தக்காளி இலை பூஞ்சை (Tomato Leaf Mold)" : "Tomato Leaf Mold"}</option>
+                  <option value="Potato Early Blight">{language === "Tamil" ? "உருளை தளிர் கருகல் (Potato Early Blight)" : "Potato Early Blight"}</option>
+                  <option value="Potato Late Blight">{language === "Tamil" ? "உருளை பின்பருவ கருகல் (Potato Late Blight)" : "Potato Late Blight"}</option>
+                  <option value="Pepper Bacterial Spot">{language === "Tamil" ? "மிளகாய் பாக்டீரியா புள்ளி (Pepper Bacterial Spot)" : "Pepper Bacterial Spot"}</option>
+                  <option value="Nutrient Deficiency">{language === "Tamil" ? "ஊட்டச்சத்து குறைபாடு (Nutrient Deficiency)" : "Nutrient Deficiency (N/P/K/Fe)"}</option>
+                  <option value="Pest Infestation">{language === "Tamil" ? "பூச்சி தாக்குதல் (Pest Infestation)" : "Insect / Mite Pest Damage"}</option>
+                  <option value="Healthy Foliage">{language === "Tamil" ? "ஆரோக்கியமான இலை (Healthy Foliage)" : "Healthy Foliage (No Disease)"}</option>
+                  <option value="Other / Unknown">{language === "Tamil" ? "பிற / அறியப்படாத நிலை" : "Other / Unknown Condition"}</option>
+                </select>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    onClick={() => submitVerdict(currentVerdict, selectedActualClass || undefined)}
+                    className="flex-1 py-2 px-3 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs shadow-xs transition-all"
+                  >
+                    {language === "Tamil" ? "பதிவை உறுதிப்படுத்து" : "Submit Verdict"}
+                  </button>
+                  <button
+                    onClick={() => submitVerdict(currentVerdict)}
+                    className="py-2 px-3 rounded-lg bg-zinc-200 hover:bg-zinc-300 text-zinc-800 font-semibold text-xs transition-all"
+                  >
+                    {language === "Tamil" ? "தவிர்" : "Skip Pick-list"}
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="flex items-center gap-2 pt-1">
+              <div className="grid grid-cols-3 gap-2 pt-1">
                 <button
-                  onClick={() => handleDiagnosisFeedback(true)}
-                  className="flex-1 py-2 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  onClick={() => handleVerdictClick("YES")}
+                  className="py-2 px-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1 active:scale-95"
                 >
                   <Check className="w-3.5 h-3.5" />
-                  <span>{language === "Tamil" ? "ஆம், சரியானது" : "Yes, Accurate"}</span>
+                  <span>{language === "Tamil" ? "ஆம் (சரி)" : "Yes"}</span>
                 </button>
                 <button
-                  onClick={() => handleDiagnosisFeedback(false)}
-                  className="flex-1 py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-800 font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  onClick={() => handleVerdictClick("NO")}
+                  className="py-2 px-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-800 font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1 active:scale-95"
                 >
                   <XCircle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>{language === "Tamil" ? "இல்லை, தவறானது" : "No, Incorrect"}</span>
+                  <span>{language === "Tamil" ? "இல்லை (தவறு)" : "No"}</span>
+                </button>
+                <button
+                  onClick={() => handleVerdictClick("NOT_SURE")}
+                  className="py-2 px-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 border border-zinc-300 text-zinc-800 font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1 active:scale-95"
+                >
+                  <HelpCircle className="w-3.5 h-3.5 text-zinc-600" />
+                  <span>{language === "Tamil" ? "தெரியவில்லை" : "Not sure"}</span>
                 </button>
               </div>
             )}

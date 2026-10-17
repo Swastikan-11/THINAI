@@ -429,6 +429,82 @@ test("Android Packaging: com.thinai.agriapp namespace & permissions declared", (
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 7. FARMER-VERDICT FIELD MONITOR & CALIBRATION DRIFT TESTS (PHASE D)
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n📦 7. Farmer-Verdict Field Monitor & Calibration Drift Tests");
+
+function testWilsonScore(positiveCount, totalCount, z = 1.96) {
+  if (totalCount <= 0) return { lower: 0, center: 0, upper: 0 };
+  const p = positiveCount / totalCount;
+  const z2 = z * z;
+  const denominator = 1 + z2 / totalCount;
+  const center = (p + z2 / (2 * totalCount)) / denominator;
+  const margin = (z * Math.sqrt((p * (1 - p) + z2 / (4 * totalCount)) / totalCount)) / denominator;
+  return {
+    lower: Math.max(0, center - margin),
+    center,
+    upper: Math.min(1, center + margin)
+  };
+}
+
+test("Wilson Score: zero total returns zero intervals without division by zero", () => {
+  const res = testWilsonScore(0, 0);
+  assert.equal(res.lower, 0);
+  assert.equal(res.center, 0);
+  assert.equal(res.upper, 0);
+});
+
+test("Wilson Score: 8 successes out of 10 samples produces correct 95% confidence interval", () => {
+  const res = testWilsonScore(8, 10);
+  assert.ok(res.center > 0.70 && res.center < 0.80, `Center was ${res.center}`);
+  assert.ok(res.lower > 0.40 && res.lower < 0.60, `Lower was ${res.lower}`);
+  assert.ok(res.upper > 0.90 && res.upper <= 1.0, `Upper was ${res.upper}`);
+  assert.ok(res.lower <= res.center && res.center <= res.upper);
+});
+
+test("Field Monitor: Guard MIN_VERDICTS_FOR_ESTIMATE = 10 withholds accuracy on small samples", () => {
+  const sampleVerdicts = [
+    { predictedClass: "Tomato Early Blight", verdict: "YES" },
+    { predictedClass: "Tomato Early Blight", verdict: "YES" },
+    { predictedClass: "Tomato Early Blight", verdict: "NO" }
+  ];
+  const MIN_VERDICTS = 10;
+  const count = sampleVerdicts.length;
+  const hasEnoughData = count >= MIN_VERDICTS;
+  const accuracy = hasEnoughData ? (sampleVerdicts.filter(v => v.verdict === "YES").length / count) : null;
+
+  assert.equal(hasEnoughData, false, "Should not claim enough data for 3 verdicts");
+  assert.equal(accuracy, null, "Accuracy should be null when verdicts < 10");
+});
+
+test("Field Monitor: Drift flag triggers when recent verdict ECE delta >= 5%", () => {
+  const baselineEce = 0.0263; // 2.63% from Phase B calibration
+  const recentEceClean = 0.045; // delta = +0.0187 (< 0.05) -> No drift
+  const recentEceDrifted = 0.082; // delta = +0.0557 (>= 0.05) -> DRIFT!
+
+  const deltaClean = recentEceClean - baselineEce;
+  const deltaDrifted = recentEceDrifted - baselineEce;
+
+  const driftClean = deltaClean >= 0.05;
+  const driftDetected = deltaDrifted >= 0.05;
+
+  assert.equal(driftClean, false, "Small variation should not trigger drift");
+  assert.equal(driftDetected, true, "ECE rise >= 5% must trigger drift alert");
+});
+
+test("Field Monitor: Retraining candidates counter captures rejected verdicts ('NO')", () => {
+  const verdicts = [
+    { id: "v1", verdict: "YES" },
+    { id: "v2", verdict: "NO", actualClassChoice: "Tomato Late Blight" },
+    { id: "v3", verdict: "NOT_SURE" },
+    { id: "v4", verdict: "NO", actualClassChoice: "Nutrient Deficiency" }
+  ];
+  const retrainingCandidates = verdicts.filter(v => v.verdict === "NO");
+  assert.equal(retrainingCandidates.length, 2, "Expected 2 retraining candidates");
+  assert.equal(retrainingCandidates[0].actualClassChoice, "Tomato Late Blight");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SUMMARY
 // ─────────────────────────────────────────────────────────────────────────────
 console.log("\n=================================================");

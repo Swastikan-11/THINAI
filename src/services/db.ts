@@ -149,10 +149,26 @@ export interface CachedSchemeRecord {
   lastVerifiedDate: string;
 }
 
+export interface FarmerVerdictRecord {
+  id: string;
+  userId: string;
+  photoHash: string;
+  predictedClass: string;
+  calibratedConfidence: number;
+  rawConfidence?: number;
+  tier: "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE";
+  verdict: "YES" | "NO" | "NOT_SURE";
+  actualClassChoice?: string;
+  model_version: string;
+  timestamp: string;
+  pendingSync: boolean;
+  synced: boolean;
+}
+
 export interface SyncQueueItem {
   id?: number;
   userId: string;
-  entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation" | "post";
+  entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation" | "post" | "verdict";
   action: "create" | "update" | "delete";
   clientId: string;
   payload: any;
@@ -168,6 +184,7 @@ export class ThinaiDatabase extends Dexie {
   soilObservations!: Table<SoilObservation, string>;
   feedbacks!: Table<LocalFeedback, string>;
   scans!: Table<LocalScan, string>;
+  verdicts!: Table<FarmerVerdictRecord, string>;
   cachedWeather!: Table<CachedWeatherRecord, string>;
   cachedMarket!: Table<CachedMarketRecord, string>;
   cachedRecommendations!: Table<CachedRecommendationRecord, string>;
@@ -177,13 +194,14 @@ export class ThinaiDatabase extends Dexie {
 
   constructor() {
     super("thinai_offline_db");
-    this.version(2).stores({
+    this.version(3).stores({
       profiles: "id, userId, updatedAt",
       farms: "id, userId, district",
       fields: "id, farmId, userId",
       soilObservations: "id, userId, fieldId, recordedAt",
       feedbacks: "id, userId, recommendationId, pendingSync",
       scans: "id, userId, scannedAt, pendingSync",
+      verdicts: "id, userId, predictedClass, verdict, timestamp, pendingSync",
       cachedWeather: "district, fetched_at, expires_at",
       cachedMarket: "commodity, fetched_at, expires_at",
       cachedRecommendations: "id, userId, fieldId, generatedAt",

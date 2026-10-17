@@ -94,12 +94,13 @@ import { CropHealthLibrary } from "./components/CropHealthLibrary";
 import { FertilizerCalculatorScreen } from "./components/FertilizerCalculatorScreen";
 import { CropDoctorScreen } from "./components/CropDoctorScreen";
 import { CommunityScreen } from "./components/CommunityScreen";
+import { FieldAccuracyScreen } from "./components/FieldAccuracyScreen";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
   | "splash" | "onboarding" | "login" | "register"
   | "home" | "community" | "mycrop" | "doctor" | "disease" | "weather"
-  | "market" | "schemes" | "services" | "library" | "calculator"
+  | "market" | "schemes" | "services" | "library" | "calculator" | "fieldAccuracy"
   | "ai" | "voice" | "reports" | "notifications"
   | "profile" | "editprofile" | "settings" | "help"
   | "whatif";
@@ -2771,8 +2772,25 @@ export default function App() {
                 engineResult={decisionResult}
                 onOpenLibrary={() => setScreen("library")}
                 onOpenCalculator={() => setScreen("calculator")}
+                onOpenFieldAccuracy={() => setScreen("fieldAccuracy")}
                 showToast={showToast}
                 language={user.language}
+              />
+            </div>
+          </div>
+        )}
+
+        {screen === "fieldAccuracy" && (
+          <div className="flex flex-col h-full select-none" style={{ background: BG }}>
+            <div style={{ background: "linear-gradient(160deg, #0f172a, #1e293b)", borderRadius: "0 0 24px 24px" }}>
+              <SBar light />
+              <BkHdr title={user.language === "Tamil" ? "கள துல்லியம் & கலிப்ரேஷன் பலகை" : "Field Accuracy & Drift Monitor"} navigate={setScreen} light />
+            </div>
+            <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: "none" }}>
+              <FieldAccuracyScreen
+                onBack={() => setScreen("doctor")}
+                language={user.language}
+                showToast={showToast}
               />
             </div>
           </div>

@@ -77,6 +77,27 @@ class FirestoreSecurityRulesSimulator {
     }
     return false;
   }
+
+  evaluateVerdicts({ auth, operation, resource, requestResource }) {
+    const isAuthenticated = auth !== null && auth.uid !== undefined;
+    if (operation === "read") return isAuthenticated;
+    if (operation === "create") {
+      if (!isAuthenticated) return false;
+      const data = requestResource?.data;
+      if (!data) return false;
+      if (data.userId !== auth.uid) return false;
+      if (!["YES", "NO", "NOT_SURE"].includes(data.verdict)) return false;
+      if (!this.isValidString(data.predictedClass, 1, 100)) return false;
+      if (typeof data.calibratedConfidence !== "number") return false;
+      if (!["TIER_1_CONFIDENT", "TIER_2_MODERATE", "TIER_3_INCONCLUSIVE"].includes(data.tier)) return false;
+      if (Object.keys(data).length > 25) return false;
+      return true;
+    }
+    if (operation === "update" || operation === "delete") {
+      return isAuthenticated && resource?.data?.userId === auth.uid;
+    }
+    return false;
+  }
 }
 
 const sim = new FirestoreSecurityRulesSimulator();
@@ -232,6 +253,68 @@ runTest("Feedbacks: Rating must be integer between 1 and 5", () => {
     }
   });
   assert.equal(invalidRating, false);
+});
+
+console.log("\n📦 3. Farmer Verdicts Rules Tests");
+
+runTest("Verdicts: Unauthenticated create is DENIED", () => {
+  const allowed = sim.evaluateVerdicts({
+    auth: null,
+    operation: "create",
+    requestResource: {
+      data: {
+        userId: "farmer-1",
+        predictedClass: "Tomato___Early_blight",
+        verdict: "YES",
+        calibratedConfidence: 82.5,
+        tier: "TIER_1_CONFIDENT"
+      }
+    }
+  });
+  assert.equal(allowed, false);
+});
+
+runTest("Verdicts: Signed-in user writing own verdict is ALLOWED", () => {
+  const allowed = sim.evaluateVerdicts({
+    auth: { uid: "farmer-1" },
+    operation: "create",
+    requestResource: {
+      data: {
+        userId: "farmer-1",
+        predictedClass: "Tomato___Early_blight",
+        verdict: "YES",
+        calibratedConfidence: 82.5,
+        tier: "TIER_1_CONFIDENT"
+      }
+    }
+  });
+  assert.equal(allowed, true);
+});
+
+runTest("Verdicts: Signed-in user spoofing another farmer's userId is DENIED", () => {
+  const allowed = sim.evaluateVerdicts({
+    auth: { uid: "farmer-attacker" },
+    operation: "create",
+    requestResource: {
+      data: {
+        userId: "farmer-victim",
+        predictedClass: "Potato___Late_blight",
+        verdict: "NO",
+        calibratedConfidence: 62.0,
+        tier: "TIER_2_MODERATE"
+      }
+    }
+  });
+  assert.equal(allowed, false);
+});
+
+runTest("Verdicts: Non-owner cannot delete another user's verdict", () => {
+  const allowed = sim.evaluateVerdicts({
+    auth: { uid: "farmer-2" },
+    operation: "delete",
+    resource: { data: { userId: "farmer-1" } }
+  });
+  assert.equal(allowed, false);
 });
 
 console.log("\n=================================================");

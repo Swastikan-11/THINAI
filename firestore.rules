@@ -72,5 +72,19 @@ service cloud.firestore {
         && request.resource.data.size() <= 15;
       allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
+
+    // 6. Farmer Verdicts (Field Accuracy & Drift Monitoring)
+    // Rules: Users can write only their own records.
+    match /verdicts/{verdictId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.verdict in ['YES', 'NO', 'NOT_SURE']
+        && isValidString(request.resource.data.predictedClass, 1, 100)
+        && request.resource.data.calibratedConfidence is number
+        && request.resource.data.tier in ['TIER_1_CONFIDENT', 'TIER_2_MODERATE', 'TIER_3_INCONCLUSIVE']
+        && request.resource.data.size() <= 25;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
   }
 }

@@ -19,7 +19,9 @@ import {
   ShieldCheck,
   MessageSquareHeart,
   TrendingUp,
-  PhoneCall
+  PhoneCall,
+  Activity,
+  ArrowRight
 } from "lucide-react";
 import { DataBadge } from "./DataBadge";
 import { fetchEquipmentListings, postEquipmentListing } from "../../services/firestoreSync";
@@ -282,6 +284,23 @@ export function FarmServicesScreen({
             <span className="text-[10px] font-extrabold text-rose-950 leading-tight">
               {language === "Tamil" ? "கருத்துகள்" : "Feedback"}
             </span>
+          </button>
+        </div>
+
+        {/* Direct Link to Field Accuracy & Drift Monitor */}
+        <div className="pt-2 border-t border-zinc-100 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="text-[11px] font-bold text-zinc-800">
+              {language === "Tamil" ? "கள துல்லியம் & கலிப்ரேஷன் பலகை" : "Field Accuracy & Calibration Drift"}
+            </span>
+          </div>
+          <button
+            onClick={() => onNavigateToScreen?.("fieldAccuracy")}
+            className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-black text-white text-[10px] font-bold flex items-center gap-1 transition-colors"
+          >
+            <span>{language === "Tamil" ? "பலகை காண்க" : "View Monitor"}</span>
+            <ArrowRight className="w-3 h-3" />
           </button>
         </div>
       </div>

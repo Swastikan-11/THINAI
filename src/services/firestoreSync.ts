@@ -295,6 +295,11 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
           await setDoc(doc(firestoreDb, "feedbacks", item.clientId), payload);
         } else if (item.entity === "post") {
           await setDoc(doc(firestoreDb, "community_posts", item.clientId), payload);
+        } else if (item.entity === "verdict") {
+          await setDoc(doc(firestoreDb, "verdicts", item.clientId), payload);
+          try {
+            await db.verdicts.update(item.clientId, { pendingSync: false, synced: true });
+          } catch {}
         }
         await db.syncQueue.update(item.id, { status: "syncing" });
         await db.syncQueue.delete(item.id);
