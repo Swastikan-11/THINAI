@@ -54,7 +54,16 @@ export const translations = {
     phoneVerified: "Phone verified successfully!",
     googleSuccess: "Google authentication successful!",
     signedInSuccess: "Signed in successfully!",
-    passwordResetSent: "Password reset link sent to"
+    passwordResetSent: "Password reset link sent to",
+    tier1Title: "Tier 1: High Confidence Diagnosis",
+    tier2Title: "Tier 2: Moderate Confidence (Cultural & Monitoring Only)",
+    tier3Title: "Tier 3: Inconclusive Detection (Cannot Tell)",
+    chemicalWithheldNotice: "Chemical treatments withheld due to uncertain diagnosis",
+    officerHelpline: "Call Kisan Agro Helpline: 1800-180-1551",
+    savePhotoForExpert: "Save Photo for Expert Review",
+    photoSavedForExpertSuccess: "Photo saved locally and queued for extension officer inspection!",
+    readAloud: "Read Aloud",
+    stopSpeech: "Stop Reading"
   },
   Tamil: {
     welcomeBack: "மீண்டும் வரவேற்கிறோம்",
@@ -109,7 +118,16 @@ export const translations = {
     phoneVerified: "கைபேசி எண் வெற்றிகரமாக சரிபார்க்கப்பட்டது!",
     googleSuccess: "Google சரிபார்ப்பு வெற்றிகரமானது!",
     signedInSuccess: "வெற்றிகரமாக உள்நுழைந்தீர்கள்!",
-    passwordResetSent: "கடவுச்சொல் மீட்டமைப்பு இணைப்பு அனுப்பப்பட்டது:"
+    passwordResetSent: "கடவுச்சொல் மீட்டமைப்பு இணைப்பு அனுப்பப்பட்டது:",
+    tier1Title: "நிலை 1: உறுதியான நோய் கண்டறிதல்",
+    tier2Title: "நிலை 2: மிதமான நம்பிக்கை (இயற்கை முறை & கண்காணிப்பு மட்டும்)",
+    tier3Title: "நிலை 3: தெளிவற்ற முடிவு (உறுதிப்படுத்த முடியவில்லை)",
+    chemicalWithheldNotice: "உறுதிப்படுத்தப்படாத நோய் கண்டறிதலுக்கு ரசாயன மருந்துகள் வழங்கப்படாது",
+    officerHelpline: "கிசான் உதவி எண்: 1800-180-1551",
+    savePhotoForExpert: "வேளாண் அலுவலர் ஆய்வுக்கு படத்தை சேமிக்க",
+    photoSavedForExpertSuccess: "படம் சேமிக்கப்பட்டு வேளாண் அலுவலர் ஆய்வுக்கு குறிக்கப்பட்டது!",
+    readAloud: "குரல் வழி வாசிக்க",
+    stopSpeech: "நிறுத்து"
   }
 } as const;
 

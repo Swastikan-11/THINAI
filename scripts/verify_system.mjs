@@ -295,6 +295,70 @@ test("Calibration Math: wilsonScoreInterval produces valid 95% intervals", async
   assert.ok(interval.lower <= interval.center && interval.center <= interval.upper, "Interval ordering violated");
 });
 
+test("Gating Engine: Exact boundary threshold mapping (tau_high=0.78, tau_low=0.45)", async () => {
+  const { getConfidenceGatedTier } = await import("../src/services/litertInferenceService.ts");
+  assert.equal(getConfidenceGatedTier(0.95), "TIER_1_CONFIDENT");
+  assert.equal(getConfidenceGatedTier(0.78), "TIER_1_CONFIDENT");
+  assert.equal(getConfidenceGatedTier(0.779), "TIER_2_MODERATE");
+  assert.equal(getConfidenceGatedTier(0.60), "TIER_2_MODERATE");
+  assert.equal(getConfidenceGatedTier(0.45), "TIER_2_MODERATE");
+  assert.equal(getConfidenceGatedTier(0.449), "TIER_3_INCONCLUSIVE");
+  assert.equal(getConfidenceGatedTier(0.12), "TIER_3_INCONCLUSIVE");
+  assert.equal(getConfidenceGatedTier(0.0), "TIER_3_INCONCLUSIVE");
+});
+
+test("PROPERTY TEST: For 200 random inputs, NO chemical advice is ever produced when confidence < tau_high", async () => {
+  const { getConfidenceGatedTier, gateChemicalAdvice } = await import("../src/services/litertInferenceService.ts");
+  const tauHigh = 0.78;
+  const tauLow = 0.45;
+  const sampleChemicals = [
+    "Mancozeb 75% WP @ 2g/L",
+    "Metalaxyl + Mancozeb (Ridomil MZ) @ 2.5g/L water",
+    "Chlorothalonil 75% WP @ 2g/L",
+    "Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 0.1g/L"
+  ];
+
+  // Pseudo-random deterministic generator for reproducibility
+  let seed = 12345;
+  function pseudoRandom() {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  const bannedChemicalTerms = ["Mancozeb", "Metalaxyl", "Chlorothalonil", "Copper Oxychloride", "Ridomil", "Streptocycline", "g/L", "WP"];
+
+  for (let trial = 0; trial < 200; trial++) {
+    const randomConf = pseudoRandom(); // Random confidence in [0.0, 1.0]
+    const tier = getConfidenceGatedTier(randomConf, tauHigh, tauLow);
+    const gatedOutput = gateChemicalAdvice(sampleChemicals, tier);
+
+    if (randomConf < tauHigh) {
+      // Must be Tier 2 or Tier 3
+      assert.ok(tier === "TIER_2_MODERATE" || tier === "TIER_3_INCONCLUSIVE", `Trial ${trial}: Expected Tier 2 or 3 for conf ${randomConf}`);
+
+      // Property invariant: None of the banned chemical names or dosages may appear
+      for (const line of gatedOutput) {
+        for (const term of bannedChemicalTerms) {
+          assert.ok(
+            !line.includes(term),
+            `VIOLATION on trial ${trial} (conf=${randomConf}, tier=${tier}): Chemical term '${term}' found in output: "${line}"`
+          );
+        }
+      }
+
+      // Must explicitly contain withhold notice or be empty
+      const isWithheldNotice = gatedOutput.some(line => 
+        line.toLowerCase().includes("withheld") || line.toLowerCase().includes("no chemical")
+      );
+      assert.ok(isWithheldNotice, `Trial ${trial}: Expected withhold notice for confidence ${randomConf}`);
+    } else {
+      // Must be Tier 1
+      assert.equal(tier, "TIER_1_CONFIDENT", `Trial ${trial}: Expected Tier 1 for conf ${randomConf}`);
+      assert.equal(gatedOutput.length, sampleChemicals.length, `Trial ${trial}: Tier 1 should preserve treatments`);
+    }
+  }
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 5. I18N TAMIL TRANSLATIONS INTEGRITY TEST
 // ─────────────────────────────────────────────────────────────────────────────

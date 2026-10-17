@@ -160,6 +160,45 @@ export function wilsonScoreInterval(
 }
 
 /**
+ * Maps calibrated confidence to selective advisory tier:
+ * Tier 1 (>= tau_high): Confident diagnosis + remedies permitted
+ * Tier 2 (tau_low <= conf < tau_high): Possible diagnosis, monitoring/cultural only (NO CHEMICALS)
+ * Tier 3 (< tau_low): Inconclusive ("cannot tell"), photo saved for expert
+ */
+export function getConfidenceGatedTier(
+  calibratedConfidence: number,
+  tauHigh: number = 0.78,
+  tauLow: number = 0.45
+): "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE" {
+  if (calibratedConfidence >= tauHigh) {
+    return "TIER_1_CONFIDENT";
+  }
+  if (calibratedConfidence >= tauLow) {
+    return "TIER_2_MODERATE";
+  }
+  return "TIER_3_INCONCLUSIVE";
+}
+
+/**
+ * Enforces strict property: NO chemical advice is EVER produced when tier is not TIER_1_CONFIDENT.
+ */
+export function gateChemicalAdvice(
+  chemicalTreatments: string[],
+  tier: "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE"
+): string[] {
+  if (tier === "TIER_1_CONFIDENT") {
+    return chemicalTreatments;
+  }
+  if (tier === "TIER_2_MODERATE") {
+    return [
+      "Chemical fungicide/pesticide withheld due to diagnostic uncertainty (Tier 2).",
+      "Do not spray systemic chemicals until diagnosis is confirmed by an extension officer or follow-up scan."
+    ];
+  }
+  return ["No chemical recommendations for inconclusive scans."];
+}
+
+/**
  * Initializes LiteRT, loads metadata, thresholds, and compiles TFLite model
  */
 export async function getOrInitLiteRtModel(): Promise<CompiledModel | null> {

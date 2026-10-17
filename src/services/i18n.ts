@@ -159,7 +159,17 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     onlineRestored: "Network restored. Live data synchronized.",
     farmerLogin: "Farmer Login",
     signOut: "Sign Out",
-    languageSelector: "Change Language"
+    languageSelector: "Change Language",
+
+    // Confidence-Gated Advisory
+    tier1Title: "Tier 1: High Confidence Diagnosis",
+    tier2Title: "Tier 2: Moderate Confidence (Cultural & Monitoring Only)",
+    tier3Title: "Tier 3: Inconclusive Detection (Cannot Tell)",
+    chemicalWithheldNotice: "Chemical treatments withheld due to uncertain diagnosis",
+    officerHelpline: "Call Kisan Agro Helpline: 1800-180-1551",
+    savePhotoForExpert: "Save Photo for Expert Review",
+    readAloud: "Read Aloud",
+    stopSpeech: "Stop Reading"
   },
 
   Tamil: {
@@ -285,7 +295,17 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     onlineRestored: "இணைய இணைப்பு மீண்டும் கிடைத்தது. தரவு புதுப்பிக்கப்பட்டது.",
     farmerLogin: "விவசாயி உள்நுழைவு",
     signOut: "வெளியேறு",
-    languageSelector: "மொழியை மாற்றவும்"
+    languageSelector: "மொழியை மாற்றவும்",
+
+    // Confidence-Gated Advisory
+    tier1Title: "நிலை 1: உறுதியான நோய் கண்டறிதல்",
+    tier2Title: "நிலை 2: மிதமான நம்பிக்கை (இயற்கை முறை & கண்காணிப்பு மட்டும்)",
+    tier3Title: "நிலை 3: தெளிவற்ற முடிவு (உறுதிப்படுத்த முடியவில்லை)",
+    chemicalWithheldNotice: "உறுதிப்படுத்தப்படாத நோய் கண்டறிதலுக்கு ரசாயன மருந்துகள் வழங்கப்படாது",
+    officerHelpline: "கிசான் உதவி எண்: 1800-180-1551",
+    savePhotoForExpert: "வேளாண் அலுவலர் ஆய்வுக்கு படத்தை சேமிக்க",
+    readAloud: "குரல் வழி வாசிக்க",
+    stopSpeech: "நிறுத்து"
   },
 
   Hindi: {
