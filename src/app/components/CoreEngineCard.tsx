@@ -2,6 +2,7 @@ import React from "react";
 import { Cpu, ArrowRight, AlertTriangle, ShieldCheck, Activity, RefreshCw, SlidersHorizontal, Droplets, Thermometer, CloudRain, TrendingUp, Sparkles, HelpCircle } from "lucide-react";
 import { DataBadge, DataStatus } from "./DataBadge";
 import { DecisionEngineResult, DecisionInputs } from "../../services/decisionEngine";
+import { ARFI_CONFIG } from "../../config/arfiConfig";
 
 interface CoreEngineCardProps {
   engineResult: DecisionEngineResult;
@@ -114,7 +115,9 @@ export function CoreEngineCard({
                 <DataBadge status="USER PROVIDED" size="sm" />
               </div>
               <div className="font-bold text-zinc-900">{inputs.soilType || "Clay Loam"}</div>
-              <div className="text-[11px] text-emerald-700 font-semibold">{inputs.soilMoisture}% Saturation</div>
+              <div className="text-[11px] text-emerald-700 font-semibold">
+                {inputs.soilMoisture <= 30 ? "🏜️ Dry (~25%)" : inputs.soilMoisture >= 75 ? "🌊 Wet (~85%)" : "🌱 Just Right (~55%)"}
+              </div>
             </div>
 
             {/* Rainfall */}
@@ -151,9 +154,11 @@ export function CoreEngineCard({
               </div>
               <div className="font-bold text-zinc-900 flex items-center gap-1">
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                ₹{inputs.marketPrice || 2300} / q
+                {inputs.marketPrice ? `₹${inputs.marketPrice} / q` : "Price Unavailable"}
               </div>
-              <div className="text-[10px] text-zinc-500 truncate" title={marketSource}>{marketSource}</div>
+              <div className="text-[10px] text-zinc-500 truncate" title={marketSource}>
+                {inputs.marketPrice ? marketSource : "No mandi feed for this crop"}
+              </div>
             </div>
 
             {/* Crop Stage */}
@@ -268,10 +273,13 @@ export function CoreEngineCard({
         {/* 5. ARFI Stability Indicator & What-If Stress Testing Bridge */}
         <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
+            <div className="flex items-center gap-2 mb-0.5 flex-wrap">
               <span className="text-xs font-bold text-zinc-800 uppercase tracking-wide">ARFI STABILITY:</span>
               <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full border ${stabilityInfo.bg}`}>
                 {arfiScore}/100 • {stabilityInfo.text}
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                {ARFI_CONFIG.labelEn}
               </span>
             </div>
             <p className="text-[11px] text-zinc-600">{stabilityInfo.desc}</p>

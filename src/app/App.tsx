@@ -57,8 +57,10 @@ import {
 import {
   getMarketIntelligence,
   COMMODITY_MARKETS,
-  MarketCommodity
+  MarketCommodity,
+  getDashboardMarketPrice
 } from "../services/marketService";
+import { ARFI_CONFIG } from "../config/arfiConfig";
 import {
   getRelevantSchemes,
   SCHEMES_DATABASE,
@@ -110,6 +112,7 @@ export interface UserState {
   stateName: string;
   farmSize: string; // Acres
   soilType: string;
+  soilMoistureStatus?: "dry" | "optimal" | "wet";
   primaryCrop: string;
   cropVariety: string;
   cropStage: string;
@@ -136,6 +139,7 @@ const INITIAL_USER: UserState = {
   stateName: "Tamil Nadu",
   farmSize: "2.0",
   soilType: "Clay Loam",
+  soilMoistureStatus: "optimal",
   primaryCrop: "Paddy (Rice)",
   cropVariety: "Ponni (CO 51)",
   cropStage: "Tillering Stage",
@@ -510,7 +514,8 @@ function HomeScreen({
   onRefreshWeather,
   activeField,
   onSelectField,
-  onDetectGps
+  onDetectGps,
+  onUpdateSoilMoisture
 }: {
   navigate: (s: Screen) => void;
   user: UserState;
@@ -523,6 +528,7 @@ function HomeScreen({
   activeField: LocalField | null;
   onSelectField: (field: LocalField) => void;
   onDetectGps: () => void;
+  onUpdateSoilMoisture: (status: "dry" | "optimal" | "wet") => void;
 }) {
   const primaryRec = decisionResult.primaryRecommendation;
   const lang = user.language;
@@ -614,36 +620,41 @@ function HomeScreen({
 
       {/* Main Dashboard Scrollable Container */}
       <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3.5" style={{ scrollbarWidth: "none" }}>
+        {(() => {
+          const soilMoistureNum = user.soilMoistureStatus === "dry" ? 25 : user.soilMoistureStatus === "wet" ? 85 : 55;
+          const dashboardMarket = getDashboardMarketPrice(user.primaryCrop, user.district);
 
-        {/* ─── 1. THINAI CORE ENGINE (PRIORITY 1: FULL INTELLIGENCE VISIBLE) ─── */}
-        <CoreEngineCard
-          engineResult={decisionResult}
-          inputs={{
-            crop: activeField?.currentCrop || user.primaryCrop,
-            cropVariety: activeField?.cropVariety || user.cropVariety,
-            cropStage: activeField?.cropStage || user.cropStage,
-            soilType: activeField?.soilType || user.soilType,
-            soilMoisture: 68,
-            temperature: weather.temperature,
-            rainfallExpected: weather.rainfallMmExpected,
-            humidity: weather.humidity,
-            forecast: weather.condition,
-            marketPrice: 2840,
-            farmSize: activeField?.areaAcres || user.farmSize,
-            location: user.district || "Coimbatore",
-            diseaseStatus: "Healthy (No Active Blight)"
-          }}
-          weatherStatus={weather.status as DataStatus}
-          weatherSource={weather.source || "Open-Meteo API"}
-          marketStatus={isOffline ? "OFFLINE" : "LIVE"}
-          marketSource="Agmarknet APMC Mandi Feed"
-          isOfflineMode={isOffline}
-          onOpenWhatIfLab={() => navigate("whatif")}
-          onOpenARFIDrawer={() => setShowARFIDrawer(true)}
-          onRefresh={onRefreshWeather}
-          arfiScore={68}
-          arfiStability="MODERATE"
-        />
+          return (
+            <CoreEngineCard
+              engineResult={decisionResult}
+              inputs={{
+                crop: activeField?.currentCrop || user.primaryCrop,
+                cropVariety: activeField?.cropVariety || user.cropVariety,
+                cropStage: activeField?.cropStage || user.cropStage,
+                soilType: activeField?.soilType || user.soilType,
+                soilMoisture: soilMoistureNum,
+                temperature: weather.temperature,
+                rainfallExpected: weather.rainfallMmExpected,
+                humidity: weather.humidity,
+                forecast: weather.condition,
+                marketPrice: dashboardMarket.pricePerQuintal,
+                farmSize: activeField?.areaAcres || user.farmSize,
+                location: user.district || "Coimbatore",
+                diseaseStatus: "Healthy (No Active Blight)"
+              }}
+              weatherStatus={weather.status as DataStatus}
+              weatherSource={weather.source || "Open-Meteo API"}
+              marketStatus={dashboardMarket.status as DataStatus}
+              marketSource={dashboardMarket.lastUpdatedLabel}
+              isOfflineMode={isOffline}
+              onOpenWhatIfLab={() => navigate("whatif")}
+              onOpenARFIDrawer={() => setShowARFIDrawer(true)}
+              onRefresh={onRefreshWeather}
+              arfiScore={ARFI_CONFIG.baselineScore}
+              arfiStability={ARFI_CONFIG.baselineStability}
+            />
+          );
+        })()}
 
         {/* ─── QUICK AGRICULTURAL SERVICES NAVIGATION RAIL ─── */}
         <div className="bg-white rounded-2xl p-3 border border-emerald-100 shadow-xs">
@@ -741,7 +752,7 @@ function HomeScreen({
             </div>
           )}
 
-          <div className="grid grid-cols-4 gap-2 text-center">
+          <div className="grid grid-cols-3 gap-2 text-center">
             <div className="p-2 rounded-xl bg-blue-50/70 border border-blue-100">
               <Thermometer size={14} className="mx-auto text-blue-600 mb-0.5" />
               <span className="text-[10px] text-gray-500 block">Temp</span>
@@ -757,10 +768,62 @@ function HomeScreen({
               <span className="text-[10px] text-gray-500 block">Rain 48h</span>
               <span className="font-extrabold text-xs text-indigo-700">{weather.rainfallMmExpected} mm</span>
             </div>
-            <div className="p-2 rounded-xl bg-amber-50/70 border border-amber-100">
-              <Activity size={14} className="mx-auto text-amber-600 mb-0.5" />
-              <span className="text-[10px] text-gray-500 block">Soil Moist</span>
-              <span className="font-extrabold text-xs text-amber-700">68%</span>
+          </div>
+
+          {/* 3-Icon Soil Moisture Selector (Phase 1 Truthfulness Fix) */}
+          <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <Activity size={14} className="text-amber-700" />
+                <span className="text-[11px] font-bold text-amber-950">
+                  {lang === "Tamil" ? "மண்ணின் ஈரப்பதம் (தேர்வு செய்க):" : "Soil Moisture (Tap to update):"}
+                </span>
+              </div>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-900 font-semibold">
+                {user.soilMoistureStatus === "dry"
+                  ? (lang === "Tamil" ? "வறண்டது (~25%)" : "Dry (~25%)")
+                  : user.soilMoistureStatus === "wet"
+                  ? (lang === "Tamil" ? "அதிக ஈரப்பதம் (~85%)" : "Wet (~85%)")
+                  : (lang === "Tamil" ? "சரியான அளவு (~55%)" : "Just Right (~55%)")}
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              <button
+                type="button"
+                onClick={() => onUpdateSoilMoisture("dry")}
+                className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1 transition-all ${
+                  user.soilMoistureStatus === "dry"
+                    ? "bg-amber-600 text-white shadow-xs scale-102"
+                    : "bg-white text-zinc-700 border border-amber-200 hover:bg-amber-50"
+                }`}
+              >
+                <span>🏜️</span>
+                <span>{lang === "Tamil" ? "வறண்டது" : "Dry"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onUpdateSoilMoisture("optimal")}
+                className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1 transition-all ${
+                  (!user.soilMoistureStatus || user.soilMoistureStatus === "optimal")
+                    ? "bg-emerald-700 text-white shadow-xs scale-102"
+                    : "bg-white text-zinc-700 border border-emerald-200 hover:bg-emerald-50"
+                }`}
+              >
+                <span>🌱</span>
+                <span>{lang === "Tamil" ? "சரியானது" : "Just Right"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onUpdateSoilMoisture("wet")}
+                className={`py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1 transition-all ${
+                  user.soilMoistureStatus === "wet"
+                    ? "bg-blue-600 text-white shadow-xs scale-102"
+                    : "bg-white text-zinc-700 border border-blue-200 hover:bg-blue-50"
+                }`}
+              >
+                <span>🌊</span>
+                <span>{lang === "Tamil" ? "ஈரப்பதம்" : "Wet"}</span>
+              </button>
             </div>
           </div>
           {/* Spray-Safety Weather Advisory (Phase 3.2 - Rule-Based) */}
@@ -816,7 +879,13 @@ function HomeScreen({
             </span>
           </div>
           <p className="text-xs text-red-900 font-semibold leading-snug">
-            ⚠️ Waterlogging & Fungal Blast Alert: Saturated soil (68%) + forecasted {weather.rainfallMmExpected}mm rain will trigger root zone hypoxia.
+            {decisionResult.riskAnalysis.overallRisk === "High"
+              ? (user.soilMoistureStatus === "wet"
+                  ? `⚠️ Waterlogging & Hypoxia Alert: Saturated soil (Wet) + forecasted ${weather.rainfallMmExpected}mm rain risks root zone suffocation.`
+                  : `⚠️ Weather Risk Alert: High forecasted rainfall (${weather.rainfallMmExpected}mm) will impact field operations.`)
+              : (user.soilMoistureStatus === "dry"
+                  ? `ℹ️ Moisture Alert: Soil is currently dry. Rain forecasted: ${weather.rainfallMmExpected}mm.`
+                  : `✅ Balanced Conditions: Soil moisture is optimal; no severe flood or drought hazard detected.`)}
           </p>
           <div className="flex gap-2 mt-1">
             {decisionResult.riskAnalysis.factors.map((f, i) => (
@@ -944,9 +1013,12 @@ function HomeScreen({
                 <Activity size={18} />
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">ARFI Resilience Index</span>
                   <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800">28% (Stable)</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                    {ARFI_CONFIG.labelEn}
+                  </span>
                 </div>
                 <h4 className="font-bold text-xs text-gray-900">Decision Stability & Sensitivity</h4>
               </div>
@@ -1984,21 +2056,40 @@ export default function App() {
   const completedActions = getCompletedActionIds();
   const feedbackHistory = getFeedbackHistory();
 
+  const soilMoistureNum = user.soilMoistureStatus === "dry" ? 25 : user.soilMoistureStatus === "wet" ? 85 : 55;
+  const dashboardMarket = getDashboardMarketPrice(user.primaryCrop, user.district);
+
   const decisionInputs: DecisionInputs = {
     crop: user.primaryCrop || "Paddy",
     cropVariety: user.cropVariety,
     cropStage: user.cropStage || "Tillering",
     soilType: user.soilType || "Clay Loam",
-    soilMoisture: 68,
+    soilMoisture: soilMoistureNum,
     temperature: weather.temperature,
     rainfallExpected: weather.rainfallMmExpected,
     humidity: weather.humidity,
     forecast: weather.condition,
-    marketPrice: 2840,
+    marketPrice: dashboardMarket.pricePerQuintal,
     farmSize: user.farmSize || "2.0",
     location: `${user.district || "Coimbatore"}, ${user.stateName || "Tamil Nadu"}`,
     completedActions,
     recentFeedbacks: feedbackHistory
+  };
+
+  const handleUpdateSoilMoisture = (status: "dry" | "optimal" | "wet") => {
+    const updated = { ...user, soilMoistureStatus: status };
+    updateUser(updated);
+    const label = status === "dry"
+      ? (user.language === "Tamil" ? "வறண்டது (~25%)" : "Dry (~25%)")
+      : status === "wet"
+      ? (user.language === "Tamil" ? "அதிக ஈரப்பதம் (~85%)" : "Wet (~85%)")
+      : (user.language === "Tamil" ? "சரியான அளவு (~55%)" : "Just Right (~55%)");
+    showToast(
+      user.language === "Tamil"
+        ? `மண்ணின் ஈரப்பதம் பதிவு செய்யப்பட்டது: ${label}`
+        : `Soil moisture updated: ${label}`,
+      "info"
+    );
   };
 
   const decisionResult = generateFarmDecisions(decisionInputs);
@@ -2160,6 +2251,7 @@ export default function App() {
             activeField={selectedField}
             onSelectField={setSelectedField}
             onDetectGps={detectLiveGpsLocation}
+            onUpdateSoilMoisture={handleUpdateSoilMoisture}
           />
         )}
 

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { apiClient } from "../../services/apiClient";
 import { LocalField } from "../../services/db";
+import { ARFI_CONFIG } from "../../config/arfiConfig";
 
 interface WhatIfLabScreenProps {
   onBack: () => void;
@@ -399,7 +400,12 @@ export function WhatIfLabScreen({
           {/* ARFI Shift Meter */}
           <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
             <div>
-              <span className="text-[10px] text-gray-500 font-semibold block">ARFI Fragility Score</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] text-gray-500 font-semibold block">ARFI Fragility Score</span>
+                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                  {ARFI_CONFIG.labelEn}
+                </span>
+              </div>
               <div className="flex items-baseline gap-2 mt-0.5">
                 <span className="text-lg font-bold text-gray-500">{(result.arfi_before * 100).toFixed(0)}%</span>
                 <span className="text-xs text-gray-400">➔</span>

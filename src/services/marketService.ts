@@ -256,6 +256,74 @@ export async function getLiveMandiPrice(cropKey: string = "paddy", district: str
   }
 }
 
+export interface DashboardMarketPrice {
+  isAvailable: boolean;
+  pricePerQuintal?: number;
+  cropName: string;
+  mandi: string;
+  status: "LIVE" | "CACHED" | "OFFLINE" | "STATIC REFERENCE";
+  lastUpdatedLabel: string;
+  source: string;
+  isBenchmark: boolean;
+}
+
+export function normalizeCropKey(rawCrop: string): string {
+  const c = rawCrop.toLowerCase().trim();
+  if (c.includes("paddy") || c.includes("rice") || c.includes("நெல்")) return "paddy";
+  if (c.includes("wheat") || c.includes("கோதுமை")) return "wheat";
+  if (c.includes("maize") || c.includes("corn") || c.includes("மக்காச்சோளம்")) return "maize";
+  if (c.includes("cotton") || c.includes("பருத்தி")) return "cotton";
+  if (c.includes("tomato") || c.includes("தக்காளி")) return "tomato";
+  return c;
+}
+
+export function getDashboardMarketPrice(cropName: string = "Paddy", district: string = "Coimbatore"): DashboardMarketPrice {
+  const key = normalizeCropKey(cropName);
+  const mandiName = `${district} APMC Market`;
+
+  // Check if we have official benchmark or commodity market data for this specific crop
+  const benchmark = OFFICIAL_MSP_BENCHMARKS[key];
+  const commodity = COMMODITY_MARKETS[key];
+
+  if (commodity) {
+    return {
+      isAvailable: true,
+      pricePerQuintal: commodity.currentPrice,
+      cropName: commodity.cropName,
+      mandi: `${district} / ${commodity.nearbyMandi}`,
+      status: "STATIC REFERENCE", // Honestly marked as benchmark until live Agmarknet API key in Phase 6
+      lastUpdatedLabel: commodity.lastVerifiedDate ? `As of ${commodity.lastVerifiedDate}` : "Benchmark, not live",
+      source: "APMC Benchmark Feed",
+      isBenchmark: true
+    };
+  }
+
+  if (benchmark) {
+    return {
+      isAvailable: true,
+      pricePerQuintal: benchmark.mspPricePerQuintal,
+      cropName: benchmark.commodity,
+      mandi: mandiName,
+      status: "STATIC REFERENCE",
+      lastUpdatedLabel: `MSP ${benchmark.year} (${benchmark.verifiedDate})`,
+      source: benchmark.source,
+      isBenchmark: true
+    };
+  }
+
+  // Honest unavailable state for crops without mandi reporting
+  return {
+    isAvailable: false,
+    pricePerQuintal: undefined,
+    cropName,
+    mandi: mandiName,
+    status: "STATIC REFERENCE",
+    lastUpdatedLabel: "Price unavailable for this crop/mandi",
+    source: "APMC / Agmarknet",
+    isBenchmark: false
+  };
+}
+
 async function getCachedOrUnavailableMandi(cropKey: string, district: string): Promise<LiveMandiPrice> {
   try {
     const cached = await db.cachedMarket.get(cropKey);
@@ -275,12 +343,33 @@ async function getCachedOrUnavailableMandi(cropKey: string, district: string): P
     }
   } catch {}
 
-  const benchmark = OFFICIAL_MSP_BENCHMARKS[cropKey] || OFFICIAL_MSP_BENCHMARKS.paddy;
+  const benchmark = OFFICIAL_MSP_BENCHMARKS[cropKey];
+  if (!benchmark) {
+    return {
+      isAvailable: false,
+      status: "OFFLINE",
+      unavailableReason: `No mandi price or MSP benchmark reported for "${cropKey}".`,
+      commodity: cropKey,
+      variety: "Local",
+      mandi: `${district} APMC Yard`,
+      district,
+      state: "Tamil Nadu",
+      pricePerQuintal: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      weeklyChangePercent: 0,
+      trendDirection: "stable",
+      arrivalDate: "N/A",
+      arrivalTime: "N/A",
+      source: "APMC Mandi",
+      lastUpdatedLabel: "Price unavailable"
+    };
+  }
 
   return {
     isAvailable: true,
     status: "OFFLINE",
-    unavailableReason: "Live APMC auction yard data offline. Showing official GoI Minimum Support Price reference benchmark.",
+    unavailableReason: "Showing official GoI Minimum Support Price reference benchmark.",
     commodity: benchmark.commodity,
     variety: benchmark.variety,
     mandi: `${district} APMC Yard`,
@@ -294,6 +383,6 @@ async function getCachedOrUnavailableMandi(cropKey: string, district: string): P
     arrivalDate: benchmark.verifiedDate,
     arrivalTime: "10:00 AM",
     source: benchmark.source,
-    lastUpdatedLabel: "Static MSP Benchmark"
+    lastUpdatedLabel: `Benchmark (As of ${benchmark.verifiedDate})`
   };
 }

@@ -346,7 +346,7 @@ export function FarmServicesScreen({
                 }`}
               >
                 <span>🚜</span>
-                <span>{language === "Tamil" ? "விவசாயி உழவுக்கருவி பகிர்வு (P2P)" : "Peer-to-Peer Sharing"}</span>
+                <span>{language === "Tamil" ? "உள்ளூர் உழவுக்கருவி பலகை" : "Local Equipment Board"}</span>
               </button>
               <button
                 onClick={() => setMachinerySubTab("chc")}
@@ -378,8 +378,8 @@ export function FarmServicesScreen({
               <div className="flex items-center justify-between text-xs text-zinc-600">
                 <span className="font-semibold">
                   {language === "Tamil"
-                    ? "உள்ளூர் விவசாயிகள் நேரடியாக வாடகைக்கு வழங்கும் கருவிகள்"
-                    : "Direct farmer-to-farmer equipment rental board with zero brokerage."}
+                    ? "உள்ளூர் விவசாயிகள் வாடகைக்கு வழங்கும் கருவிகள் பலகை"
+                    : "Direct local equipment rental board with zero brokerage."}
                 </span>
                 <DataBadge status="STATIC REFERENCE" detail="Local Farmer Network" />
               </div>

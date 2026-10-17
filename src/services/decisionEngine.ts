@@ -99,10 +99,69 @@ export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineRes
   const wasIrrigationDelayFollowed = completed.includes("delay_irrigation_fungal") || irrigationFeedback?.actionTaken === "completed";
   const wasIrrigationHelpful = irrigationFeedback?.wasHelpful !== false;
 
+  const isPaddy = crop.includes("paddy") || crop.includes("rice") || crop.includes("நெல்");
+
+  // UNSUPPORTED CROP HONEST FALLBACK:
+  // If the crop is not Paddy/Rice, do NOT silently apply paddy agronomic rules.
+  if (!isPaddy) {
+    const cropDisplay = inputs.crop || "this crop";
+    return {
+      primaryRecommendation: {
+        id: "limited_guidance_unsupported_crop",
+        title: "Limited Guidance for this Crop",
+        action: `Detailed agronomic decision rules for "${cropDisplay}" are under active calibration. Consult your local block Assistant Agricultural Officer (AAO) or TNAU Agritech portal for specific package of practices.`,
+        when: "Before applying irrigation or fertilizer schedules.",
+        why: `THINAI's verified rule engine is currently calibrated for Paddy (Rice). Silently applying rice irrigation, tillering, or blast rules to ${cropDisplay} would risk agronomic mismanagement.`,
+        confidence: 45,
+        confidenceLabel: "Crop-Specific Calibration Pending",
+        supportingFactors: [
+          `Selected crop: ${cropDisplay}`,
+          `THINAI agronomic rules calibrated: Paddy (Rice) only`,
+          `Weather forecasts (Rain: ${rain}mm, Temp: ${temp}°C) remain active for local reference`
+        ],
+        risk: "Applying cereal irrigation or nitrogen split schedules to different crop types risks root rot or nutrient imbalance.",
+        alternativeAction: "Access 'Officer Contacts' in Farm Services to speak directly with your local block extension officer.",
+        recommendation: `Limited guidance available for ${cropDisplay}. Specific agronomic rules are under development.`,
+        reason: `THINAI rule engine currently specializes in Paddy (Rice). Consult TNAU Agritech Portal for ${cropDisplay}.`,
+        priority: "Medium",
+        category: "General Farm Management",
+        recommendedTime: "Consult before field operations",
+        riskLevel: "Low",
+        explainability: {
+          what: `Display honest limited guidance state for ${cropDisplay}.`,
+          why: "Transparent AI governance: Never fabricate crop guidance where calibrated rules do not exist.",
+          when: "Active continuously while this crop is selected.",
+          confidenceReason: "Safety gate: Uncalibrated crop rule execution halted.",
+          rulesTriggered: ["RULE_UNSUPPORTED_CROP_SAFETY_FALLBACK"]
+        },
+        status: "pending",
+        impact: "Prevents misapplication of paddy-specific agrochemicals and water management."
+      },
+      secondaryRecommendations: [],
+      riskAnalysis: {
+        overallRisk: rain > 50 ? "High" : "Moderate",
+        factors: [
+          {
+            name: "Rule Availability",
+            level: "Warning",
+            detail: `Rules for ${cropDisplay} are under development. General weather and market data remain active.`
+          },
+          {
+            name: "Precipitation",
+            level: rain > 40 ? "Warning" : "Safe",
+            detail: `Forecasted ${rain}mm rainfall over next 48h. Adjust field drainage accordingly.`
+          }
+        ]
+      },
+      generatedAt: new Date().toISOString(),
+      engineVersion: "THINAI-AdaptiveDecisionEngine-v2.1"
+    };
+  }
+
   // -------------------------------------------------------------
   // RULE 1: High Rain + High Moisture + Paddy Tillering -> Delay Irrigation
   // -------------------------------------------------------------
-  if ((crop.includes("paddy") || crop.includes("rice")) && rain > 35 && moisture > 60) {
+  if (rain > 35 && moisture > 60) {
     if (!wasIrrigationDelayFollowed) {
       recommendations.push({
         id: "delay_irrigation_fungal",

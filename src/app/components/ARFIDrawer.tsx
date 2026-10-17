@@ -4,6 +4,7 @@ import {
   TrendingDown, TrendingUp, Sparkles, BarChart2, Activity,
   Sliders, ArrowUpRight, X, HelpCircle
 } from "lucide-react";
+import { ARFI_CONFIG } from "../../config/arfiConfig";
 
 export interface ARFIData {
   fragility_score: number; // 0.0 - 1.0
@@ -123,42 +124,42 @@ export function ARFIDrawer({
   const subComponents = [
     {
       name: "Data Reliability",
-      weight: "20%",
+      weight: `${Math.round(ARFI_CONFIG.weights.dataReliability * 100)}%`,
       score: data.data_reliability_score,
       desc: "Freshness and density of soil sensors, weather forecasts, and satellite feeds.",
       inverted: false
     },
     {
       name: "Model Consensus",
-      weight: "20%",
+      weight: `${Math.round(ARFI_CONFIG.weights.modelConfidence * 100)}%`,
       score: data.model_agreement_score,
       desc: "Cross-validation agreement between Random Forest & Gradient Boosting models.",
       inverted: false
     },
     {
       name: "Prediction Uncertainty",
-      weight: "15%",
+      weight: `${Math.round(ARFI_CONFIG.weights.predictionUncertainty * 100)}%`,
       score: data.uncertainty_score,
       desc: "Normalized entropy across candidate crop probability distributions.",
       inverted: true
     },
     {
       name: "Scenario Sensitivity",
-      weight: "15%",
+      weight: `${Math.round(ARFI_CONFIG.weights.sensitivityShift * 100)}%`,
       score: data.scenario_sensitivity_score,
       desc: "Recommendation shift gradient under synthetic parameter fluctuations.",
       inverted: true
     },
     {
       name: "Stress Robustness",
-      weight: "15%",
+      weight: `${Math.round(ARFI_CONFIG.weights.weatherStress * 100)}%`,
       score: data.stress_robustness_score,
       desc: "Resistance to rank-order flips during severe climate and cost shocks.",
       inverted: false
     },
     {
       name: "Decision Risk",
-      weight: "15%",
+      weight: `${Math.round(ARFI_CONFIG.weights.economicRisk * 100)}%`,
       score: data.decision_risk_score,
       desc: "Economic downside exposure given current market volatility indices.",
       inverted: true
@@ -176,10 +177,10 @@ export function ARFIDrawer({
               <Activity size={18} />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <h3 className="text-sm font-black text-gray-900">ARFI Explainability Engine</h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-gray-100 text-gray-700">
-                  v2.0
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                  {ARFI_CONFIG.labelEn}
                 </span>
               </div>
               <p className="text-[11px] text-gray-500">Agri Recommendation Fragility Index</p>
@@ -248,9 +249,17 @@ export function ARFIDrawer({
           {/* TAB 1: 6 Sub-Score Components */}
           {activeTab === "components" && (
             <div className="flex flex-col gap-2.5">
-              <div className="bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-[11px] text-gray-600">
-                <span className="font-bold text-gray-800">ARFI Formulation: </span>
-                ARFI = 0.20·R<sub>data</sub> + 0.20·C<sub>model</sub> + 0.15·U<sub>pred</sub> + 0.15·S<sub>sens</sub> + 0.15·R<sub>stress</sub> + 0.15·D<sub>risk</sub>
+              <div className="bg-amber-50/70 p-2.5 rounded-xl border border-amber-200 text-[11px] text-amber-950">
+                <div className="font-bold mb-1 flex items-center justify-between">
+                  <span>ARFI Formulation (Heuristic Index):</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-900 font-bold">Not trained on yield data</span>
+                </div>
+                <p className="font-mono text-[10px] text-amber-900/90 leading-relaxed">
+                  ARFI = {ARFI_CONFIG.weights.dataReliability}·R<sub>data</sub> + {ARFI_CONFIG.weights.modelConfidence}·C<sub>model</sub> + {ARFI_CONFIG.weights.predictionUncertainty}·U<sub>pred</sub> + {ARFI_CONFIG.weights.sensitivityShift}·S<sub>sens</sub> + {ARFI_CONFIG.weights.weatherStress}·R<sub>stress</sub> + {ARFI_CONFIG.weights.economicRisk}·D<sub>risk</sub>
+                </p>
+                <p className="text-[10px] text-amber-800/80 mt-1 italic">
+                  {ARFI_CONFIG.descriptionEn}
+                </p>
               </div>
 
               {subComponents.map((sub, idx) => {
