@@ -276,6 +276,8 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
 
   try {
     const pendingItems = await db.syncQueue.where("status").equals("pending").toArray();
+    // Guarantee strict chronological FIFO execution order
+    pendingItems.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
     for (const item of pendingItems) {
       if (!item.id) continue;
@@ -301,14 +303,39 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
             await db.verdicts.update(item.clientId, { pendingSync: false, synced: true });
           } catch {}
         } else if (item.entity === "profile") {
-          await setDoc(doc(firestoreDb, "profiles", currentUid), payload, { merge: true });
+          // Last-Write-Wins (LWW) conflict resolution policy
+          const profileDocRef = doc(firestoreDb, "profiles", currentUid);
+          try {
+            const existingSnap = await getDoc(profileDocRef);
+            if (existingSnap.exists()) {
+              const remoteData = existingSnap.data() as any;
+              const incomingTime = payload.updatedAt ? new Date(payload.updatedAt).getTime() : new Date(item.timestamp).getTime();
+              const remoteTime = remoteData?.updatedAt ? new Date(remoteData.updatedAt).getTime() : 0;
+              if (incomingTime >= remoteTime) {
+                // Incoming write is newer or equal: commit write
+                await setDoc(profileDocRef, payload, { merge: true });
+              } else {
+                // Stale offline write: remote already has a newer update from another device.
+                console.info(`[LWW Conflict] Preserved remote profile (remote: ${remoteData?.updatedAt} > local: ${payload.updatedAt})`);
+              }
+            } else {
+              await setDoc(profileDocRef, payload, { merge: true });
+            }
+          } catch (docErr) {
+            await setDoc(profileDocRef, payload, { merge: true });
+          }
         }
         await db.syncQueue.update(item.id, { status: "syncing" });
         await db.syncQueue.delete(item.id);
         synced++;
-      } catch (err) {
+      } catch (err: any) {
         failed++;
         console.warn(`Failed syncing queue item ${item.id}:`, err);
+        // If auth error (expired token), STOP syncing loop immediately so queue items are PRESERVED!
+        if (err?.code === "auth/user-token-expired" || err?.code === "permission-denied") {
+          console.warn("Auth token expired during sync. Stopping sync pass to preserve queue.");
+          break;
+        }
         await db.syncQueue.update(item.id, { retryCount: (item.retryCount || 0) + 1 });
       }
     }
