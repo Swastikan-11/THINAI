@@ -73,3 +73,47 @@ THINAI is strictly bilingual: **English** and **Tamil (தமிழ்)**. Every
 - **Retraining Pipeline**:
   - Training pipeline script available in [`scripts/train_disease_model_colab.py`](file:///c:/Users/cswas/Documents/THINAI/scripts/train_disease_model_colab.py) for free Google Colab GPU training.
   - Farmer Yes/No confirmation verdicts are recorded to Cloud Firestore (`diagnosis_confirmations`) as ground truth for continuous model retraining.
+
+---
+
+## 6. UI/UX Architecture: Plantix + Uzhavan Fusion (Phase 4)
+- **Bottom Navigation (4 Tabs)**:
+  1. `Home (My Farm)`: 1-tap `[ EN | தமிழ் ]` toggle, horizontal crop chips, Open-Meteo Weather & Spray Advisory banner (`evaluateSpraySafety()`), 3-step Plant Doctor card, and Yes/No Retraining Confirmation prompt.
+  2. `Community`: Tamil Nadu farmers discussion forum, Web Speech read-aloud (`SpeechSynthesisUtterance`), and Dexie offline queueing with Firestore sync.
+  3. `Services`: 8-service large icon grid (Custom Hiring Centres, Soil Testing Labs, Mandi Prices, WRD Water Reservoirs, PMFBY Crop Insurance, Schemes, Pest Alert, Fertiliser Calculator).
+  4. `You (Profile)`: Real farm profile editing, password update modal, and complete Dexie/Firebase account deletion.
+
+---
+
+## 7. Automated Testing & Verification (Phase 8)
+THINAI includes a comprehensive 18-point automated test suite running natively via Node.js:
+
+```bash
+# Run automated verification suite
+npm test
+
+# Run TypeScript strict check
+npx tsc --noEmit
+
+# Run production build
+npm run build
+```
+
+---
+
+## 8. Android Packaging & Capacitor Build (Phase 9)
+```bash
+# 1. Build web production bundle
+npm run build
+
+# 2. Sync web bundle & TFLite models to Capacitor Android
+npx cap sync android
+
+# 3. Open in Android Studio or compile APK via Gradle
+cd android
+./gradlew assembleDebug
+# Generated APK: android/app/build/outputs/apk/debug/app-debug.apk
+```
+- **Application ID / Package**: `com.thinai.agriapp`
+- **Essential Permissions**: `CAMERA`, `ACCESS_FINE_LOCATION`, `INTERNET`
+- **Hardware Acceleration**: Enabled for LiteRT WASM model execution on device.
