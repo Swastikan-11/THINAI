@@ -216,6 +216,85 @@ test("Model Metadata: labels.json exists with exactly 39 classes and 94.3% accur
   assert.equal(meta.confidence_threshold, 0.65);
 });
 
+test("Model Calibration: thresholds.json exists with valid T, tau_high, and tau_low", () => {
+  const threshPath = path.resolve("public/models/thresholds.json");
+  assert.ok(fs.existsSync(threshPath), "thresholds.json missing in public/models/");
+  const thresh = JSON.parse(fs.readFileSync(threshPath, "utf-8"));
+  assert.equal(thresh.architecture, "MobileNetV2");
+  assert.equal(thresh.temperature, 1.28);
+  assert.equal(thresh.tau_high, 0.78);
+  assert.equal(thresh.tau_low, 0.45);
+  assert.ok(thresh.tau_high > thresh.tau_low, "tau_high must be strictly greater than tau_low");
+  assert.ok(thresh.metrics.ece_post_calibration < thresh.metrics.ece_pre_calibration, "Post-calibration ECE must be lower than pre-calibration");
+  assert.ok(thresh.classes.length >= 15, "Expected at least 15 priority classes");
+});
+
+test("Model Evaluation Artifacts: metrics.csv and publication figures exist", () => {
+  const csvPath = path.resolve("results/metrics.csv");
+  assert.ok(fs.existsSync(csvPath), "results/metrics.csv missing");
+  const csv = fs.readFileSync(csvPath, "utf-8");
+  assert.match(csv, /optimal_temperature_T/);
+  assert.match(csv, /ece_post_calibration/);
+
+  const pngRel = path.resolve("results/calibration_before_after.png");
+  assert.ok(fs.existsSync(pngRel), "results/calibration_before_after.png missing");
+  assert.ok(fs.statSync(pngRel).size > 1000, "calibration_before_after.png too small");
+
+  const pngRisk = path.resolve("results/risk_coverage_curve.png");
+  assert.ok(fs.existsSync(pngRisk), "results/risk_coverage_curve.png missing");
+  assert.ok(fs.statSync(pngRisk).size > 1000, "risk_coverage_curve.png too small");
+});
+
+test("Calibration Math: Temperature scaling softens overconfidence and preserves ranking", async () => {
+  const { applyTemperatureScaling } = await import("../src/services/litertInferenceService.ts");
+  const rawProbs = [0.85, 0.10, 0.05];
+  const T = 1.28;
+  const calibrated = applyTemperatureScaling(rawProbs, T);
+
+  // Softening effect: Peak probability should decrease
+  assert.ok(calibrated[0] < rawProbs[0], `Expected calibrated ${calibrated[0]} < raw ${rawProbs[0]}`);
+  // Normalization: Sum must equal 1.0
+  const sum = calibrated.reduce((a, b) => a + b, 0);
+  assert.ok(Math.abs(sum - 1.0) < 1e-6, `Probabilities must sum to 1.0 (got ${sum})`);
+  // Rank invariance: Argmax must remain class 0
+  assert.ok(calibrated[0] > calibrated[1] && calibrated[1] > calibrated[2], "Ranking was altered by scaling");
+  // Identity: T=1.0 leaves probabilities identical
+  const unscaled = applyTemperatureScaling(rawProbs, 1.0);
+  assert.ok(Math.abs(unscaled[0] - rawProbs[0]) < 1e-5, "T=1.0 should preserve probabilities");
+});
+
+test("Calibration Math: computeEce computes Expected Calibration Error", async () => {
+  const { computeEce } = await import("../src/services/litertInferenceService.ts");
+  // Case A: Perfect calibration
+  const perfect = [
+    { confidence: 0.8, isCorrect: true },
+    { confidence: 0.8, isCorrect: true },
+    { confidence: 0.8, isCorrect: true },
+    { confidence: 0.8, isCorrect: true },
+    { confidence: 0.8, isCorrect: false }
+  ];
+  // 4/5 = 80% accuracy, mean confidence = 80% -> error should be 0
+  const ecePerfect = computeEce(perfect, 5);
+  assert.ok(Math.abs(ecePerfect) < 1e-6, `Expected ECE ~ 0 for perfectly calibrated set, got ${ecePerfect}`);
+
+  // Case B: Severe overconfidence
+  const overconfident = [
+    { confidence: 0.9, isCorrect: false },
+    { confidence: 0.9, isCorrect: false }
+  ];
+  // Accuracy = 0%, confidence = 90% -> ECE should be 0.9
+  const eceOver = computeEce(overconfident, 5);
+  assert.ok(Math.abs(eceOver - 0.9) < 1e-6, `Expected ECE 0.9 for overconfident set, got ${eceOver}`);
+});
+
+test("Calibration Math: wilsonScoreInterval produces valid 95% intervals", async () => {
+  const { wilsonScoreInterval } = await import("../src/services/litertInferenceService.ts");
+  const interval = wilsonScoreInterval(90, 100);
+  assert.ok(interval.lower > 0.80 && interval.lower < 0.85, `Lower bound out of expected range: ${interval.lower}`);
+  assert.ok(interval.upper > 0.93 && interval.upper < 0.97, `Upper bound out of expected range: ${interval.upper}`);
+  assert.ok(interval.lower <= interval.center && interval.center <= interval.upper, "Interval ordering violated");
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 5. I18N TAMIL TRANSLATIONS INTEGRITY TEST
 // ─────────────────────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 // THINAI LiteRT.js (@litertjs/core) On-Device Neural Vision Service
 // Executes MobileNetV2 .tflite via WASM backend.
-// Falls back to heuristic when model is unavailable and labels it "basic colour check, low reliability".
-// Enforces strict crop boundaries and confidence thresholds.
+// Applies Post-Hoc Temperature Scaling and 3-Tier Confidence-Gated Advisory.
+// Enforces strict crop boundaries and selective risk thresholds (tau_low, tau_high).
 
 import { loadLiteRt, loadAndCompile, CompiledModel, Tensor } from "@litertjs/core";
 
@@ -10,15 +10,37 @@ export interface ModelMetadata {
   architecture: string;
   classes: string[];
   input_shape: number[];
-  confidence_threshold: number;
+  confidence_threshold?: number;
   metrics?: {
-    lab_accuracy: number;
-    field_augmented_accuracy: number;
+    lab_accuracy?: number;
+    field_augmented_accuracy?: number;
+    validation_accuracy?: number;
   };
+}
+
+export interface CalibrationThresholds {
+  model_version: string;
+  architecture: string;
+  framework: string;
+  temperature: number;
+  tau_high: number;
+  tau_low: number;
+  metrics?: {
+    test_accuracy: number;
+    macro_f1: number;
+    ece_pre_calibration: number;
+    ece_post_calibration: number;
+  };
+  crops: string[];
+  classes: string[];
 }
 
 export interface NeuralInferenceResult {
   source: "LITERT_NEURAL_MODEL" | "HEURISTIC_FALLBACK" | "UNSUPPORTED_CROP" | "LOW_CONFIDENCE";
+  tier?: "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE";
+  calibratedConfidence?: number;
+  rawConfidence?: number;
+  temperatureApplied?: number;
   labelStatus: string;
   isReliable: boolean;
   diseaseName: string;
@@ -36,26 +58,109 @@ export interface NeuralInferenceResult {
 
 let compiledModelPromise: Promise<CompiledModel | null> | null = null;
 let loadedMetadata: ModelMetadata | null = null;
+let loadedThresholds: CalibrationThresholds | null = null;
 
-// Crops explicitly covered by the trained MobileNetV2 model
+// Bounded crops with verified model classes
 export const COVERED_MODEL_CROPS = [
   "Tomato",
   "Potato",
   "Pepper",
   "Corn",
-  "Maize",
-  "Apple",
-  "Grape",
-  "Orange",
-  "Peach",
-  "Strawberry",
-  "Squash",
-  "Cherry",
-  "Soybean"
+  "Maize"
 ];
 
+// Default fallback thresholds if thresholds.json is not yet fetched
+const DEFAULT_THRESHOLDS: CalibrationThresholds = {
+  model_version: "thinai-mobilenetv2-calibrated-v1",
+  architecture: "MobileNetV2",
+  framework: "LiteRT.js / TensorFlow Lite",
+  temperature: 1.28,
+  tau_high: 0.78,
+  tau_low: 0.45,
+  crops: COVERED_MODEL_CROPS,
+  classes: []
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CALIBRATION MATHEMATICAL UTILITIES
+// ─────────────────────────────────────────────────────────────────────────────
+
 /**
- * Initializes LiteRT and loads the TFLite model from public/models/
+ * Applies temperature scaling to convert uncalibrated softmax probabilities
+ * into calibrated probabilities: z'_i = z_i / T
+ */
+export function applyTemperatureScaling(probabilities: number[], temperature: number): number[] {
+  if (!Number.isFinite(temperature) || temperature <= 0 || probabilities.length === 0) {
+    return probabilities;
+  }
+  const epsilon = 1e-12;
+  // Recover pseudo-logits: z_i = ln(p_i + epsilon)
+  const logits = probabilities.map((p) => Math.log(Math.max(p, epsilon)));
+  // Scale logits by temperature T
+  const scaled = logits.map((z) => z / temperature);
+  // Softmax with max subtraction for numerical stability
+  const maxZ = Math.max(...scaled);
+  const exps = scaled.map((z) => Math.exp(z - maxZ));
+  const sumExps = exps.reduce((acc, v) => acc + v, 0);
+  return exps.map((v) => v / (sumExps || 1));
+}
+
+/**
+ * Computes Expected Calibration Error (ECE) across confidence bins
+ */
+export function computeEce(
+  items: { confidence: number; isCorrect: boolean }[],
+  nBins: number = 10
+): number {
+  if (items.length === 0) return 0;
+  let totalEce = 0;
+  const binEdges = Array.from({ length: nBins + 1 }, (_, i) => i / nBins);
+
+  for (let i = 0; i < nBins; i++) {
+    const lower = binEdges[i];
+    const upper = binEdges[i + 1];
+    const inBin = items.filter((item) =>
+      i === nBins - 1
+        ? item.confidence >= lower && item.confidence <= upper
+        : item.confidence >= lower && item.confidence < upper
+    );
+
+    if (inBin.length > 0) {
+      const avgConf = inBin.reduce((s, it) => s + it.confidence, 0) / inBin.length;
+      const avgAcc = inBin.filter((it) => it.isCorrect).length / inBin.length;
+      const binWeight = inBin.length / items.length;
+      totalEce += binWeight * Math.abs(avgAcc - avgConf);
+    }
+  }
+
+  return totalEce;
+}
+
+/**
+ * Computes Wilson Score 95% Confidence Interval for sample proportion
+ */
+export function wilsonScoreInterval(
+  successes: number,
+  total: number,
+  z: number = 1.96
+): { lower: number; center: number; upper: number } {
+  if (total <= 0) {
+    return { lower: 0, center: 0, upper: 0 };
+  }
+  const p = successes / total;
+  const z2 = z * z;
+  const denom = 1 + z2 / total;
+  const center = (p + z2 / (2 * total)) / denom;
+  const margin = (z * Math.sqrt((p * (1 - p) + z2 / (4 * total)) / total)) / denom;
+  return {
+    lower: Math.max(0, center - margin),
+    center,
+    upper: Math.min(1, center + margin)
+  };
+}
+
+/**
+ * Initializes LiteRT, loads metadata, thresholds, and compiles TFLite model
  */
 export async function getOrInitLiteRtModel(): Promise<CompiledModel | null> {
   if (compiledModelPromise) {
@@ -67,10 +172,23 @@ export async function getOrInitLiteRtModel(): Promise<CompiledModel | null> {
       // 1. Initialize LiteRT WASM runtime from public/litert directory
       await loadLiteRt("/litert/");
 
-      // 2. Fetch model metadata
-      const metaRes = await fetch("/models/labels.json");
-      if (metaRes.ok) {
-        loadedMetadata = await metaRes.json();
+      // 2. Fetch model metadata & calibration thresholds
+      try {
+        const metaRes = await fetch("/models/labels.json");
+        if (metaRes.ok) {
+          loadedMetadata = await metaRes.json();
+        }
+      } catch (e) {
+        console.warn("Could not fetch /models/labels.json", e);
+      }
+
+      try {
+        const threshRes = await fetch("/models/thresholds.json");
+        if (threshRes.ok) {
+          loadedThresholds = await threshRes.json();
+        }
+      } catch (e) {
+        console.warn("Could not fetch /models/thresholds.json, using defaults", e);
       }
 
       // 3. Fetch TFLite model binary
@@ -121,7 +239,7 @@ function preprocessImageToFloat32(imageData: ImageData): Float32Array {
 }
 
 /**
- * Executes Neural Inference or returns honest boundary/fallback responses
+ * Executes Neural Inference with Calibrated Confidence & Selective 3-Tier Gating
  */
 export async function runNeuralDiseaseInference(
   imageData: ImageData,
@@ -135,16 +253,19 @@ export async function runNeuralDiseaseInference(
     // Honest crop boundary enforcement: Do NOT silently apply arbitrary rules
     return {
       source: "UNSUPPORTED_CROP",
-      labelStatus: "photo saved, expert advice suggested",
+      tier: "TIER_3_INCONCLUSIVE",
+      calibratedConfidence: 0,
+      rawConfidence: 0,
+      labelStatus: "limited guidance, expert advice suggested",
       isReliable: false,
       diseaseName: `Expert Advice Suggested for ${selectedCrop} (வேளாண் அலுவலர் ஆலோசனை)`,
       scientificName: "Out of Trained Vision Model Domain",
       crop: selectedCrop,
       confidence: 0,
       symptoms: [
-        `The current MobileNetV2 neural weights are calibrated for: ${COVERED_MODEL_CROPS.join(", ")}.`,
-        `Selected crop "${selectedCrop}" is not yet in the active neural model classes.`,
-        "Your photo has been saved locally and queued to Firestore for upcoming retraining."
+        `The current calibrated MobileNetV2 neural weights are restricted to: ${COVERED_MODEL_CROPS.join(", ")}.`,
+        `Selected crop "${selectedCrop}" is outside the active vision pathology classes.`,
+        "Your photo has been saved locally and queued for extension officer inspection."
       ],
       immediateAction: "Contact your local Assistant Agricultural Officer (AAO) or nearest KVK center for verified visual inspection.",
       organicTreatment: ["Consult Block Agricultural Technology Management Agency (ATMA)."],
@@ -158,6 +279,7 @@ export async function runNeuralDiseaseInference(
 
   // 2. Try Running MobileNetV2 via LiteRT.js
   const model = await getOrInitLiteRtModel();
+  const thresholds = loadedThresholds || DEFAULT_THRESHOLDS;
 
   if (model && loadedMetadata && loadedMetadata.classes && loadedMetadata.classes.length > 0) {
     try {
@@ -167,9 +289,9 @@ export async function runNeuralDiseaseInference(
       // Run inference on compiled model
       const outputTensors = await model.run(inputTensor);
 
-      // Retrieve probabilities
+      // Retrieve uncalibrated probabilities
       const outputTensor = Array.isArray(outputTensors) ? outputTensors[0] : (Object.values(outputTensors)[0] as Tensor);
-      const probabilities = Array.from(outputTensor.toTypedArray() as Float32Array);
+      const rawProbabilities = Array.from(outputTensor.toTypedArray() as Float32Array);
 
       // Clean up tensors
       inputTensor.delete();
@@ -179,65 +301,47 @@ export async function runNeuralDiseaseInference(
         Object.values(outputTensors).forEach((t: any) => t?.delete?.());
       }
 
+      // Apply Post-Hoc Temperature Scaling
+      const temperature = thresholds.temperature || 1.28;
+      const calibratedProbs = applyTemperatureScaling(rawProbabilities, temperature);
+
       // Find top prediction
       let maxIdx = 0;
-      let maxProb = 0;
+      let maxCalibratedProb = 0;
+      let maxRawProb = 0;
       const allResults: { label: string; probability: number }[] = [];
 
-      probabilities.forEach((prob, idx) => {
+      calibratedProbs.forEach((calProb, idx) => {
         const label = loadedMetadata!.classes[idx] || `Class ${idx}`;
-        allResults.push({ label, probability: Math.round(prob * 1000) / 10 });
-        if (prob > maxProb) {
-          maxProb = prob;
+        const rawProb = rawProbabilities[idx] || 0;
+        allResults.push({ label, probability: Math.round(calProb * 1000) / 10 });
+
+        if (calProb > maxCalibratedProb) {
+          maxCalibratedProb = calProb;
+          maxRawProb = rawProb;
           maxIdx = idx;
         }
       });
 
       allResults.sort((a, b) => b.probability - a.probability);
-      const confidencePercent = Math.round(maxProb * 1000) / 10;
-      const threshold = (loadedMetadata.confidence_threshold || 0.65) * 100;
-
-      // 3. Confidence Threshold Check: If below threshold, show "not sure, retake photo"
-      if (confidencePercent < threshold) {
-        return {
-          source: "LOW_CONFIDENCE",
-          labelStatus: "not sure, retake photo",
-          isReliable: false,
-          diseaseName: "Uncertain Detection / தெளிவற்ற முடிவு (Retake Recommended)",
-          scientificName: "Prediction Below Calibrated Confidence Threshold",
-          crop: selectedCrop,
-          confidence: confidencePercent,
-          allProbabilities: allResults.slice(0, 3),
-          symptoms: [
-            `Top prediction probability was ${confidencePercent}%, which is below the required ${threshold}% confidence threshold.`,
-            "Ambiguity detected due to lighting, background clutter, or ambiguous lesion morphology."
-          ],
-          immediateAction: "Please retake the photo adhering to the photo quality tips below.",
-          organicTreatment: ["Do not apply remedies until a confident diagnosis is established."],
-          chemicalTreatment: ["Chemical application withheld due to low prediction certainty."],
-          preventiveMeasures: ["Inspect adjacent tillers to locate more distinct, well-defined lesion spots."],
-          tipsForRetake: [
-            "Maintain 10 - 15 cm distance from the leaf surface.",
-            "Avoid direct harsh sunlight glare or heavy dark shadows.",
-            "Frame a single affected leaf with no soil or hands behind it.",
-            "Ensure the leaf is in crisp optical focus."
-          ]
-        };
-      }
-
-      // Valid High-Confidence Detection from LiteRT
+      const calibratedPercent = Math.round(maxCalibratedProb * 1000) / 10;
+      const rawPercent = Math.round(maxRawProb * 1000) / 10;
       const predictedClass = loadedMetadata.classes[maxIdx];
 
-      // Check if predicted as Background_without_leaves (Class 10)
+      // Check if predicted as Background_without_leaves
       if (predictedClass.includes("Background_without_leaves") || predictedClass.toLowerCase().includes("background")) {
         return {
           source: "LOW_CONFIDENCE",
+          tier: "TIER_3_INCONCLUSIVE",
+          calibratedConfidence: calibratedPercent,
+          rawConfidence: rawPercent,
+          temperatureApplied: temperature,
           labelStatus: "not sure, retake photo",
           isReliable: false,
           diseaseName: "Non-Foliage Detected / இலை இல்லை (Retake Recommended)",
           scientificName: "Background Without Leaves Detected by Neural Model",
           crop: selectedCrop,
-          confidence: confidencePercent,
+          confidence: calibratedPercent,
           allProbabilities: allResults.slice(0, 3),
           symptoms: [
             "Neural vision model detected non-foliage objects, bare soil, or background clutter.",
@@ -257,20 +361,97 @@ export async function runNeuralDiseaseInference(
 
       const remedy = getRemedyForClass(predictedClass, selectedCrop);
 
+      // ─────────────────────────────────────────────────────────────────────────
+      // 3-TIER SELECTIVE CONFIDENCE GATING
+      // ─────────────────────────────────────────────────────────────────────────
+
+      // TIER 1 (Calibrated Confidence >= tau_high): Specific Diagnosis + Remedy Allowed
+      if (maxCalibratedProb >= thresholds.tau_high) {
+        return {
+          source: "LITERT_NEURAL_MODEL",
+          tier: "TIER_1_CONFIDENT",
+          calibratedConfidence: calibratedPercent,
+          rawConfidence: rawPercent,
+          temperatureApplied: temperature,
+          labelStatus: "confident diagnosis",
+          isReliable: true,
+          diseaseName: remedy.diseaseName,
+          scientificName: remedy.scientificName,
+          crop: selectedCrop,
+          confidence: calibratedPercent,
+          allProbabilities: allResults.slice(0, 4),
+          symptoms: remedy.symptoms,
+          immediateAction: remedy.immediateAction,
+          organicTreatment: remedy.organicTreatment,
+          chemicalTreatment: remedy.chemicalTreatment,
+          preventiveMeasures: remedy.preventiveMeasures
+        };
+      }
+
+      // TIER 2 (tau_low <= Calibrated Confidence < tau_high): Cultural & Monitoring Only (NO CHEMICALS)
+      if (maxCalibratedProb >= thresholds.tau_low) {
+        return {
+          source: "LITERT_NEURAL_MODEL",
+          tier: "TIER_2_MODERATE",
+          calibratedConfidence: calibratedPercent,
+          rawConfidence: rawPercent,
+          temperatureApplied: temperature,
+          labelStatus: "possible diagnosis, not sure",
+          isReliable: false,
+          diseaseName: `Possible ${remedy.diseaseName}, not sure (சாத்தியமான நோய், உறுதிப்படுத்தப்படவில்லை)`,
+          scientificName: `Moderate Confidence Diagnostic Candidate (${remedy.scientificName})`,
+          crop: selectedCrop,
+          confidence: calibratedPercent,
+          allProbabilities: allResults.slice(0, 3),
+          symptoms: [
+            ...remedy.symptoms,
+            `Calibrated confidence is ${calibratedPercent}% (between tau_low ${Math.round(thresholds.tau_low * 100)}% and tau_high ${Math.round(thresholds.tau_high * 100)}%).`,
+            "Symptom presentation has optical ambiguity with other biotic/abiotic stresses."
+          ],
+          immediateAction: "Monitor the plant daily for 48 hours. Retake photo under clear daylight if lesions spread.",
+          organicTreatment: remedy.organicTreatment,
+          // STRICT RULE: Chemical treatment withheld on uncertain diagnosis!
+          chemicalTreatment: [
+            "Chemical fungicide/pesticide withheld due to moderate confidence (Tier 2).",
+            "Do not spray systemic chemicals until diagnosis is confirmed by an extension officer or follow-up scan."
+          ],
+          preventiveMeasures: remedy.preventiveMeasures,
+          tipsForRetake: [
+            "Maintain 10 - 15 cm distance from the leaf surface.",
+            "Avoid direct harsh sunlight glare or heavy dark shadows.",
+            "Frame a single affected leaf with no soil or hands behind it.",
+            "Ensure the leaf is in crisp optical focus."
+          ]
+        };
+      }
+
+      // TIER 3 (Calibrated Confidence < tau_low): "Cannot Tell" (NO DIAGNOSIS, NO CHEMICALS)
       return {
-        source: "LITERT_NEURAL_MODEL",
-        labelStatus: "MobileNetV2 LiteRT.js WASM Inference",
-        isReliable: true,
-        diseaseName: remedy.diseaseName,
-        scientificName: remedy.scientificName,
+        source: "LOW_CONFIDENCE",
+        tier: "TIER_3_INCONCLUSIVE",
+        calibratedConfidence: calibratedPercent,
+        rawConfidence: rawPercent,
+        temperatureApplied: temperature,
+        labelStatus: "cannot tell, photo saved for expert",
+        isReliable: false,
+        diseaseName: "Cannot Tell / உறுதிப்படுத்த முடியவில்லை (Expert Review Suggested)",
+        scientificName: "Below Calibrated Optical Confidence Gate (tau_low)",
         crop: selectedCrop,
-        confidence: confidencePercent,
-        allProbabilities: allResults.slice(0, 4),
-        symptoms: remedy.symptoms,
-        immediateAction: remedy.immediateAction,
-        organicTreatment: remedy.organicTreatment,
-        chemicalTreatment: remedy.chemicalTreatment,
-        preventiveMeasures: remedy.preventiveMeasures
+        confidence: calibratedPercent,
+        allProbabilities: allResults.slice(0, 3),
+        symptoms: [
+          `Calibrated confidence is ${calibratedPercent}%, which is below the minimum advisory threshold (tau_low = ${Math.round(thresholds.tau_low * 100)}%).`,
+          "Lesion pattern is too ambiguous for reliable computer vision diagnosis."
+        ],
+        immediateAction: "Photo saved for agricultural officer verification. Contact nearest AAO or KVK helpline.",
+        organicTreatment: ["No treatment advised until confirmed by field inspection."],
+        chemicalTreatment: ["No chemical recommendations for inconclusive scans."],
+        preventiveMeasures: ["Inspect adjacent tillers to locate more distinct, well-defined lesion spots."],
+        tipsForRetake: [
+          "Hold camera 10 - 15 cm from leaf surface.",
+          "Ensure the leaf blade fills at least 70% of the camera frame.",
+          "Avoid direct midday sun glare."
+        ]
       };
     } catch (inferErr) {
       console.warn("LiteRT inference execution error, falling back to heuristic:", inferErr);
@@ -281,6 +462,9 @@ export async function runNeuralDiseaseInference(
   // Label fallback result honestly as "basic colour check, low reliability"
   return {
     source: "HEURISTIC_FALLBACK",
+    tier: "TIER_3_INCONCLUSIVE",
+    calibratedConfidence: 50,
+    rawConfidence: 50,
     labelStatus: "basic colour check, low reliability",
     isReliable: false,
     diseaseName: "Preliminary Colour Scan (அடிப்படை நிறச் சரிபார்ப்பு)",
@@ -292,7 +476,7 @@ export async function runNeuralDiseaseInference(
       "Result is derived solely from basic RGB/HSV leaf chromaticity filtering.",
       "Subject to high false-positive rates on field textures."
     ],
-    immediateAction: "Download or place the neural model file into public/models/ for verified vision pathology.",
+    immediateAction: "Consult the nearest Assistant Agricultural Officer (AAO) for verified diagnosis.",
     organicTreatment: ["Verify symptoms visually with an agricultural extension officer before treatment."],
     chemicalTreatment: ["No chemical action recommended on basic colour check alone."],
     preventiveMeasures: ["Regularly inspect the underside of leaves for mycelium or pest egg masses."]

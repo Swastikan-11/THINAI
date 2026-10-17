@@ -1,0 +1,11 @@
+# Python requirements for THINAI Calibrated Disease Model Pipeline
+# Zero-cost reproduction on Google Colab (T4 GPU) or local Linux/Windows environment
+
+tensorflow==2.15.0
+numpy==1.26.4
+scipy==1.12.0
+scikit-learn==1.4.0
+matplotlib==3.8.2
+pandas==2.2.0
+tqdm==4.66.1
+pillow==10.2.0
