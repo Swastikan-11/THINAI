@@ -381,7 +381,7 @@ export function FarmServicesScreen({
                     ? "உள்ளூர் விவசாயிகள் நேரடியாக வாடகைக்கு வழங்கும் கருவிகள்"
                     : "Direct farmer-to-farmer equipment rental board with zero brokerage."}
                 </span>
-                <DataBadge status="COMMUNITY" detail="Local Farmer Network" />
+                <DataBadge status="STATIC REFERENCE" detail="Local Farmer Network" />
               </div>
 
               {/* Equipment Listings Grid */}

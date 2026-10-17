@@ -633,7 +633,7 @@ function HomeScreen({
             location: user.district || "Coimbatore",
             diseaseStatus: "Healthy (No Active Blight)"
           }}
-          weatherStatus={(weather.status as DataStatus) || (weather.isLive ? "LIVE" : "CACHED")}
+          weatherStatus={weather.status as DataStatus}
           weatherSource={weather.source || "Open-Meteo API"}
           marketStatus={isOffline ? "OFFLINE" : "LIVE"}
           marketSource="Agmarknet APMC Mandi Feed"
@@ -717,8 +717,8 @@ function HomeScreen({
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                style={{ background: weather.isLive ? "#E8F5E9" : "#FFF3E0", color: weather.isLive ? P : "#E65100" }}>
-                {weather.isLive ? "Live Open-Meteo" : "Cached Offline Data"}
+                style={{ background: weather.status === "LIVE" ? "#E8F5E9" : "#FFF3E0", color: weather.status === "LIVE" ? P : "#E65100" }}>
+                {weather.status === "LIVE" ? "Live Open-Meteo" : "Cached Offline Data"}
               </span>
               <button
                 onClick={onDetectGps}
@@ -1934,8 +1934,8 @@ export default function App() {
     try {
       const w = await fetchFarmWeather(district || "Coimbatore");
       setWeather(w);
-    } catch {
-      setWeather(getFallbackWeather(district || "Coimbatore"));
+    } catch (err) {
+      console.warn("Failed to load live weather:", err);
     }
   };
 
@@ -2055,7 +2055,6 @@ export default function App() {
         if (uid) {
           await apiClient.deleteAccount();
           await db.profiles.delete(`profile-${uid}`);
-          await db.activities.where("userId").equals(uid).delete();
           await db.feedbacks.where("userId").equals(uid).delete();
           await db.scans.where("userId").equals(uid).delete();
         }
@@ -2073,18 +2072,7 @@ export default function App() {
 
   const handleFeedbackSubmit = async (fb: Omit<ActionFeedback, "id" | "completedAt">) => {
     recordFeedback(fb);
-    const actId = `act-${Date.now()}`;
     const fbId = `fb-${Date.now()}`;
-
-    addFarmActivity({
-      date: new Date().toISOString().split("T")[0],
-      activityType: fb.category as ActivityType,
-      crop: user.primaryCrop,
-      fieldPlot: `Main Plot (${user.farmSize} Acres)`,
-      notes: `Completed action: ${fb.recommendationTitle}. Observation: ${fb.cropConditionObservation || "Normal"}. ${fb.notes || ""}`,
-      cost: fb.costSavedEstimate ? `Saved ${fb.costSavedEstimate}` : undefined,
-      source: "thinai_recommendation"
-    });
 
     // Queue mutation in Dexie offline sync queue
     await syncManager.queueMutation("feedback", "create", fbId, {
