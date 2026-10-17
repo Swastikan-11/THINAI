@@ -1637,12 +1637,14 @@ function AIScreen({
   navigate,
   user,
   weather,
-  decisionResult
+  decisionResult,
+  isOffline
 }: {
   navigate: (s: Screen) => void;
   user: UserState;
   weather: WeatherData;
   decisionResult: DecisionEngineResult;
+  isOffline?: boolean;
 }) {
   const lang = user.language;
   const [messages, setMessages] = useState<AssistantMessage[]>([
@@ -1784,6 +1786,23 @@ function AIScreen({
         <BkHdr title={t("aiAdvisorTitle", lang)} navigate={navigate} light />
       </div>
 
+      {/* Offline Mode Banner */}
+      {(isOffline || (typeof navigator !== "undefined" && !navigator.onLine)) && (
+        <div className="bg-amber-50 border-b border-amber-300 text-amber-950 px-4 py-2 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span className="font-semibold">
+              {lang === "Tamil"
+                ? "ஆஃப்லைன் முறை: உள்ளூர் வேளாண்மை விதிகள் இயங்குகின்றன (கிளவுட் AI ஆஃப்லைன்)."
+                : "Offline Mode: Rule-based agronomic advisory active (Cloud AI offline)."}
+            </span>
+          </div>
+          <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 bg-amber-200/80 text-amber-900 rounded border border-amber-400 shrink-0">
+            {lang === "Tamil" ? "உள்ளூர்" : "Rule-Based"}
+          </span>
+        </div>
+      )}
+
       {/* Suggested chips */}
       <div className="px-4 py-2 flex gap-1.5 overflow-x-auto border-b border-gray-200 bg-white" style={{ scrollbarWidth: "none" }}>
         {suggestedQuestions.slice(0, 4).map((sq, i) => (
@@ -1875,6 +1894,15 @@ function ProfileScreen({
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      showToast?.(
+        lang === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — கடவுச்சொல்லை மாற்ற இணைய இணைப்பு தேவை."
+          : "No internet connection — updating password requires an active connection.",
+        "error"
+      );
+      return;
+    }
     if (!newPassword.trim() || newPassword.length < 6) {
       showToast?.("Password must be at least 6 characters.", "error");
       return;
@@ -2503,14 +2531,30 @@ export default function App() {
       localStorage.setItem("thinai_farmer_profile", JSON.stringify(u));
       const uid = firebaseUser?.uid;
       if (uid) {
+        const isOnline = typeof navigator !== "undefined" && navigator.onLine;
         db.profiles.put({
           id: `profile-${uid}`,
           userId: uid,
           data: u as any,
           updatedAt: new Date().toISOString(),
-          synced: true
+          synced: isOnline
         }).catch(err => console.warn("Dexie profile update error:", err));
-        setDoc(doc(firestoreDb, "profiles", uid), u, { merge: true }).catch(err => console.warn("Firestore profile update error:", err));
+
+        if (isOnline) {
+          setDoc(doc(firestoreDb, "profiles", uid), u, { merge: true }).catch(err => console.warn("Firestore profile update error:", err));
+        } else {
+          // Offline: queue in Dexie write queue for background sync
+          db.syncQueue.add({
+            userId: uid,
+            entity: "profile",
+            action: "update",
+            clientId: `profile-${uid}`,
+            payload: u,
+            timestamp: new Date().toISOString(),
+            retryCount: 0,
+            status: "pending"
+          }).then(() => syncManager.updatePendingCount()).catch(err => console.warn("Queue profile error:", err));
+        }
       }
     } catch (e) {
       console.error(e);
@@ -2617,6 +2661,15 @@ export default function App() {
   };
 
   const handleDeleteAccount = async () => {
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      showToast(
+        user.language === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — கணக்கை நீக்க இணைய இணைப்பு தேவை."
+          : "No internet connection — deleting account requires an active connection.",
+        "error"
+      );
+      return;
+    }
     if (confirm("Are you sure you want to delete your farmer account and all associated farm data? This cannot be undone.")) {
       try {
         const uid = firebaseUser?.uid;
@@ -2640,9 +2693,8 @@ export default function App() {
 
   const handleFeedbackSubmit = async (fb: Omit<ActionFeedback, "id" | "completedAt">) => {
     recordFeedback(fb);
-    const fbId = `fb-${Date.now()}`;
 
-    // Record to Firestore & Dexie offline queue
+    // Record to Firestore & Dexie offline queue (idempotent clientId)
     await recordFeedbackToFirestore({
       recommendationId: fb.recommendationId,
       recommendationTitle: fb.recommendationTitle,
@@ -2652,16 +2704,6 @@ export default function App() {
       cropConditionObservation: fb.cropConditionObservation,
       notes: fb.notes,
       costSavedEstimate: fb.costSavedEstimate
-    });
-
-    // Also queue mutation in Dexie offline sync queue for legacy manager
-    await syncManager.queueMutation("feedback", "create", fbId, {
-      recommendation_id: fb.recommendationId,
-      action_taken: fb.actionTaken,
-      rating: fb.rating,
-      crop_observation: fb.cropConditionObservation || "Normal",
-      notes: fb.notes || "",
-      cost_saved_estimate: fb.costSavedEstimate ? parseFloat(fb.costSavedEstimate.replace(/[^0-9.]/g, "")) : null
     });
 
     showToast("Feedback saved! Future recommendations updated.", "success");
@@ -2904,6 +2946,7 @@ export default function App() {
             user={user}
             weather={weather}
             decisionResult={decisionResult}
+            isOffline={isOffline}
           />
         )}
 

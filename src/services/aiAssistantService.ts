@@ -301,12 +301,51 @@ export function generateContextualResponse(query: string, context: FarmerContext
     }
   }
 
-  // Check 2: "Why should I delay irrigation?" or Ask AI Why
+  // Check 2: Disease / Yellowing Query
   if (
-    q.includes("delay") || q.includes("irrigation") || q.includes("why") ||
-    q.includes("பாசனம்") || q.includes("தள்ளி") || q.includes("ஏன்") ||
-    q.includes("सिंचाई") || q.includes("टालना") || q.includes("क्यों") ||
-    q.includes("నీటిపారుదల") || q.includes("వాయిదా") || q.includes("ఎందుకు") ||
+    q.includes("yellow") || q.includes("disease") || q.includes("blast") ||
+    q.includes("மஞ்சள்") || q.includes("நோய்") ||
+    q.includes("पीली") || q.includes("रोग") ||
+    q.includes("పసుపు") || q.includes("తెగులు") ||
+    q.includes("ಹಳದಿ") || q.includes("ರೋಗ") ||
+    q.includes("മഞ്ഞ") || q.includes("രോഗം")
+  ) {
+    if (lang === "Tamil") {
+      return `🍃 **இலைகள் மஞ்சள் நிறமாதல் & நோய் பாதுகாப்பு ஆலோசனை:**
+
+1. **காரணம்:** அதிக மண்ணின் ஈரப்பதம் (${context.soilMoisture || 55}%) மற்றும் காற்றில் 75% ஈரப்பதம் நிலவும்போது, நைட்ரஜன் சத்து வேர்களால் கிரகிக்கப்படாமல் மந்தமாகும் அல்லது பாக்டீரியா இலைக்கருகல் (BLB) பூஞ்சை ஆரம்பிக்கலாம்.
+2. **நடவடிக்கை:**
+   • வயலில் தேங்கியுள்ள நீரை உடனடியாக வெளியேற்றவும்.
+   • பயிர் ஸ்கேன் தாவலை பயன்படுத்தி இலை படத்தை பதிவேற்றி ஆய்வு செய்யவும்.
+   • மழை நின்ற பிறகு 25 கிலோ/ஏக்கர் யூரியா + 5 கிலோ ஜிங்க் சல்பேட் இடவும்.`;
+    }
+
+    if (lang === "Hindi") {
+      return `🍃 **पत्तियों का पीलापन एवं फसल सुरक्षा सलाह:**
+
+1. **कारण:** मिट्टी में अत्यधिक नमी (${context.soilMoisture || 55}%) और 75% आर्द्रता के कारण जड़ों को ऑक्सीजन नहीं मिलती, जिससे नाइट्रोजन अवशोषण रुक जाता है या झुलसा रोग पनप सकता है।
+2. **कदम उठाएं:**
+   • खेत से अतिरिक्त पानी तुरंत निकालें।
+   • 'रोग पहचान' टैब से प्रभावित पत्ती की फोटो स्कैन करें।
+   • बारिश के बाद 25 किग्रा/एकड़ यूरिया + 5 किग्रा जिंक सल्फेट डालें।`;
+    }
+
+    return `🍃 **Leaf Yellowing & Disease Management Advisory:**
+
+1. **Probable Causes:** In the ${context.cropStage} stage of ${context.primaryCrop}, saturated soil (${context.soilMoisture || 55}%) inhibits root aeration, leading to temporary nitrogen chlorosis or early onset of bacterial blight.
+2. **Immediate Steps:**
+   • Drain stagnant surface water from the plots immediately.
+   • Use the **Scan Crop** feature to run our diagnostic classifier on affected leaves.
+   • Avoid applying raw chemical nitrogen until drainage is restored.`;
+  }
+
+  // Check 3: "Why should I delay irrigation?" or Ask AI Why
+  if (
+    q.includes("delay") || q.includes("irrigation") || q.includes("water") ||
+    (q.includes("why") && (q.includes("delay") || q.includes("irrigation") || q.includes("water") || q.includes("wait"))) ||
+    q.includes("பாசனம்") || q.includes("தள்ளி") ||
+    q.includes("सिंचाई") || q.includes("टालना") ||
+    q.includes("నీటిపారుదల") || q.includes("వాయిదా") ||
     q.includes("ನೀರಾವರಿ") || q.includes("ಮುಂದೂಡಿಕೆ") ||
     q.includes("നന") || q.includes("മാറ്റിവെക്കണം")
   ) {
@@ -351,44 +390,6 @@ Hello ${context.name}! Based on your active farm parameters:
 4. **When to recheck:** Friday morning after rainfall recedes.
 
 ⚠️ *AI-assisted recommendation: Saves pump electricity/diesel while protecting productive tillers.*`;
-  }
-
-  // Check 3: Disease / Yellowing Query
-  if (
-    q.includes("yellow") || q.includes("disease") || q.includes("blast") ||
-    q.includes("மஞ்சள்") || q.includes("நோய்") ||
-    q.includes("पीली") || q.includes("रोग") ||
-    q.includes("పసుపు") || q.includes("తెగులు") ||
-    q.includes("ಹಳದಿ") || q.includes("ರೋಗ") ||
-    q.includes("മഞ്ഞ") || q.includes("രോഗം")
-  ) {
-    if (lang === "Tamil") {
-      return `🍃 **இலைகள் மஞ்சள் நிறமாதல் & நோய் பாதுகாப்பு ஆலோசனை:**
-
-1. **காரணம்:** அதிக மண்ணின் ஈரப்பதம் (${context.soilMoisture || 55}%) மற்றும் காற்றில் 75% ஈரப்பதம் நிலவும்போது, நைட்ரஜன் சத்து வேர்களால் கிரகிக்கப்படாமல் மந்தமாகும் அல்லது பாக்டீரியா இலைக்கருகல் (BLB) பூஞ்சை ஆரம்பிக்கலாம்.
-2. **நடவடிக்கை:**
-   • வயலில் தேங்கியுள்ள நீரை உடனடியாக வெளியேற்றவும்.
-   • பயிர் ஸ்கேன் தாவலை பயன்படுத்தி இலை படத்தை பதிவேற்றி ஆய்வு செய்யவும்.
-   • மழை நின்ற பிறகு 25 கிலோ/ஏக்கர் யூரியா + 5 கிலோ ஜிங்க் சல்பேட் இடவும்.`;
-    }
-
-    if (lang === "Hindi") {
-      return `🍃 **पत्तियों का पीलापन एवं फसल सुरक्षा सलाह:**
-
-1. **कारण:** मिट्टी में अत्यधिक नमी (${context.soilMoisture || 55}%) और 75% आर्द्रता के कारण जड़ों को ऑक्सीजन नहीं मिलती, जिससे नाइट्रोजन अवशोषण रुक जाता है या झुलसा रोग पनप सकता है।
-2. **कदम उठाएं:**
-   • खेत से अतिरिक्त पानी तुरंत निकालें।
-   • 'रोग पहचान' टैब से प्रभावित पत्ती की फोटो स्कैन करें।
-   • बारिश के बाद 25 किग्रा/एकड़ यूरिया + 5 किग्रा जिंक सल्फेट डालें।`;
-    }
-
-    return `🍃 **Leaf Yellowing & Disease Management Advisory:**
-
-1. **Probable Causes:** In the ${context.cropStage} stage of ${context.primaryCrop}, saturated soil (${context.soilMoisture || 55}%) inhibits root aeration, leading to temporary nitrogen chlorosis or early onset of bacterial blight.
-2. **Immediate Steps:**
-   • Drain stagnant surface water from the plots immediately.
-   • Use the **Scan Crop** feature to run our diagnostic classifier on affected leaves.
-   • Avoid applying raw chemical nitrogen until drainage is restored.`;
   }
 
   // Check 4: Market / Price query

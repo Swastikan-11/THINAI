@@ -315,6 +315,21 @@ export interface SprayAdvisory {
 export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
   const { windSpeed, rainProbability, rainfallMmExpected, temperature } = weather;
 
+  // 0. Unavailable Weather State (offline cold start with no cached data)
+  if (!weather.isAvailable) {
+    return {
+      isSafe: false,
+      statusText: "Weather Unavailable - Check Locally",
+      statusTextTamil: "வானிலை தரவு இல்லை - களத்தில் சரிபார்க்கவும்",
+      badgeColor: "amber",
+      reason: weather.unavailableReason || "Weather data is unavailable offline. Check wind speed and cloud cover locally before spraying.",
+      reasonTamil: "ஆஃப்லைனில் வானிலை தரவு இல்லை. தெளிப்பதற்கு முன் காற்று வேகம் மற்றும் மேகக் கூட்டத்தை நேரில் சரிபார்க்கவும்.",
+      windSpeed: 0,
+      rainProbability: 0,
+      temperature: 0
+    };
+  }
+
   // 1. Rain Wash-off Hazard
   if (rainProbability > 40 || rainfallMmExpected > 2) {
     return {

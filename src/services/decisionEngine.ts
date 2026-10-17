@@ -22,17 +22,27 @@ export interface DecisionInputs {
   cropVariety?: string;
   cropStage: string;
   soilType: string;
-  soilMoisture: number; // percentage (0-100)
-  temperature: number; // Celsius
-  rainfallExpected: number; // mm in next 24-48 hours
-  humidity: number; // percentage
-  forecast: string;
+  soilMoisture?: number; // percentage (0-100)
+  soilMoisturePct?: number;
+  soilMoistureStatus?: "dry" | "optimal" | "wet";
+  temperature?: number; // Celsius
+  temperatureC?: number;
+  rainfallExpected?: number; // mm in next 24-48 hours
+  rainfallExpectedMm?: number;
+  humidity?: number; // percentage
+  relativeHumidity?: number;
+  forecast?: string;
+  weatherCondition?: string;
   marketPrice?: number;
-  farmSize: string | number;
+  mandiPricePerQuintal?: number;
+  mspPricePerQuintal?: number;
+  farmSize?: string | number;
+  farmSizeAcres?: number;
   location: string;
   diseaseStatus?: string; // e.g. "Healthy", "Blast Suspected", "BLB Detected"
   completedActions?: string[];
   recentFeedbacks?: ActionFeedback[];
+  feedbackHistory?: any[];
 }
 
 export interface ExplainableAI {
@@ -82,12 +92,32 @@ export interface DecisionEngineResult {
  * Integrates agronomic rules, microclimate thresholds, and farmer feedback history
  */
 export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineResult {
+  const moisture = inputs.soilMoisture !== undefined 
+    ? Number(inputs.soilMoisture) 
+    : inputs.soilMoisturePct !== undefined 
+      ? Number(inputs.soilMoisturePct) 
+      : inputs.soilMoistureStatus === "dry" 
+        ? 25 
+        : inputs.soilMoistureStatus === "wet" 
+          ? 85 
+          : 55;
+  const rain = inputs.rainfallExpected !== undefined 
+    ? Number(inputs.rainfallExpected) 
+    : inputs.rainfallExpectedMm !== undefined 
+      ? Number(inputs.rainfallExpectedMm) 
+      : 0;
+  const humidity = inputs.humidity !== undefined 
+    ? Number(inputs.humidity) 
+    : inputs.relativeHumidity !== undefined 
+      ? Number(inputs.relativeHumidity) 
+      : 75;
+  const temp = inputs.temperature !== undefined 
+    ? Number(inputs.temperature) 
+    : inputs.temperatureC !== undefined 
+      ? Number(inputs.temperatureC) 
+      : 28;
   const crop = (inputs.crop || "Paddy").toLowerCase();
   const stage = (inputs.cropStage || "Tillering").toLowerCase();
-  const moisture = Number(inputs.soilMoisture) || 55;
-  const rain = inputs.rainfallExpected !== undefined ? Number(inputs.rainfallExpected) : 0;
-  const humidity = Number(inputs.humidity) || 75;
-  const temp = Number(inputs.temperature) || 28;
   const soil = (inputs.soilType || "Clay Loam").toLowerCase();
   const completed = inputs.completedActions || [];
   const feedbacks = inputs.recentFeedbacks || [];
@@ -156,6 +186,43 @@ export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineRes
       generatedAt: new Date().toISOString(),
       engineVersion: "THINAI-AdaptiveDecisionEngine-v2.1"
     };
+  }
+
+  // -------------------------------------------------------------
+  // RULE 0: Low Soil Moisture + Low Rain -> Critical Root-Zone Irrigation Required
+  // -------------------------------------------------------------
+  if (moisture <= 35 && rain < 10) {
+    recommendations.push({
+      id: "apply_timely_irrigation",
+      title: "Schedule Root-Zone Irrigation",
+      action: "Apply light furrow or sprinkler irrigation for 2-3 hours during morning (6-9 AM) to prevent permanent wilting.",
+      when: "Tomorrow morning before peak midday heat.",
+      why: `Soil moisture index is critically low (${moisture}% in ${inputs.soilType || "soil"}) with minimal rain forecasted (${rain}mm). Active ${inputs.cropStage} stage requires moisture to avoid tiller abortion.`,
+      confidence: 91,
+      confidenceLabel: "Soil Moisture Depletion Model Confidence",
+      supportingFactors: [
+        `Soil moisture is currently at ${moisture}% (depleted below wilting margin)`,
+        `Rainfall forecast is low (${rain}mm in next 48h)`,
+        `Crop stage: ${inputs.cropStage} demands active root-zone transpiration stream`
+      ],
+      risk: "Stomatal closure, productive tiller abortion, severe water stress, and up to 30% biomass reduction.",
+      alternativeAction: "If canal water is unavailable, provide micro-sprinkler or drip misting during cooler morning hours.",
+      recommendation: "Apply timely irrigation to restore soil moisture above 50%.",
+      reason: `Depleted root zone moisture (${moisture}%) requires replenishment under low forecasted rainfall (${rain}mm).`,
+      priority: "High",
+      category: "Irrigation",
+      recommendedTime: "Tomorrow early morning (6:00 AM - 9:00 AM)",
+      riskLevel: "High",
+      explainability: {
+        what: "Irrigate field to bring root-zone moisture into optimal 50-65% zone.",
+        why: "Low moisture inhibits nutrient uptake and stunts active vegetative growth.",
+        when: "Early morning to minimize evaporative losses.",
+        confidenceReason: `Direct calculation from measured soil moisture index (${moisture}%) and near-zero precipitation forecast.`,
+        rulesTriggered: ["RULE_LOW_MOISTURE_IRRIGATION_DISPATCH"]
+      },
+      status: "pending",
+      impact: "Prevents productive tiller loss and avoids up to 30% water-stress yield reduction."
+    });
   }
 
   // -------------------------------------------------------------
@@ -387,7 +454,7 @@ export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineRes
 
   // Sort recommendations by priority: High -> Medium -> Low
   const priorityOrder: Record<PriorityLevel, number> = { High: 3, Medium: 2, Low: 1 };
-  recommendations.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+  recommendations.sort((a, b) => (priorityOrder[b.priority] - priorityOrder[a.priority]) || (b.confidence - a.confidence));
 
   const primary = recommendations[0];
   const secondary = recommendations.slice(1);

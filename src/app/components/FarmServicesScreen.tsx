@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { DataBadge } from "./DataBadge";
 import { fetchEquipmentListings, postEquipmentListing } from "../../services/firestoreSync";
+import { syncManager } from "../../services/syncService";
 import { auth } from "../../firebase";
 
 export interface EquipmentListing {
@@ -132,6 +133,13 @@ export function FarmServicesScreen({
     const updated = [item, ...customListings];
     setCustomListings(updated);
     setShowPostModal(false);
+    if (typeof navigator !== "undefined" && (!navigator.onLine || syncManager.isOfflineActive())) {
+      alert(
+        language === "Tamil"
+          ? "பதிவு சாதனத்தில் சேமிக்கப்பட்டது — ஆன்லைனில் வந்தவுடன் பகிரப்படும்."
+          : "Listing saved locally — will post to shared board when online."
+      );
+    }
     setNewEquipment({
       equipmentName: "Mahindra 575 DI Tractor",
       model: "45 HP with Rotavator",
@@ -1168,6 +1176,16 @@ export function FarmServicesScreen({
                 href="https://pmfby.gov.in"
                 target="_blank"
                 rel="noreferrer"
+                onClick={(e) => {
+                  if (typeof navigator !== "undefined" && !navigator.onLine) {
+                    e.preventDefault();
+                    alert(
+                      language === "Tamil"
+                        ? "இணைய இணைப்பு இல்லை — இந்த வலைப்பக்கத்தை அணுக இணைய இணைப்பு தேவை."
+                        : "No internet connection — PMFBY portal requires an active connection."
+                    );
+                  }
+                }}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 transition-colors"
               >
                 <span>PMFBY Official Portal</span>

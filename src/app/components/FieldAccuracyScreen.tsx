@@ -116,6 +116,28 @@ export function FieldAccuracyScreen({
       </div>
 
       <div className="p-4 max-w-3xl mx-auto space-y-4">
+        {/* DATA SOURCE PROVENANCE BADGE */}
+        <div className="flex items-center justify-between px-3 py-2 bg-white rounded-xl border border-zinc-200 text-xs shadow-xs">
+          <div className="flex items-center gap-2">
+            <Database className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span className="font-semibold text-zinc-800">
+              {isTa ? "தரவு ஆதாரம்:" : "Data Provenance:"}
+            </span>
+            <span className="text-zinc-600">
+              {typeof navigator !== "undefined" && !navigator.onLine
+                ? (isTa ? "உள்ளூர் சாதன சேமிப்பு (ஆஃப்லைன் - Dexie IndexedDB)" : "Local Device Storage (Offline - Dexie IndexedDB)")
+                : (isTa ? "கிளவுட் ஃபயர்ஸ்டோர் & உள்ளூர் சேமிப்பு" : "Cloud Firestore & Local Storage")}
+            </span>
+          </div>
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
+            typeof navigator !== "undefined" && !navigator.onLine
+              ? "bg-amber-100 text-amber-800 border border-amber-300"
+              : "bg-emerald-100 text-emerald-800 border border-emerald-300"
+          }`}>
+            {typeof navigator !== "undefined" && !navigator.onLine ? "OFFLINE" : "SYNCED"}
+          </span>
+        </div>
+
         {/* NOISY WEAK LABELS MANDATORY NOTICE */}
         <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-950 space-y-1.5 shadow-xs">
           <div className="flex items-center gap-2 font-extrabold text-xs text-amber-900">

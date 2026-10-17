@@ -300,6 +300,8 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
           try {
             await db.verdicts.update(item.clientId, { pendingSync: false, synced: true });
           } catch {}
+        } else if (item.entity === "profile") {
+          await setDoc(doc(firestoreDb, "profiles", currentUid), payload, { merge: true });
         }
         await db.syncQueue.update(item.id, { status: "syncing" });
         await db.syncQueue.delete(item.id);
@@ -312,6 +314,10 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
     }
   } catch (queueErr) {
     console.warn("Could not flush Dexie sync queue:", queueErr);
+  } finally {
+    try {
+      await syncManager.updatePendingCount();
+    } catch {}
   }
 
   return { synced, failed };

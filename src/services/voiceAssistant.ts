@@ -81,6 +81,11 @@ export function createSpeechRecognizer(
 
   return {
     start: () => {
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        onError("Voice recognition requires internet or offline speech model. Please type your question. • குரல் அறிதலுக்கு இணைய இணைப்பு தேவை. தட்டச்சு செய்யவும்.");
+        onEnd();
+        return;
+      }
       try {
         recognition.start();
       } catch (e) {
