@@ -400,6 +400,21 @@ test("i18n: src/services/i18n.ts has full English <-> Tamil coverage", async () 
   assert.ok(enKeys.length >= 100, `Expected at least 100 i18n keys, found ${enKeys.length}`);
 });
 
+test("UI Hooks: 4 primary navigation tabs have exact English and Tamil labels (Home | Community | Services | You)", async () => {
+  const i18nModule = await import("../src/services/i18n.ts");
+  const { I18N_STRINGS } = i18nModule;
+
+  assert.equal(I18N_STRINGS.English.navHome, "Home");
+  assert.equal(I18N_STRINGS.English.navCommunity, "Community");
+  assert.equal(I18N_STRINGS.English.navServices, "Services");
+  assert.equal(I18N_STRINGS.English.navProfile, "You");
+
+  assert.equal(I18N_STRINGS.Tamil.navHome, "முகப்பு");
+  assert.equal(I18N_STRINGS.Tamil.navCommunity, "சமூகம்");
+  assert.equal(I18N_STRINGS.Tamil.navServices, "சேவைகள்");
+  assert.equal(I18N_STRINGS.Tamil.navProfile, "நீங்கள்");
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 6. ANDROID & CAPACITOR PACKAGING VERIFICATION
 // ─────────────────────────────────────────────────────────────────────────────

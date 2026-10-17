@@ -70,6 +70,7 @@ export function CommunityScreen({
   showToast
 }: CommunityScreenProps) {
   const [posts, setPosts] = useState<CommunityPost[]>(DEFAULT_POSTS);
+  const [loading, setLoading] = useState(false);
   const [newContent, setNewContent] = useState("");
   const [newCrop, setNewCrop] = useState(primaryCrop);
   const [isAlert, setIsAlert] = useState(false);
@@ -81,6 +82,7 @@ export function CommunityScreen({
   }, []);
 
   const loadCommunityPosts = async () => {
+    setLoading(true);
     let localQueuedPosts: CommunityPost[] = [];
     try {
       const queued = await db.syncQueue.where("entity").equals("post").toArray();
@@ -100,6 +102,7 @@ export function CommunityScreen({
 
     if (syncManager.isOfflineActive()) {
       setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
+      setLoading(false);
       return;
     }
 
@@ -128,6 +131,8 @@ export function CommunityScreen({
     } catch {
       // Graceful offline fallback to default posts + local queued posts
       setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -323,74 +328,106 @@ export function CommunityScreen({
 
       {/* Community Feed */}
       <div className="space-y-3">
-        {posts.map((post) => {
-          const isLiked = !!likedMap[post.id];
-          return (
-            <div
-              key={post.id}
-              className={`bg-white rounded-2xl border p-4 shadow-xs space-y-2.5 transition-all ${
-                post.isOutbreakAlert ? "border-amber-300 bg-amber-50/30" : "border-zinc-200"
-              }`}
-            >
-              {/* Header */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <strong className="text-xs font-extrabold text-zinc-900">{post.authorName}</strong>
-                    {post.isSample && (
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-300">
-                        SAMPLE / மாதிரி
-                      </span>
-                    )}
-                    {post.isOutbreakAlert && (
-                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-                        {language === "Tamil" ? "எச்சரிக்கை" : "Pest Alert"}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 text-[10px] text-zinc-500 mt-0.5">
-                    <span className="flex items-center gap-0.5">
-                      <MapPin className="w-3 h-3 text-zinc-400" /> {post.district}
-                    </span>
-                    <span>•</span>
-                    <span className="font-semibold text-emerald-800">{post.crop}</span>
-                    <span>•</span>
-                    <span>{post.createdAt}</span>
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-xs space-y-3 animate-pulse">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-zinc-200 shrink-0" />
+                  <div className="space-y-1.5 flex-1">
+                    <div className="w-32 h-3.5 bg-zinc-200 rounded-md" />
+                    <div className="w-20 h-2.5 bg-zinc-100 rounded-md" />
                   </div>
                 </div>
-
-                {/* Read Aloud button (Farmer Accessibility) */}
-                <button
-                  onClick={() => handleSpeakPost(post.content)}
-                  title="Read aloud"
-                  className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 text-zinc-600 hover:bg-emerald-100 hover:text-emerald-800 transition-colors"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Content */}
-              <p className="text-xs text-zinc-800 leading-relaxed font-normal">{post.content}</p>
-
-              {/* Actions */}
-              <div className="flex items-center justify-between pt-2 border-t border-zinc-100 text-xs text-zinc-500">
-                <button
-                  onClick={() => handleLike(post.id)}
-                  className={`min-h-[40px] px-3 rounded-lg flex items-center gap-1.5 font-bold transition-all active:scale-95 ${
-                    isLiked ? "text-emerald-700 bg-emerald-50" : "text-zinc-600 hover:bg-zinc-100"
-                  }`}
-                >
-                  <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? "fill-emerald-700" : ""}`} />
-                  <span>{post.likesCount} {language === "Tamil" ? "பயனுள்ளது" : "Helpful"}</span>
-                </button>
-
-                <div className="text-[10px] text-zinc-400">
-                  {language === "Tamil" ? "சரிபார்க்கப்பட்ட உழவர்" : "Verified Farmer"}
+                <div className="space-y-1.5">
+                  <div className="w-full h-3 bg-zinc-200 rounded-md" />
+                  <div className="w-4/5 h-3 bg-zinc-100 rounded-md" />
                 </div>
               </div>
+            ))}
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-zinc-200 p-8 text-center space-y-2">
+            <MessageSquare className="w-10 h-10 text-zinc-300 mx-auto" />
+            <div className="text-xs font-bold text-zinc-800">
+              {language === "Tamil" ? "பதிவுகள் எதுவும் இல்லை" : "No community discussions yet"}
             </div>
-          );
-        })}
+            <p className="text-[11px] text-zinc-500 max-w-sm mx-auto">
+              {language === "Tamil"
+                ? "உங்கள் வட்டாரத்தில் உள்ள விவசாயிகளுடன் உங்கள் முதல் பயிர் அனுபவத்தை பகிருங்கள்."
+                : "Be the first farmer to share an agronomic observation or question in your district."}
+            </p>
+          </div>
+        ) : (
+          posts.map((post) => {
+            const isLiked = !!likedMap[post.id];
+            return (
+              <div
+                key={post.id}
+                className={`bg-white rounded-2xl border p-4 shadow-xs space-y-2.5 transition-all ${
+                  post.isOutbreakAlert ? "border-amber-300 bg-amber-50/30" : "border-zinc-200"
+                }`}
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <strong className="text-xs font-extrabold text-zinc-900">{post.authorName}</strong>
+                      {post.isSample && (
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-300">
+                          SAMPLE / மாதிரி
+                        </span>
+                      )}
+                      {post.isOutbreakAlert && (
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+                          {language === "Tamil" ? "எச்சரிக்கை" : "Pest Alert"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] text-zinc-500 mt-0.5">
+                      <span className="flex items-center gap-0.5">
+                        <MapPin className="w-3 h-3 text-zinc-400" /> {post.district}
+                      </span>
+                      <span>•</span>
+                      <span className="font-semibold text-emerald-800">{post.crop}</span>
+                      <span>•</span>
+                      <span>{post.createdAt}</span>
+                    </div>
+                  </div>
+
+                  {/* Read Aloud button (Farmer Accessibility) */}
+                  <button
+                    onClick={() => handleSpeakPost(post.content)}
+                    title="Read aloud"
+                    className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 text-zinc-600 hover:bg-emerald-100 hover:text-emerald-800 transition-colors"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Content */}
+                <p className="text-xs text-zinc-800 leading-relaxed font-normal">{post.content}</p>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-2 border-t border-zinc-100 text-xs text-zinc-500">
+                  <button
+                    onClick={() => handleLike(post.id)}
+                    className={`min-h-[44px] px-3.5 rounded-lg flex items-center gap-1.5 font-bold transition-all active:scale-95 ${
+                      isLiked ? "text-emerald-700 bg-emerald-50" : "text-zinc-600 hover:bg-zinc-100"
+                    }`}
+                  >
+                    <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? "fill-emerald-700" : ""}`} />
+                    <span>{post.likesCount} {language === "Tamil" ? "பயனுள்ளது" : "Helpful"}</span>
+                  </button>
+
+                  <div className="text-[10px] text-zinc-400">
+                    {language === "Tamil" ? "சரிபார்க்கப்பட்ட உழவர்" : "Verified Farmer"}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

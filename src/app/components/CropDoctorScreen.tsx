@@ -480,6 +480,60 @@ export function CropDoctorScreen({
         </div>
       )}
 
+      {/* ─── 3-STEP STRIP: TAKE PICTURE -> DIAGNOSIS -> REMEDY (PLANTIX/UZHAVAN PATTERN) ─── */}
+      <div className="bg-white rounded-2xl border border-zinc-200 p-3.5 shadow-xs">
+        <div className="flex items-center justify-between text-center">
+          {/* Step 1 */}
+          <div className="flex-1 flex flex-col items-center">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs transition-colors ${
+              !diagnosis ? "bg-emerald-600 text-white shadow-xs" : "bg-emerald-100 text-emerald-800"
+            }`}>
+              1
+            </div>
+            <span className="text-[11px] font-bold text-zinc-900 mt-1">
+              {language === "Tamil" ? "1. படம் எடுங்கள்" : "1. Take Picture"}
+            </span>
+            <span className="text-[9px] text-zinc-500">
+              {language === "Tamil" ? "இலை புகைப்படம்" : "Leaf Photo"}
+            </span>
+          </div>
+
+          <div className="w-8 sm:w-12 h-0.5 bg-zinc-200 -mt-4 shrink-0" />
+
+          {/* Step 2 */}
+          <div className="flex-1 flex flex-col items-center">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs transition-colors ${
+              analyzing ? "bg-amber-500 text-white animate-pulse" : (diagnosis ? "bg-emerald-100 text-emerald-800" : "bg-zinc-100 text-zinc-500")
+            }`}>
+              2
+            </div>
+            <span className="text-[11px] font-bold text-zinc-900 mt-1">
+              {language === "Tamil" ? "2. நோயறிதல்" : "2. Diagnosis"}
+            </span>
+            <span className="text-[9px] text-zinc-500">
+              {language === "Tamil" ? "கலிப்ரேஷன் கணிப்பு" : "Calibrated CV"}
+            </span>
+          </div>
+
+          <div className="w-8 sm:w-12 h-0.5 bg-zinc-200 -mt-4 shrink-0" />
+
+          {/* Step 3 */}
+          <div className="flex-1 flex flex-col items-center">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs transition-colors ${
+              diagnosis ? "bg-emerald-600 text-white shadow-xs" : "bg-zinc-100 text-zinc-500"
+            }`}>
+              3
+            </div>
+            <span className="text-[11px] font-bold text-zinc-900 mt-1">
+              {language === "Tamil" ? "3. தீர்வு பெறுங்கள்" : "3. Gated Remedy"}
+            </span>
+            <span className="text-[9px] text-zinc-500">
+              {language === "Tamil" ? "பாதுகாப்பான தீர்வு" : "Tiered Safety"}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* ─── 2. CAPTURE / UPLOAD OPTIONS OR PHOTO PREVIEW ─── */}
       {!photoPreview ? (
         <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-xs text-center space-y-4">
@@ -487,9 +541,13 @@ export function CropDoctorScreen({
             <CameraIcon className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="font-extrabold text-base text-zinc-900">Capture Leaf or Plant Foliage</h3>
+            <h3 className="font-extrabold text-base text-zinc-900">
+              {language === "Tamil" ? "இலை அல்லது பயிர் பகுதியை படம் பிடிக்கவும்" : "Capture Leaf or Plant Foliage"}
+            </h3>
             <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
-              Focus closely on the affected leaf spots, wilting stems, or discolored grains. Ensure natural daylight without severe glare.
+              {language === "Tamil"
+                ? "பாதிக்கப்பட்ட இலை அல்லது தண்டு பகுதியை கேமரா மூலம் படம் பிடிக்கவும். தெளிவான பகல் வெளிச்சத்தில் படம் எடுக்கவும்."
+                : "Focus closely on affected leaf spots, wilting stems, or discoloration. Ensure natural daytime lighting without glare."}
             </p>
           </div>
 
@@ -525,19 +583,21 @@ export function CropDoctorScreen({
             </div>
           </div>
 
-          {/* TWO CLEAR PROMINENT OPTIONS (AS REQUESTED) */}
+          {/* BIG CAMERA BUTTON & GALLERY UPLOAD (TOUCH TARGET >= 52PX) */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-md mx-auto">
             <button
               onClick={handleTakePhoto}
-              className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-md active:scale-98 transition-all"
+              className="w-full sm:w-auto flex-1 min-h-[52px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs sm:text-sm shadow-md active:scale-98 transition-all cursor-pointer"
             >
-              <CameraIcon className="w-4 h-4" /> TAKE PHOTO
+              <CameraIcon className="w-5 h-5" />
+              <span>{language === "Tamil" ? "படம் எடுங்கள் (கேமரா)" : "TAKE PHOTO"}</span>
             </button>
             <button
               onClick={handleUploadFromGallery}
-              className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-extrabold text-xs border border-zinc-300 active:scale-98 transition-all"
+              className="w-full sm:w-auto flex-1 min-h-[52px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-extrabold text-xs sm:text-sm border border-zinc-300 active:scale-98 transition-all cursor-pointer"
             >
-              <Upload className="w-4 h-4 text-zinc-600" /> UPLOAD FROM GALLERY
+              <Upload className="w-5 h-5 text-zinc-600" />
+              <span>{language === "Tamil" ? "கேலரியிலிருந்து பதிவேற்று" : "UPLOAD FROM GALLERY"}</span>
             </button>
           </div>
 

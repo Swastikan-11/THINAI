@@ -40,7 +40,7 @@ export function persistLanguage(lang: AppLanguage): void {
 export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
   English: {
     // Nav
-    navHome: "My Farm",
+    navHome: "Home",
     navCommunity: "Community",
     navCrop: "My Crop",
     navDoctor: "Crop Doctor",
@@ -174,7 +174,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
 
   Tamil: {
     // Nav
-    navHome: "என் பண்ணை",
+    navHome: "முகப்பு",
     navCommunity: "சமூகம்",
     navCrop: "என் பயிர்",
     navDoctor: "பயிர் மருத்துவர்",
@@ -182,7 +182,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     navAI: "AI ஆலோசகர்",
     navScan: "பயிர் ஸ்கேன்",
     navServices: "சேவைகள்",
-    navProfile: "சுயவிவரம்",
+    navProfile: "நீங்கள்",
     navSettings: "அமைப்புகள்",
     navWeather: "வானிலை",
     navMarket: "சந்தை விலை",

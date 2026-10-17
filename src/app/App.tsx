@@ -233,10 +233,10 @@ function BNav({
 
   const tab = getTab(screen);
   const items = [
-    { id: "home", icon: Home, label: lang === "Tamil" ? "என் பண்ணை" : t("navHome", lang), dest: "home" as Screen },
-    { id: "community", icon: MessageCircle, label: lang === "Tamil" ? "சமூகம்" : t("navCommunity", lang), dest: "community" as Screen },
-    { id: "services", icon: Wrench, label: lang === "Tamil" ? "சேவைகள்" : t("navServices", lang), dest: "services" as Screen },
-    { id: "profile", icon: User, label: lang === "Tamil" ? "சுயவிவரம்" : t("navProfile", lang), dest: "profile" as Screen },
+    { id: "home", icon: Home, label: t("navHome", lang), dest: "home" as Screen },
+    { id: "community", icon: MessageCircle, label: t("navCommunity", lang), dest: "community" as Screen },
+    { id: "services", icon: Wrench, label: t("navServices", lang), dest: "services" as Screen },
+    { id: "profile", icon: User, label: t("navProfile", lang), dest: "profile" as Screen },
   ];
 
   return (
@@ -565,21 +565,22 @@ function HomeScreen({
         <div className="flex justify-between items-center mt-1 mb-2">
           <SyncStatusBar />
           <div className="flex gap-2 items-center">
-            {/* Instant Language Toggle: [ EN | தமிழ் ] */}
+            {/* 1-Tap Instant Language Toggle: [ EN | தமிழ் ] (Plantix/Uzhavan Pattern) */}
             <button
               onClick={onToggleLanguage || onOpenLangModal}
-              className="h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold active:scale-95 border border-white/20 transition-all cursor-pointer shadow-xs"
+              className="min-h-[42px] px-3.5 py-1.5 rounded-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
               title="Instant Language Switch (English / தமிழ்)"
+              aria-label="Toggle language between English and Tamil"
             >
-              <Globe size={13} />
-              <span className={lang === "English" ? "text-amber-300 font-black" : "text-white/70"}>EN</span>
+              <Globe size={14} className="text-white shrink-0" />
+              <span className={lang === "English" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>EN</span>
               <span className="text-white/40">|</span>
-              <span className={lang === "Tamil" ? "text-amber-300 font-black" : "text-white/70"}>தமிழ்</span>
+              <span className={lang === "Tamil" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>தமிழ்</span>
             </button>
             <button onClick={() => navigate("notifications")}
-              className="w-8 h-8 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
-              <Bell size={15} color="#fff" />
-              <div className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: ACC }} />
+              className="w-10 h-10 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
+              <Bell size={16} color="#fff" />
+              <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: ACC }} />
             </button>
           </div>
         </div>
