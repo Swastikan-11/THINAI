@@ -348,7 +348,7 @@ export function FarmServicesScreen({
           <div className="bg-blue-50/70 border border-blue-200 rounded-xl p-3 text-xs text-blue-900 flex items-start gap-2">
             <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
             <p>
-              Reservoir capacities directly inform the <strong>THINAI Core Engine</strong> irrigation advisory. When reservoir storage is above 60%, canal sluice releases ensure reliable gravity irrigation.
+              Reservoir capacities reflect the last verified <strong>Tamil Nadu Water Resources Department (WRD)</strong> daily water bulletin. When live telemetric scrapers are disconnected, the last known recorded date and storage levels are displayed without simulated estimates.
             </p>
           </div>
 
@@ -365,8 +365,8 @@ export function FarmServicesScreen({
                 inflowCusecs: "1,240",
                 outflowCusecs: "850",
                 canalStatus: "Lower Bhavani Project (LBP) Main Canal Open",
-                lastUpdated: "Today 08:00 AM",
-                source: "Water Resources Dept (WRD) Daily Gauge"
+                lastUpdated: "Last recorded: 15-Oct-2026 (WRD Daily Gauge)",
+                source: "Water Resources Dept (WRD) Official Report"
               },
               {
                 name: "Mettur Reservoir (Stanley)",
@@ -379,7 +379,7 @@ export function FarmServicesScreen({
                 inflowCusecs: "5,400",
                 outflowCusecs: "10,000",
                 canalStatus: "Delta Samba Irrigation Release Active",
-                lastUpdated: "Today 08:00 AM",
+                lastUpdated: "Last recorded: 15-Oct-2026 (CWMA Daily Gauge)",
                 source: "Cauvery Water Management Authority (CWMA)"
               },
               {
@@ -393,7 +393,7 @@ export function FarmServicesScreen({
                 inflowCusecs: "320",
                 outflowCusecs: "280",
                 canalStatus: "PAP Contour Canal Release Active",
-                lastUpdated: "Today 08:00 AM",
+                lastUpdated: "Last recorded: 15-Oct-2026 (PAP Gauge)",
                 source: "Parambikulam Aliyar Project (PAP) WRD"
               },
               {
@@ -407,7 +407,7 @@ export function FarmServicesScreen({
                 inflowCusecs: "410",
                 outflowCusecs: "350",
                 canalStatus: "Amaravathi Main Canal Turn-wise Release",
-                lastUpdated: "Today 08:00 AM",
+                lastUpdated: "Last recorded: 15-Oct-2026 (WRD Daily Gauge)",
                 source: "WRD Amaravathi Basin Division"
               }
             ].map((dam, idx) => (

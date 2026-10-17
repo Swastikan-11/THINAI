@@ -170,7 +170,7 @@ export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineRes
         when: "Re-check soil tomorrow morning before next scheduled watering.",
         why: `Upcoming heavy rainfall of ${rain}mm combined with existing ${moisture}% soil moisture satisfies crop water demand and risks root suffocation.`,
         confidence: 89,
-        confidenceLabel: "Calibrated Micro-Climate & Soil Saturation Model Confidence",
+        confidenceLabel: "Calibrated Weather Grid & Soil Saturation Heuristic Confidence",
         supportingFactors: [
           `Forecasted heavy rainfall of ${rain}mm within 48 hours`,
           `Current soil moisture index is already saturated at ${moisture}% in ${inputs.soilType || "Clay Loam"}`,

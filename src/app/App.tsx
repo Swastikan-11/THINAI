@@ -686,7 +686,7 @@ function HomeScreen({
               </div>
               <div>
                 <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">
-                  {lang === "Tamil" ? "வானிலை & மருந்து தெளிப்பு வழிகாட்டல்" : "Weather & Spray Advisory"}
+                  {lang === "Tamil" ? "வானிலை & மருந்து தெளிப்பு வழிகாட்டல் (Open-Meteo ~11 கிமீ கிரிட்)" : "Weather & Spray Advisory (Open-Meteo ~11 km grid)"}
                 </div>
                 <div className="text-xs font-bold text-gray-900">
                   {weather.locationName || user.district || "Coimbatore"} • {weather.temperature}°C, {weather.condition}

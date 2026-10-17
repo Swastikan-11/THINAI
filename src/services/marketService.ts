@@ -233,6 +233,69 @@ export function getMarketIntelligence(cropKey: string = "paddy"): MarketCommodit
   return base;
 }
 
+/**
+ * Real Agmarknet Mandi Integration via data.gov.in API
+ * Resource ID: 9ef84268-d588-465a-a308-a864a43d0070 (Agmarknet Daily Mandi Prices)
+ */
+export async function fetchLiveAgmarknetPrice(
+  commodity: string,
+  district: string = "Coimbatore",
+  customApiKey?: string
+): Promise<LiveMandiPrice | null> {
+  const apiKey = customApiKey || (import.meta.env?.VITE_DATA_GOV_IN_API_KEY as string);
+  if (!apiKey) return null;
+
+  try {
+    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${encodeURIComponent(apiKey)}&format=json&filters%5Bstate%5D=Tamil+Nadu&filters%5Bdistrict%5D=${encodeURIComponent(district)}&filters%5Bcommodity%5D=${encodeURIComponent(commodity)}&limit=1`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (json.records && json.records.length > 0) {
+      const r = json.records[0];
+      const priceModal = parseFloat(r.modal_price) || 0;
+      const minPrice = parseFloat(r.min_price) || priceModal;
+      const maxPrice = parseFloat(r.max_price) || priceModal;
+
+      const livePrice: LiveMandiPrice = {
+        isAvailable: true,
+        status: "LIVE",
+        commodity: r.commodity || commodity,
+        variety: r.variety || "Local",
+        mandi: `${r.market || district} APMC`,
+        district: r.district || district,
+        state: r.state || "Tamil Nadu",
+        pricePerQuintal: priceModal,
+        minPrice,
+        maxPrice,
+        weeklyChangePercent: 0,
+        trendDirection: "stable",
+        arrivalDate: r.arrival_date || new Date().toISOString().split("T")[0],
+        arrivalTime: "Morning Session",
+        source: "data.gov.in Agmarknet API (Live)",
+        lastUpdatedLabel: `Live (Agmarknet ${r.arrival_date || "Today"})`
+      };
+
+      try {
+        await db.cachedMarket.put({
+          commodity: normalizeCropKey(commodity),
+          data: livePrice,
+          source: "data.gov.in Agmarknet API",
+          fetched_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 24 * 3600000).toISOString(),
+          data_version: "v1.0",
+          location: district,
+          isLive: true
+        });
+      } catch {}
+
+      return livePrice;
+    }
+  } catch (err) {
+    console.warn("Agmarknet live fetch error:", err);
+  }
+  return null;
+}
+
 export async function getLiveMandiPrice(cropKey: string = "paddy", district: string = "Coimbatore"): Promise<LiveMandiPrice> {
   const normalizedKey = cropKey.toLowerCase().trim();
 
@@ -240,14 +303,21 @@ export async function getLiveMandiPrice(cropKey: string = "paddy", district: str
     return await getCachedOrUnavailableMandi(normalizedKey, district);
   }
 
+  // 1. Try real data.gov.in API if key is present
+  try {
+    const live = await fetchLiveAgmarknetPrice(normalizedKey, district);
+    if (live) return live;
+  } catch {}
+
+  // 2. Try Dexie cache
   try {
     const cached = await db.cachedMarket.get(normalizedKey);
     if (cached && cached.data) {
       return {
         ...cached.data,
         isAvailable: true,
-        status: "LIVE",
-        source: "Agmarknet APMC Real-time Feed"
+        status: "CACHED",
+        source: "Agmarknet APMC (Cached Offline Data)"
       };
     }
     return await getCachedOrUnavailableMandi(normalizedKey, district);

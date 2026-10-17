@@ -91,7 +91,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     saveChanges: "Save Profile",
 
     // Weather
-    liveWeather: "Live Micro-Climate Weather",
+    liveWeather: "Live Weather (Open-Meteo ~11 km regional grid)",
     temperature: "Temperature",
     humidity: "Humidity",
     rainForecast: "Rainfall Forecast (48h)",
@@ -217,7 +217,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     saveChanges: "சேமிக்கவும்",
 
     // Weather
-    liveWeather: "நேரடி வேளாண் வானிலை",
+    liveWeather: "நேரலை வானிலை (Open-Meteo ~11 கிமீ மண்டல கிரிட்)",
     temperature: "வெப்பநிலை",
     humidity: "காற்றின் ஈரப்பதம்",
     rainForecast: "மழை கணிப்பு (48 மணி)",

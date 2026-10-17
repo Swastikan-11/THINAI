@@ -24,6 +24,7 @@ export interface WeatherData {
   updatedAt: string;
   lastUpdatedLabel: string;
   source: string;
+  gridResolution?: string;
   latitude?: number;
   longitude?: number;
   locationName?: string;
@@ -205,7 +206,8 @@ export async function getLiveWeather(districtOrCoords?: string | { lat: number; 
       alerts,
       updatedAt: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       lastUpdatedLabel: "Just now",
-      source: `Open-Meteo Live API (${locationLabel})`
+      source: `Open-Meteo (~11 km grid, ${locationLabel})`,
+      gridResolution: "~11 km grid (ECMWF/GFS numerical weather model)"
     };
 
     // Cache in Dexie with provenance metadata
@@ -213,7 +215,7 @@ export async function getLiveWeather(districtOrCoords?: string | { lat: number; 
       await db.cachedWeather.put({
         district: locationLabel,
         data: weatherData,
-        source: "Open-Meteo Real-time Forecast",
+        source: `Open-Meteo (~11 km grid, ${locationLabel})`,
         fetched_at: now.toISOString(),
         expires_at: new Date(now.getTime() + 3 * 3600000).toISOString(), // 3 hour expiry
         data_version: "v1.0",
@@ -248,7 +250,8 @@ async function getCachedOrUnavailableWeather(locationLabel: string): Promise<Wea
         ...cached.data,
         isAvailable: true,
         status: "CACHED",
-        source: `Open-Meteo (${cached.source})`,
+        source: `Open-Meteo (~11 km grid, ${cached.source})`,
+        gridResolution: "~11 km grid",
         lastUpdatedLabel: `Last updated: ${timeAgoLabel}`,
         updatedAt: fetchedDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
