@@ -152,7 +152,7 @@ export interface CachedSchemeRecord {
 export interface SyncQueueItem {
   id?: number;
   userId: string;
-  entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation";
+  entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation" | "post";
   action: "create" | "update" | "delete";
   clientId: string;
   payload: any;

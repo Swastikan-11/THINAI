@@ -270,6 +270,7 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
     return { synced: 0, failed: 0 };
   }
 
+  const currentUid = auth.currentUser.uid;
   let synced = 0;
   let failed = 0;
 
@@ -279,12 +280,21 @@ export async function flushDexieSyncQueueToFirestore(): Promise<{ synced: number
     for (const item of pendingItems) {
       if (!item.id) continue;
       try {
-        if (item.entity === "farm" && item.payload?.equipmentName) {
-          await setDoc(doc(firestoreDb, "equipment_listings", item.clientId), item.payload);
-        } else if (item.entity === "scan" && item.payload?.farmerVerdict) {
-          await setDoc(doc(firestoreDb, "diagnosis_confirmations", item.clientId), item.payload);
+        const payload = {
+          ...item.payload,
+          userId: item.payload?.userId && item.payload.userId !== "anonymous_farmer" && item.payload.userId !== "offline_farmer"
+            ? item.payload.userId
+            : currentUid
+        };
+
+        if (item.entity === "farm" && payload.equipmentName) {
+          await setDoc(doc(firestoreDb, "equipment_listings", item.clientId), payload);
+        } else if (item.entity === "scan" && payload.farmerVerdict) {
+          await setDoc(doc(firestoreDb, "diagnosis_confirmations", item.clientId), payload);
         } else if (item.entity === "feedback") {
-          await setDoc(doc(firestoreDb, "feedbacks", item.clientId), item.payload);
+          await setDoc(doc(firestoreDb, "feedbacks", item.clientId), payload);
+        } else if (item.entity === "post") {
+          await setDoc(doc(firestoreDb, "community_posts", item.clientId), payload);
         }
         await db.syncQueue.update(item.id, { status: "syncing" });
         await db.syncQueue.delete(item.id);

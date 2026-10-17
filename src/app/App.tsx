@@ -664,9 +664,6 @@ function HomeScreen({
         </div>
       </div>
 
-      {/* Offline Mode Active Banner */}
-      <OfflineActiveBanner />
-
       {/* Main Dashboard Scrollable Container */}
       <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3.5" style={{ scrollbarWidth: "none" }}>
         {/* ─── 1. WEATHER + SPRAY ADVISORY BANNER (PLANTIX + UZHAVAN PATTERN) ─── */}
@@ -2630,6 +2627,9 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Sticky App-Wide Offline Banner across all active screens */}
+      {screen !== "splash" && <OfflineActiveBanner />}
 
       {/* Screen Router */}
       <div className="flex-1 overflow-hidden">

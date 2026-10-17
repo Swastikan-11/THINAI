@@ -1,6 +1,7 @@
 import { db, SyncQueueItem } from "./db";
 import { apiClient } from "./apiClient";
 import { auth } from "../firebase";
+import { flushDexieSyncQueueToFirestore } from "./firestoreSync";
 
 export type SyncState = "ONLINE" | "OFFLINE_MODE" | "OFFLINE" | "SYNCING" | "SYNCED" | "FAILED";
 
@@ -13,6 +14,27 @@ export interface SyncStatusInfo {
 }
 
 type SyncListener = (info: SyncStatusInfo) => void;
+
+/**
+ * Cache expiration policy helpers
+ * Weather: 3 hours valid
+ * Mandi Market: 24 hours valid
+ */
+export function isWeatherCacheValid(fetchedAt: string | undefined | null): boolean {
+  if (!fetchedAt) return false;
+  const fetchedTime = new Date(fetchedAt).getTime();
+  if (isNaN(fetchedTime)) return false;
+  const threeHoursMs = 3 * 60 * 60 * 1000;
+  return Date.now() - fetchedTime < threeHoursMs;
+}
+
+export function isMarketCacheValid(fetchedAt: string | undefined | null): boolean {
+  if (!fetchedAt) return false;
+  const fetchedTime = new Date(fetchedAt).getTime();
+  if (isNaN(fetchedTime)) return false;
+  const twentyFourHoursMs = 24 * 60 * 60 * 1000;
+  return Date.now() - fetchedTime < twentyFourHoursMs;
+}
 
 class OfflineSyncManager {
   private state: SyncState = navigator.onLine ? "ONLINE" : "OFFLINE";
@@ -118,12 +140,7 @@ class OfflineSyncManager {
       return false;
     }
     if (!navigator.onLine) {
-      this.setState("OFFLINE");
-      return false;
-    }
-    const isHealthy = await apiClient.checkHealth();
-    if (!isHealthy) {
-      this.setState("OFFLINE", "Backend unreachable");
+      this.setState("OFFLINE", "No network connection");
       return false;
     }
     return true;
@@ -153,7 +170,7 @@ class OfflineSyncManager {
    * Enqueues an offline mutation and triggers sync if online.
    */
   public async queueMutation(
-    entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation",
+    entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation" | "post",
     action: "create" | "update" | "delete",
     clientId: string,
     payload: any
@@ -182,44 +199,54 @@ class OfflineSyncManager {
   }
 
   /**
-   * Pushes all pending queue items to FastAPI backend and confirms synchronization.
+   * Synchronizes all pending queue items:
+   * 1. Direct flush to Cloud Firestore (Shared Spark Backend).
+   * 2. If FastAPI backend is also running, syncs remaining backend mutations.
    */
   public async triggerSync(): Promise<void> {
     const uid = auth.currentUser?.uid;
     if (!uid || this.isSyncing || this.isManualOffline) return;
 
-    const isReachable = await this.checkReachability();
-    if (!isReachable) return;
+    if (!navigator.onLine) {
+      this.setState("OFFLINE", "No network connection");
+      return;
+    }
 
     this.isSyncing = true;
-    this.setState("SYNCING");
+    this.setState("SYNCING", "Syncing data to cloud...");
 
     try {
-      const pendingItems = await db.syncQueue
-        .where("userId")
-        .equals(uid)
-        .toArray();
+      // 1. Direct synchronization to Cloud Firestore (Spark Tier)
+      await flushDexieSyncQueueToFirestore();
 
-      if (pendingItems.length > 0) {
-        const mutations = pendingItems.map(item => ({
-          client_id: item.clientId,
-          entity: item.entity,
-          action: item.action,
-          timestamp: item.timestamp,
-          payload: item.payload
-        }));
+      // 2. Optional FastAPI synchronization if local/cloud FastAPI server is reachable
+      const isApiReachable = await apiClient.checkHealth().catch(() => false);
+      if (isApiReachable) {
+        const pendingItems = await db.syncQueue
+          .where("userId")
+          .equals(uid)
+          .toArray();
 
-        const pushRes = await apiClient.pushSync(mutations);
-        if (pushRes && pushRes.synced_count !== undefined) {
-          // Remove successfully synced items from queue using IDs
-          const idsToDelete = pendingItems.map(i => i.id!).filter(Boolean);
-          await db.syncQueue.bulkDelete(idsToDelete);
+        if (pendingItems.length > 0) {
+          const mutations = pendingItems.map(item => ({
+            client_id: item.clientId,
+            entity: item.entity,
+            action: item.action,
+            timestamp: item.timestamp,
+            payload: item.payload
+          }));
+
+          const pushRes = await apiClient.pushSync(mutations);
+          if (pushRes && pushRes.synced_count !== undefined) {
+            const idsToDelete = pendingItems.map(i => i.id!).filter(Boolean);
+            await db.syncQueue.bulkDelete(idsToDelete);
+          }
         }
       }
 
       this.lastSyncedAt = new Date().toISOString();
       await this.updatePendingCount();
-      this.setState("SYNCED");
+      this.setState("SYNCED", "All data synchronized");
       this.backoffDelayMs = 5000;
 
       setTimeout(() => {

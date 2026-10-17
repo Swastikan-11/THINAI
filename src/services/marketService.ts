@@ -3,7 +3,7 @@
 // NO FABRICATED LIVE PRICES. Transparent status: LIVE, CACHED, OFFLINE, STATIC REFERENCE.
 
 import { db } from "./db";
-import { syncManager } from "./syncService";
+import { syncManager, isMarketCacheValid } from "./syncService";
 
 export interface LiveMandiPrice {
   isAvailable: boolean;
@@ -313,11 +313,12 @@ export async function getLiveMandiPrice(cropKey: string = "paddy", district: str
   try {
     const cached = await db.cachedMarket.get(normalizedKey);
     if (cached && cached.data) {
+      const isValid = isMarketCacheValid(cached.fetched_at);
       return {
         ...cached.data,
         isAvailable: true,
         status: "CACHED",
-        source: "Agmarknet APMC (Cached Offline Data)"
+        source: isValid ? "Agmarknet APMC (Cached Offline Data)" : "Agmarknet APMC (Stale Cache >24h)"
       };
     }
     return await getCachedOrUnavailableMandi(normalizedKey, district);

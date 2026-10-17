@@ -87,7 +87,28 @@ export function CommunityScreen({
   }, []);
 
   const loadCommunityPosts = async () => {
-    if (syncManager.isOfflineActive()) return;
+    let localQueuedPosts: CommunityPost[] = [];
+    try {
+      const queued = await db.syncQueue.where("entity").equals("post").toArray();
+      localQueuedPosts = queued.map((q) => ({
+        id: q.clientId,
+        authorName: q.payload?.authorName || "You (Local)",
+        district: q.payload?.district || district,
+        crop: q.payload?.crop || primaryCrop,
+        content: q.payload?.content || "",
+        likesCount: 0,
+        createdAt: language === "Tamil" ? "காத்திருக்கிறது (Pending Sync)" : "Pending Sync",
+        isOutbreakAlert: !!q.payload?.isOutbreakAlert
+      }));
+    } catch {
+      // Ignore
+    }
+
+    if (syncManager.isOfflineActive()) {
+      setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
+      return;
+    }
+
     try {
       const q = query(collection(firestoreDb, "community_posts"), limit(30));
       const snap = await getDocs(q);
@@ -106,10 +127,13 @@ export function CommunityScreen({
         });
       });
       if (remotePosts.length > 0) {
-        setPosts([...remotePosts, ...DEFAULT_POSTS]);
+        setPosts([...localQueuedPosts, ...remotePosts, ...DEFAULT_POSTS]);
+      } else {
+        setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
       }
     } catch {
-      // Graceful offline fallback to default posts
+      // Graceful offline fallback to default posts + local queued posts
+      setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
     }
   };
 
@@ -118,44 +142,86 @@ export function CommunityScreen({
     setPosting(true);
     const user = auth.currentUser;
     const authorName = user?.displayName || "Farmer (" + district + ")";
+    const postId = `post-${Date.now()}`;
 
     const newPostItem: CommunityPost = {
-      id: `post-${Date.now()}`,
+      id: postId,
       authorName,
       district,
       crop: newCrop,
       content: newContent.trim(),
       likesCount: 0,
-      createdAt: "Just now",
+      createdAt: syncManager.isOfflineActive() 
+        ? (language === "Tamil" ? "காத்திருக்கிறது (Pending Sync)" : "Pending Sync") 
+        : "Just now",
       isOutbreakAlert: isAlert
+    };
+
+    const payload = {
+      userId: user?.uid || "anonymous_farmer",
+      authorName,
+      district,
+      crop: newCrop,
+      content: newContent.trim(),
+      likesCount: 0,
+      isOutbreakAlert: isAlert,
+      createdAt: new Date().toISOString()
     };
 
     try {
       if (!syncManager.isOfflineActive() && user) {
-        await addDoc(collection(firestoreDb, "community_posts"), {
-          userId: user.uid,
-          authorName,
-          district,
-          crop: newCrop,
-          content: newContent.trim(),
-          likesCount: 0,
-          isOutbreakAlert: isAlert,
-          createdAt: new Date().toISOString()
+        await addDoc(collection(firestoreDb, "community_posts"), payload);
+        if (showToast) {
+          showToast(
+            language === "Tamil" ? "பதிவு பகிரப்பட்டது!" : "Post published to Tamil Nadu farmer community!",
+            "success"
+          );
+        }
+      } else {
+        await db.syncQueue.add({
+          userId: user?.uid || "anonymous_farmer",
+          entity: "post",
+          action: "create",
+          clientId: postId,
+          payload,
+          timestamp: new Date().toISOString(),
+          retryCount: 0,
+          status: "pending"
         });
+        await syncManager.updatePendingCount();
+        if (showToast) {
+          showToast(
+            language === "Tamil" ? "ஆஃப்லைனில் சேமிக்கப்பட்டது. இணையம் வந்ததும் பகிரப்படும்." : "Saved offline. Will sync when online.",
+            "info"
+          );
+        }
       }
       setPosts([newPostItem, ...posts]);
       setNewContent("");
       setIsAlert(false);
-      if (showToast) {
-        showToast(
-          language === "Tamil" ? "பதிவு பகிரப்பட்டது!" : "Post published to Tamil Nadu farmer community!",
-          "success"
-        );
-      }
     } catch (e) {
-      console.warn("Could not push post directly to firestore:", e);
+      console.warn("Could not push post directly to firestore, queuing in Dexie:", e);
+      try {
+        await db.syncQueue.add({
+          userId: user?.uid || "anonymous_farmer",
+          entity: "post",
+          action: "create",
+          clientId: postId,
+          payload,
+          timestamp: new Date().toISOString(),
+          retryCount: 0,
+          status: "pending"
+        });
+        await syncManager.updatePendingCount();
+      } catch {}
       setPosts([newPostItem, ...posts]);
       setNewContent("");
+      if (showToast) {
+        showToast(
+          language === "Tamil" ? "ஆஃப்லைனில் சேமிக்கப்பட்டது. பின்னர் ஒத்திசைக்கப்படும்." : "Saved to offline sync queue.",
+          "info"
+        );
+      }
     } finally {
       setPosting(false);
     }

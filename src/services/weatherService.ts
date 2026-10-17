@@ -3,7 +3,7 @@
 // NO FABRICATED WEATHER VALUES. Real live fetch or genuine Dexie cache with timestamp.
 
 import { db } from "./db";
-import { syncManager } from "./syncService";
+import { syncManager, isWeatherCacheValid } from "./syncService";
 
 export interface WeatherData {
   isAvailable: boolean;
@@ -240,6 +240,7 @@ async function getCachedOrUnavailableWeather(locationLabel: string): Promise<Wea
   try {
     const cached = await db.cachedWeather.get(locationLabel);
     if (cached && cached.data) {
+      const isValid = isWeatherCacheValid(cached.fetched_at);
       const fetchedDate = new Date(cached.fetched_at);
       const minutesAgo = Math.max(1, Math.round((Date.now() - fetchedDate.getTime()) / (1000 * 60)));
       const timeAgoLabel = minutesAgo < 60 
@@ -252,7 +253,7 @@ async function getCachedOrUnavailableWeather(locationLabel: string): Promise<Wea
         status: "CACHED",
         source: `Open-Meteo (~11 km grid, ${cached.source})`,
         gridResolution: "~11 km grid",
-        lastUpdatedLabel: `Last updated: ${timeAgoLabel}`,
+        lastUpdatedLabel: isValid ? `Cached: ${timeAgoLabel}` : `Stale Cache (>3h): ${timeAgoLabel}`,
         updatedAt: fetchedDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
     }
