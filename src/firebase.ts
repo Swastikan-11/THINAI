@@ -1,6 +1,11 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import {
+  initializeFirestore,
+  getFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDpCyqemIV7cCNcDOSNZ_1LG7fJ8autCAc",
@@ -13,5 +18,21 @@ const firebaseConfig = {
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const firestoreDb = getFirestore(app);
+
+// Enable Firestore persistent local disk cache for robust offline access
+export const firestoreDb = (() => {
+  try {
+    if (typeof window !== "undefined") {
+      return initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager()
+        })
+      });
+    }
+  } catch (e) {
+    // Graceful fallback if already initialized or in Node test runner
+  }
+  return getFirestore(app);
+})();
+
 export default app;

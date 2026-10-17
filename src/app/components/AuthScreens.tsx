@@ -77,6 +77,15 @@ export function LoginScreen({
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!navigator.onLine) {
+      showToast(
+        language === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — உள்நுழைய இணைய இணைப்பு தேவை • No internet — sign-in needs an active connection"
+          : "No internet — sign-in needs an active connection • இணைய இணைப்பு இல்லை",
+        "error"
+      );
+      return;
+    }
     if (!email.trim() || !password.trim()) {
       showToast("Please enter your email and password", "error");
       return;
@@ -95,6 +104,15 @@ export function LoginScreen({
   };
 
   const handleForgotPassword = async () => {
+    if (!navigator.onLine) {
+      showToast(
+        language === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — கடவுச்சொல் மீட்டமைக்க இணையம் தேவை"
+          : "No internet — password reset requires an internet connection",
+        "error"
+      );
+      return;
+    }
     if (!email.trim()) {
       showToast("Please enter your email address to reset password", "warning");
       return;
@@ -108,6 +126,15 @@ export function LoginScreen({
   };
 
   const handleGoogleLogin = async () => {
+    if (!navigator.onLine) {
+      showToast(
+        language === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — Google மூலம் உள்நுழைய இணையம் தேவை"
+          : "No internet — Google sign-in requires an active internet connection",
+        "error"
+      );
+      return;
+    }
     setLoading(true);
     try {
       const fbUser = await loginWithGoogle();
@@ -123,6 +150,15 @@ export function LoginScreen({
   };
 
   const handleSendOtp = async () => {
+    if (!navigator.onLine) {
+      showToast(
+        language === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — OTP பெற இணைய இணைப்பு தேவை"
+          : "No internet — OTP verification requires an active internet connection",
+        "error"
+      );
+      return;
+    }
     const rawNumber = phoneNumber.trim();
     if (!rawNumber || rawNumber.length < 10) {
       showToast("Please enter a valid 10-digit mobile number", "error");
@@ -484,6 +520,15 @@ export function RegisterScreen({
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!navigator.onLine) {
+      showToast(
+        language === "Tamil"
+          ? "இணைய இணைப்பு இல்லை — பதிவு செய்ய இணைய இணைப்பு தேவை • No internet — registration needs an active connection"
+          : "No internet — registration needs an active connection • இணைய இணைப்பு இல்லை",
+        "error"
+      );
+      return;
+    }
     if (!name.trim()) {
       showToast(tAuth("fullNameRequired", language), "error");
       return;

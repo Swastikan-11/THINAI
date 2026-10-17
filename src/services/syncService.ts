@@ -149,13 +149,21 @@ class OfflineSyncManager {
   }
 
   public async updatePendingCount(): Promise<number> {
-    const uid = auth.currentUser?.uid;
-    if (!uid) {
-      this.pendingCount = 0;
-      return 0;
-    }
     try {
-      this.pendingCount = await db.syncQueue.where("userId").equals(uid).count();
+      const uid = auth.currentUser?.uid;
+      if (uid) {
+        this.pendingCount = await db.syncQueue
+          .where("userId")
+          .equals(uid)
+          .and(item => item.status === "pending")
+          .count();
+      } else {
+        // In offline cold-start or before auth hydration, count all pending items across the device
+        this.pendingCount = await db.syncQueue
+          .where("status")
+          .equals("pending")
+          .count();
+      }
       this.notify();
       return this.pendingCount;
     } catch {

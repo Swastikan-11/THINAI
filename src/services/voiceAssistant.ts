@@ -68,7 +68,11 @@ export function createSpeechRecognizer(
   };
 
   recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-    onError(event.error);
+    if (event.error === "network") {
+      onError("Voice input requires internet or offline speech pack. Please type your question. • குரல் உள்ளீட்டிற்கு இணையம் தேவை. தட்டச்சு செய்யவும்.");
+    } else {
+      onError(event.error);
+    }
   };
 
   recognition.onend = () => {
