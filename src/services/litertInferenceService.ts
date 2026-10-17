@@ -199,6 +199,53 @@ export function gateChemicalAdvice(
 }
 
 /**
+ * Assigns diagnostic remedies based on selective confidence gating tier.
+ * Tier 1: Full organic & chemical treatments
+ * Tier 2: Organic/cultural only, chemical treatment withheld
+ * Tier 3: Inconclusive, no chemical or organic disease claims, referral to Extension Officer
+ */
+export function assignTierRemedies(
+  tier: "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE",
+  organicTreatments: string[],
+  chemicalTreatments: string[],
+  diseaseName: string
+): {
+  organicTreatment: string[];
+  chemicalTreatment: string[];
+  immediateAction: string;
+  tipsForRetake?: string[];
+} {
+  if (tier === "TIER_1_CONFIDENT") {
+    return {
+      organicTreatment: organicTreatments,
+      chemicalTreatment: chemicalTreatments,
+      immediateAction: `Apply recommended cultural and protective treatments for ${diseaseName}.`
+    };
+  }
+  if (tier === "TIER_2_MODERATE") {
+    return {
+      organicTreatment: organicTreatments,
+      chemicalTreatment: [],
+      immediateAction: "Monitor the plant daily for 48 hours. Retake photo under clear daylight if lesions spread.",
+      tipsForRetake: [
+        "Maintain 10 - 15 cm distance from leaf surface.",
+        "Avoid direct harsh sunlight glare or heavy shadows.",
+        "Frame a single affected leaf with no soil or hands behind it."
+      ]
+    };
+  }
+  return {
+    organicTreatment: [],
+    chemicalTreatment: [],
+    immediateAction: "Photo saved for agricultural officer verification. Contact nearest Extension Officer (AAO) or KVK helpline.",
+    tipsForRetake: [
+      "Hold camera 10 - 15 cm from leaf surface.",
+      "Ensure the leaf blade fills at least 70% of the camera frame."
+    ]
+  };
+}
+
+/**
  * Initializes LiteRT, loads metadata, thresholds, and compiles TFLite model
  */
 export async function getOrInitLiteRtModel(): Promise<CompiledModel | null> {

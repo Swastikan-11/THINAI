@@ -20,6 +20,8 @@ __pycache__/
 .pytest_cache/
 backend/thinai.db
 
-# Test screenshots
+# Test screenshots and reports
 test_screen.jpg
-thinai_screen_dashboard.jpg
+thinai_screen_dashboard.jpg
+test-results/
+playwright-report/

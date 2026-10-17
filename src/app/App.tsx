@@ -2332,18 +2332,36 @@ export default function App() {
   // Firebase Authentication State Listener & Session Persistence
   useEffect(() => {
     const unsubscribe = onAuthStateChange(async (fbUser) => {
-      setFirebaseUser(fbUser);
+      const activeUser = fbUser || ((typeof window !== "undefined" && (window as any).__THINAI_TEST_USER__) ? (window as any).__THINAI_TEST_USER__ : null);
+      setFirebaseUser(activeUser);
       setAuthChecked(true);
 
-      if (fbUser) {
-        (window as any)._currentFirebaseUid = fbUser.uid;
+      if (activeUser) {
+        (window as any)._currentFirebaseUid = activeUser.uid;
         try {
           // 1. Check local Dexie IndexedDB first (Offline capability)
-          const localProfile = await db.profiles.get(`profile-${fbUser.uid}`);
+          let localProfile = await db.profiles.get(`profile-${activeUser.uid}`);
+          if (!localProfile) {
+            try {
+              const saved = localStorage.getItem("thinai_farmer_profile");
+              if (saved) {
+                const parsed = JSON.parse(saved);
+                localProfile = {
+                  id: `profile-${activeUser.uid}`,
+                  userId: activeUser.uid,
+                  data: parsed,
+                  updatedAt: new Date().toISOString(),
+                  synced: true
+                };
+                await db.profiles.put(localProfile);
+              }
+            } catch {}
+          }
           if (localProfile && localProfile.data && localProfile.data.name) {
             setUser(localProfile.data as any);
             if (screen === "splash" || screen === "login" || screen === "register") {
-              setScreen("home");
+              const target = (urlScreen && urlScreen !== "splash" && urlScreen !== "login" && urlScreen !== "register") ? urlScreen : "home";
+              setScreen(target);
             }
             return;
           }

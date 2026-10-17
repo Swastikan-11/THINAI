@@ -53,20 +53,22 @@ class OfflineSyncManager {
   }
 
   private initListeners() {
-    window.addEventListener("online", () => {
-      if (this.isManualOffline) return; // Respect explicit user offline choice
-      this.checkReachability().then(isReachable => {
-        if (isReachable) {
-          this.setState("ONLINE", "Internet connection restored");
-          this.triggerSync();
-        }
+    if (typeof window !== "undefined") {
+      window.addEventListener("online", () => {
+        if (this.isManualOffline) return; // Respect explicit user offline choice
+        this.checkReachability().then(isReachable => {
+          if (isReachable) {
+            this.setState("ONLINE", "Internet connection restored");
+            this.triggerSync();
+          }
+        });
       });
-    });
 
-    window.addEventListener("offline", () => {
-      if (this.isManualOffline) return;
-      this.setState("OFFLINE", "Offline — using local agricultural data");
-    });
+      window.addEventListener("offline", () => {
+        if (this.isManualOffline) return;
+        this.setState("OFFLINE", "Offline — using local agricultural data");
+      });
+    }
   }
 
   public subscribe(listener: SyncListener): () => void {

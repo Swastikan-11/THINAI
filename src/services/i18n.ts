@@ -51,6 +51,8 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     navAI: "AI Advisor",
     navProfile: "You",
     navSettings: "Settings",
+    navDiary: "Farm Diary",
+    navScan: "Crop Scan",
 
     // Dashboard Core Sections
     farmStatus: "FARM STATUS",
