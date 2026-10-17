@@ -22,6 +22,7 @@ import { db } from "../../services/db";
 import { syncManager } from "../../services/syncService";
 import { DecisionEngineResult } from "../../services/decisionEngine";
 import { detectCropDisease, DiseaseDetectionResult } from "../../services/diseaseDetectionService";
+import { recordDiagnosisConfirmation } from "../../services/firestoreSync";
 
 interface CropDoctorProps {
   primaryCrop?: string;
@@ -201,6 +202,16 @@ export function CropDoctorScreen({
         crop: diagnosis.crop,
         timestamp: feedbackRecord.timestamp
       });
+
+      // Record to Firestore shared backend / Dexie queue for model retraining
+      await recordDiagnosisConfirmation({
+        predictedDisease: diagnosis.diseaseName,
+        crop: diagnosis.crop,
+        confidence: diagnosis.confidence,
+        farmerVerdict: isCorrect ? "CONFIRMED" : "REJECTED",
+        farmerComment: diagnosis.scientificName,
+        imageUrl: photoPreview && photoPreview.length < 50000 ? photoPreview : undefined
+      }).catch((e) => console.warn("Firestore diagnosis confirmation record failed:", e));
 
       if (showToast) {
         showToast(

@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    // 1. User Profiles
+    match /profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(userId)
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 100;
+      allow delete: if isOwner(userId);
+    }
+
+    // 2. Local Equipment Listings
+    // Visible to signed-in users. Phone number permitted only if consentPhoneShare is true.
+    match /equipment_listings/{listingId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidString(request.resource.data.equipmentName, 2, 100)
+        && isValidString(request.resource.data.village, 2, 80)
+        && isValidString(request.resource.data.district, 2, 80)
+        && request.resource.data.consentPhoneShare is bool
+        && (request.resource.data.consentPhoneShare == true || !('phone' in request.resource.data) || request.resource.data.phone == "")
+        && request.resource.data.size() <= 20;
+      allow update, delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // 3. Farmer Feedbacks
+    match /feedbacks/{feedbackId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidString(request.resource.data.recommendationId, 1, 100)
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+        && request.resource.data.size() <= 20;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 4. Disease Scan Confirmations (Future Retraining Loop)
+    match /diagnosis_confirmations/{scanId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.farmerVerdict in ['CONFIRMED', 'REJECTED', 'UNCERTAIN']
+        && isValidString(request.resource.data.predictedDisease, 1, 100)
+        && request.resource.data.size() <= 25;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 5. Community Posts
+    match /community_posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidString(request.resource.data.content, 1, 1000)
+        && request.resource.data.size() <= 15;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

@@ -47,3 +47,14 @@ npm run build
 
 ## 3. Bilingual Support
 THINAI is strictly bilingual: **English** and **Tamil (தமிழ்)**. Every user-visible string routes through `t(key, lang)`.
+
+---
+
+## 4. Backend Architecture & Zero-Cost Cloud Deployment
+- **Primary Shared Cloud Backend**: **Firebase Spark Tier (Free Plan)**
+  - Zero deployment cost and zero server maintenance.
+  - **Cloud Firestore**: Stores shared collections including Local Equipment Board (`equipment_listings`), Farmer Feedback (`feedbacks`), Diagnosis Confirmations (`diagnosis_confirmations`), and Community posts (`community_posts`).
+  - **Security Rules**: Strictly enforced via [`firestore.rules`](file:///c:/Users/cswas/Documents/THINAI/firestore.rules). Authenticated access, document ownership verification, field validation, size limits, and phone privacy consent.
+  - **Offline-First Resilience**: Dexie.js (IndexedDB) acts as the local offline cache. Any mutations made offline are written to the `syncQueue` and automatically synced to Firestore when network connectivity resumes.
+- **FastAPI Backend (`/backend`)**:
+  - **OPTIONAL**: The FastAPI Python backend is purely optional and intended for local development or workstation experiments. It is **not deployed** to any cloud server, maintaining zero cost. All core functionality runs entirely client-side and via Firebase Spark.

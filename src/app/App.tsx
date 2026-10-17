@@ -61,6 +61,7 @@ import {
   getDashboardMarketPrice
 } from "../services/marketService";
 import { ARFI_CONFIG } from "../config/arfiConfig";
+import { recordFeedbackToFirestore, flushDexieSyncQueueToFirestore } from "../services/firestoreSync";
 import {
   getRelevantSchemes,
   SCHEMES_DATABASE,
@@ -1988,6 +1989,7 @@ export default function App() {
       setIsOffline(false);
       showToast(t("onlineRestored", user.language), "success");
       loadLiveWeather(user.district || "Coimbatore");
+      flushDexieSyncQueueToFirestore().catch((e) => console.warn("Sync flush error:", e));
     };
     const handleOffline = () => {
       setIsOffline(true);
@@ -2165,7 +2167,19 @@ export default function App() {
     recordFeedback(fb);
     const fbId = `fb-${Date.now()}`;
 
-    // Queue mutation in Dexie offline sync queue
+    // Record to Firestore & Dexie offline queue
+    await recordFeedbackToFirestore({
+      recommendationId: fb.recommendationId,
+      recommendationTitle: fb.recommendationTitle,
+      category: fb.category,
+      actionTaken: fb.actionTaken,
+      rating: fb.rating,
+      cropConditionObservation: fb.cropConditionObservation,
+      notes: fb.notes,
+      costSavedEstimate: fb.costSavedEstimate
+    });
+
+    // Also queue mutation in Dexie offline sync queue for legacy manager
     await syncManager.queueMutation("feedback", "create", fbId, {
       recommendation_id: fb.recommendationId,
       action_taken: fb.actionTaken,

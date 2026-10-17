@@ -16,6 +16,8 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { DataBadge } from "./DataBadge";
+import { fetchEquipmentListings, postEquipmentListing } from "../../services/firestoreSync";
+import { auth } from "../../firebase";
 
 export interface EquipmentListing {
   id: string;
@@ -28,6 +30,7 @@ export interface EquipmentListing {
   ratePerDay: string;
   availableDates: string;
   icon: string;
+  consentPhoneShare: boolean;
 }
 
 const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
@@ -41,7 +44,8 @@ const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
     district: "Coimbatore",
     ratePerDay: "₹600 / hour (Driver included)",
     availableDates: "Available all weekdays",
-    icon: "🚜"
+    icon: "🚜",
+    consentPhoneShare: true
   },
   {
     id: "p2p-2",
@@ -53,7 +57,8 @@ const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
     district: "Coimbatore",
     ratePerDay: "₹350 / hour",
     availableDates: "Available this week",
-    icon: "⚙️"
+    icon: "⚙️",
+    consentPhoneShare: true
   },
   {
     id: "p2p-3",
@@ -65,7 +70,8 @@ const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
     district: "Coimbatore",
     ratePerDay: "₹450 / acre (Chemical spray)",
     availableDates: "Book 1 day prior",
-    icon: "🛸"
+    icon: "🛸",
+    consentPhoneShare: true
   },
   {
     id: "p2p-4",
@@ -77,9 +83,11 @@ const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
     district: "Coimbatore",
     ratePerDay: "₹2,100 / acre",
     availableDates: "Harvest season booking open",
-    icon: "🌾"
+    icon: "🌾",
+    consentPhoneShare: true
   }
 ];
+
 
 export function FarmServicesScreen({
   district = "Coimbatore",
@@ -94,15 +102,20 @@ export function FarmServicesScreen({
   const [machinerySubTab, setMachinerySubTab] = useState<"p2p" | "chc">("p2p");
   const [showPostModal, setShowPostModal] = useState(false);
 
-  // Load custom farmer equipment listings from localStorage
-  const [customListings, setCustomListings] = useState<EquipmentListing[]>(() => {
-    try {
-      const saved = localStorage.getItem("thinai_custom_equipment_listings");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Load custom farmer equipment listings from Firestore & offline cache
+  const [customListings, setCustomListings] = useState<EquipmentListing[]>([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    fetchEquipmentListings().then((items) => {
+      if (isMounted && items.length > 0) {
+        setCustomListings(items);
+      }
+    }).catch((err) => {
+      console.warn("Could not load equipment listings from backend:", err);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const [newEquipment, setNewEquipment] = useState<Omit<EquipmentListing, "id">>({
     equipmentName: "Mahindra 575 DI Tractor",
@@ -113,23 +126,18 @@ export function FarmServicesScreen({
     district: district,
     ratePerDay: "₹650 / hour",
     availableDates: "Available Today",
-    icon: "🚜"
+    icon: "🚜",
+    consentPhoneShare: true
   });
 
-  const handleCreateEquipment = () => {
+  const handleCreateEquipment = async () => {
     if (!newEquipment.ownerName.trim() || !newEquipment.phone.trim()) {
       alert(language === "Tamil" ? "தயவுசெய்து உரிமையாளர் பெயர் மற்றும் தொலைபேசி எண்ணை உள்ளிடவும்." : "Please enter owner name and mobile phone.");
       return;
     }
-    const item: EquipmentListing = {
-      ...newEquipment,
-      id: `p2p-custom-${Date.now()}`
-    };
+    const item = await postEquipmentListing(newEquipment);
     const updated = [item, ...customListings];
     setCustomListings(updated);
-    try {
-      localStorage.setItem("thinai_custom_equipment_listings", JSON.stringify(updated));
-    } catch {}
     setShowPostModal(false);
     setNewEquipment({
       equipmentName: "Mahindra 575 DI Tractor",
@@ -140,7 +148,8 @@ export function FarmServicesScreen({
       district: district,
       ratePerDay: "₹650 / hour",
       availableDates: "Available Today",
-      icon: "🚜"
+      icon: "🚜",
+      consentPhoneShare: true
     });
   };
 
@@ -422,13 +431,19 @@ export function FarmServicesScreen({
                           </span>
                           <strong className="text-zinc-800">{item.ownerName}</strong>
                         </div>
-                        <a
-                          href={`tel:${item.phone}`}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs active:scale-95 transition-transform"
-                        >
-                          <Phone className="w-3.5 h-3.5" />
-                          <span>{language === "Tamil" ? "அழைக்க" : "Call Farmer"}</span>
-                        </a>
+                        {auth.currentUser && item.phone && item.phone !== "Contact via App" ? (
+                          <a
+                            href={`tel:${item.phone}`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs active:scale-95 transition-transform"
+                          >
+                            <Phone className="w-3.5 h-3.5" />
+                            <span>{language === "Tamil" ? "அழைக்க" : "Call Farmer"}</span>
+                          </a>
+                        ) : (
+                          <span className="text-[10px] font-semibold text-zinc-500 bg-zinc-200/80 px-2 py-1 rounded-md">
+                            {language === "Tamil" ? "உள்நுழைந்து அழைக்கவும்" : "Sign in to call"}
+                          </span>
+                        )}
                       </div>
 
                       <div className="text-[10px] text-zinc-400 pt-2 flex items-center justify-between border-t border-zinc-100 mt-2">
@@ -671,6 +686,22 @@ export function FarmServicesScreen({
                         className="w-full p-2.5 rounded-xl border border-zinc-300 focus:outline-emerald-600"
                       />
                     </div>
+                  </div>
+
+                  {/* Explicit Phone Sharing Consent Checkbox (Phase 2 Requirement) */}
+                  <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      id="consentPhone"
+                      checked={newEquipment.consentPhoneShare !== false}
+                      onChange={(e) => setNewEquipment({ ...newEquipment, consentPhoneShare: e.target.checked })}
+                      className="mt-0.5 w-4 h-4 text-emerald-600 rounded border-zinc-300 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <label htmlFor="consentPhone" className="text-[11px] text-emerald-950 font-medium leading-tight cursor-pointer">
+                      {language === "Tamil"
+                        ? "உள்நுழைந்த சக விவசாயிகளுக்கு மட்டுமே எனது தொடர்பு தொலைபேசி எண்ணைக் காட்ட சம்மதிக்கிறேன்."
+                        : "I consent to share my contact mobile number exclusively with signed-in farmers."}
+                    </label>
                   </div>
                 </div>
 
