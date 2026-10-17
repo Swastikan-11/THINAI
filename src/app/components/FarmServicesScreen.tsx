@@ -13,7 +13,13 @@ import {
   Clock,
   Sparkles,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  CloudSun,
+  Calculator,
+  ShieldCheck,
+  MessageSquareHeart,
+  TrendingUp,
+  PhoneCall
 } from "lucide-react";
 import { DataBadge } from "./DataBadge";
 import { fetchEquipmentListings, postEquipmentListing } from "../../services/firestoreSync";
@@ -92,13 +98,17 @@ const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
 export function FarmServicesScreen({
   district = "Coimbatore",
   primaryCrop = "Paddy",
-  language = "English"
+  language = "English",
+  onNavigateToScreen,
+  onOpenFeedbackModal
 }: {
   district?: string;
   primaryCrop?: string;
   language?: string;
+  onNavigateToScreen?: (s: any) => void;
+  onOpenFeedbackModal?: () => void;
 }) {
-  const [activeTab, setActiveTab] = useState<"water" | "machinery" | "fertilizer" | "officers" | "news">("water");
+  const [activeTab, setActiveTab] = useState<"machinery" | "water" | "fertilizer" | "officers" | "news" | "insurance">("machinery");
   const [machinerySubTab, setMachinerySubTab] = useState<"p2p" | "chc">("p2p");
   const [showPostModal, setShowPostModal] = useState(false);
 
@@ -175,6 +185,126 @@ export function FarmServicesScreen({
           Direct field utility infrastructure tailored for regional farmers. All contact numbers and reservoir storage levels are verified against official Department of Water Resources and Agronomic Extension registries.
         </p>
       </div>
+
+      {/* ─── 8-ITEM FARMER SERVICES GRID (PHASE 4 SPECIFICATION) ─── */}
+      <div className="bg-white rounded-2xl border border-zinc-200 p-3.5 shadow-xs space-y-2.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-zinc-900 uppercase tracking-wide flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-emerald-600" />
+            {language === "Tamil" ? "வேளாண் சேவைகள் பலகை" : "Farmer Services Grid"}
+          </span>
+          <span className="text-[10px] text-zinc-500 font-mono">
+            {language === "Tamil" ? "8 நேரடி சேவைகள்" : "8 Direct Services"}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 text-center">
+          {/* 1. Weather Advisory */}
+          <button
+            onClick={() => onNavigateToScreen?.("home")}
+            className="min-h-[64px] p-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all"
+          >
+            <CloudSun className="w-5 h-5 text-blue-700" />
+            <span className="text-[10px] font-extrabold text-blue-950 leading-tight">
+              {language === "Tamil" ? "வானிலை" : "Weather"}
+            </span>
+          </button>
+
+          {/* 2. Mandi Price */}
+          <button
+            onClick={() => onNavigateToScreen?.("market")}
+            className="min-h-[64px] p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all"
+          >
+            <TrendingUp className="w-5 h-5 text-emerald-700" />
+            <span className="text-[10px] font-extrabold text-emerald-950 leading-tight">
+              {language === "Tamil" ? "சந்தை விலை" : "Mandi"}
+            </span>
+          </button>
+
+          {/* 3. Fertilizer Calculator */}
+          <button
+            onClick={() => onNavigateToScreen?.("calculator")}
+            className="min-h-[64px] p-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all"
+          >
+            <Calculator className="w-5 h-5 text-amber-700" />
+            <span className="text-[10px] font-extrabold text-amber-950 leading-tight">
+              {language === "Tamil" ? "உரக் கணக்கீடு" : "Fertilizer"}
+            </span>
+          </button>
+
+          {/* 4. Equipment Board */}
+          <button
+            onClick={() => setActiveTab("machinery")}
+            className={`min-h-[64px] p-2 rounded-xl border flex flex-col items-center justify-center gap-1 active:scale-95 transition-all ${
+              activeTab === "machinery"
+                ? "bg-teal-700 text-white border-teal-800 shadow-sm"
+                : "bg-teal-50 hover:bg-teal-100 text-teal-950 border-teal-200"
+            }`}
+          >
+            <Wrench className={`w-5 h-5 ${activeTab === "machinery" ? "text-white" : "text-teal-700"}`} />
+            <span className="text-[10px] font-extrabold leading-tight">
+              {language === "Tamil" ? "உபகரணங்கள்" : "Equipment"}
+            </span>
+          </button>
+
+          {/* 5. Water Reservoirs */}
+          <button
+            onClick={() => setActiveTab("water")}
+            className={`min-h-[64px] p-2 rounded-xl border flex flex-col items-center justify-center gap-1 active:scale-95 transition-all ${
+              activeTab === "water"
+                ? "bg-blue-700 text-white border-blue-800 shadow-sm"
+                : "bg-cyan-50 hover:bg-cyan-100 text-cyan-950 border-cyan-200"
+            }`}
+          >
+            <Droplets className={`w-5 h-5 ${activeTab === "water" ? "text-white" : "text-cyan-700"}`} />
+            <span className="text-[10px] font-extrabold leading-tight">
+              {language === "Tamil" ? "நீர்த்தேக்கம்" : "Reservoirs"}
+            </span>
+          </button>
+
+          {/* 6. Officer Contacts / KVK */}
+          <button
+            onClick={() => setActiveTab("officers")}
+            className={`min-h-[64px] p-2 rounded-xl border flex flex-col items-center justify-center gap-1 active:scale-95 transition-all ${
+              activeTab === "officers"
+                ? "bg-indigo-700 text-white border-indigo-800 shadow-sm"
+                : "bg-indigo-50 hover:bg-indigo-100 text-indigo-950 border-indigo-200"
+            }`}
+          >
+            <UserCheck className={`w-5 h-5 ${activeTab === "officers" ? "text-white" : "text-indigo-700"}`} />
+            <span className="text-[10px] font-extrabold leading-tight">
+              {language === "Tamil" ? "அலுவலர்கள்" : "Officers/KVK"}
+            </span>
+          </button>
+
+          {/* 7. Crop Insurance Info */}
+          <button
+            onClick={() => setActiveTab("insurance")}
+            className={`min-h-[64px] p-2 rounded-xl border flex flex-col items-center justify-center gap-1 active:scale-95 transition-all ${
+              activeTab === "insurance"
+                ? "bg-purple-700 text-white border-purple-800 shadow-sm"
+                : "bg-purple-50 hover:bg-purple-100 text-purple-950 border-purple-200"
+            }`}
+          >
+            <ShieldCheck className={`w-5 h-5 ${activeTab === "insurance" ? "text-white" : "text-purple-700"}`} />
+            <span className="text-[10px] font-extrabold leading-tight">
+              {language === "Tamil" ? "காப்பீடு" : "Insurance"}
+            </span>
+          </button>
+
+          {/* 8. Farmer Feedback */}
+          <button
+            onClick={() => onOpenFeedbackModal ? onOpenFeedbackModal() : setActiveTab("news")}
+            className="min-h-[64px] p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition-all"
+          >
+            <MessageSquareHeart className="w-5 h-5 text-rose-700" />
+            <span className="text-[10px] font-extrabold text-rose-950 leading-tight">
+              {language === "Tamil" ? "கருத்துகள்" : "Feedback"}
+            </span>
+          </button>
+        </div>
+      </div>
+
 
       {/* Navigation Sub-Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
@@ -977,6 +1107,78 @@ export function FarmServicesScreen({
           </div>
         </div>
       )}
+
+      {/* TAB: CROP INSURANCE (PMFBY) (PHASE 4 SPECIFICATION) */}
+      {activeTab === "insurance" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold text-sm text-zinc-900 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-purple-600" />
+              {language === "Tamil" ? "பயிர் காப்பீட்டு விவரங்கள் (PMFBY)" : "Crop Insurance (PMFBY & RWBCIS)"}
+            </h3>
+            <DataBadge status="STATIC REFERENCE" detail="Dept of Agriculture TN" />
+          </div>
+
+          <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-4 text-xs text-purple-950 space-y-3">
+            <div className="font-bold flex items-center gap-1.5 text-sm">
+              <Info className="w-4 h-4 text-purple-700" />
+              <span>{language === "Tamil" ? "காப்பீட்டு பாதுகாப்பு & உழவர் கட்டணங்கள்" : "Tamil Nadu Farmer Premium Subsidies"}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="bg-white p-3 rounded-xl border border-purple-100 shadow-2xs">
+                <div className="font-extrabold text-purple-900">🌾 Kharif / Samba Paddy</div>
+                <div className="text-xl font-black text-purple-700 mt-1">1.5%</div>
+                <div className="text-[10px] text-zinc-500">Max farmer share; remainder 98.5% paid by TN & Central Govt.</div>
+              </div>
+
+              <div className="bg-white p-3 rounded-xl border border-purple-100 shadow-2xs">
+                <div className="font-extrabold text-purple-900">🌱 Pulses & Oilseeds</div>
+                <div className="text-xl font-black text-purple-700 mt-1">1.5% - 2%</div>
+                <div className="text-[10px] text-zinc-500">Black gram, green gram, groundnut under notified blocks.</div>
+              </div>
+
+              <div className="bg-white p-3 rounded-xl border border-purple-100 shadow-2xs">
+                <div className="font-extrabold text-purple-900">🍅 Horticulture & Fruit</div>
+                <div className="text-xl font-black text-purple-700 mt-1">5.0%</div>
+                <div className="text-[10px] text-zinc-500">Tomato, banana, chilli, turmeric, onion.</div>
+              </div>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-xl border border-purple-100 space-y-1.5">
+              <strong className="text-zinc-900 font-bold block">
+                {language === "Tamil" ? "காப்பீடு கோருவதற்கான முக்கிய விதிமுறைகள்:" : "Critical Claim Rules:"}
+              </strong>
+              <ul className="text-zinc-700 space-y-1 text-xs">
+                <li>• <strong>72-Hour Window:</strong> Localized calamity (inundation, hailstorm, landslide) must be reported within <strong>72 hours</strong>.</li>
+                <li>• <strong>Required Documents:</strong> Adangal, Land Patta, Aadhaar Card, Active Bank Account Passbook copy.</li>
+                <li>• <strong>Enrollment:</strong> Direct via e-Seva / CSC Center or through Primary Agricultural Cooperative Credit Society (PACCS).</li>
+              </ul>
+            </div>
+
+            <div className="pt-2 flex flex-wrap items-center gap-2">
+              <a
+                href="https://pmfby.gov.in"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 transition-colors"
+              >
+                <span>PMFBY Official Portal</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+
+              <a
+                href="tel:18001801551"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-purple-300 text-purple-900 font-bold text-xs hover:bg-purple-50 transition-colors"
+              >
+                <PhoneCall className="w-3.5 h-3.5 text-purple-700" />
+                <span>Kisan Helpline: 1800-180-1551</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

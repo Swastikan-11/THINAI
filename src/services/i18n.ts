@@ -40,15 +40,16 @@ export function persistLanguage(lang: AppLanguage): void {
 export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
   English: {
     // Nav
-    navHome: "Home",
+    navHome: "My Farm",
+    navCommunity: "Community",
     navCrop: "My Crop",
     navDoctor: "Crop Doctor",
     navWeather: "Weather",
     navMarket: "Market",
     navSchemes: "Schemes",
-    navServices: "Farm Services",
+    navServices: "Services",
     navAI: "AI Advisor",
-    navProfile: "Farm Profile",
+    navProfile: "You",
     navSettings: "Settings",
 
     // Dashboard Core Sections
@@ -163,11 +164,15 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
 
   Tamil: {
     // Nav
-    navHome: "முகப்பு",
+    navHome: "என் பண்ணை",
+    navCommunity: "சமூகம்",
+    navCrop: "என் பயிர்",
+    navDoctor: "பயிர் மருத்துவர்",
     navDiary: "பண்ணை நாட்குறிப்பு",
     navAI: "AI ஆலோசகர்",
     navScan: "பயிர் ஸ்கேன்",
-    navProfile: "பண்ணை சுயவிவரம்",
+    navServices: "சேவைகள்",
+    navProfile: "சுயவிவரம்",
     navSettings: "அமைப்புகள்",
     navWeather: "வானிலை",
     navMarket: "சந்தை விலை",

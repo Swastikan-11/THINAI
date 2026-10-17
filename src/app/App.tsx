@@ -61,7 +61,7 @@ import {
   getDashboardMarketPrice
 } from "../services/marketService";
 import { ARFI_CONFIG } from "../config/arfiConfig";
-import { recordFeedbackToFirestore, flushDexieSyncQueueToFirestore } from "../services/firestoreSync";
+import { recordFeedbackToFirestore, flushDexieSyncQueueToFirestore, recordDiagnosisConfirmation } from "../services/firestoreSync";
 import {
   getRelevantSchemes,
   SCHEMES_DATABASE,
@@ -91,11 +91,12 @@ import { CropGuideScreen } from "./components/CropGuideScreen";
 import { CropHealthLibrary } from "./components/CropHealthLibrary";
 import { FertilizerCalculatorScreen } from "./components/FertilizerCalculatorScreen";
 import { CropDoctorScreen } from "./components/CropDoctorScreen";
+import { CommunityScreen } from "./components/CommunityScreen";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
   | "splash" | "onboarding" | "login" | "register"
-  | "home" | "mycrop" | "doctor" | "disease" | "weather"
+  | "home" | "community" | "mycrop" | "doctor" | "disease" | "weather"
   | "market" | "schemes" | "services" | "library" | "calculator"
   | "ai" | "voice" | "reports" | "notifications"
   | "profile" | "editprofile" | "settings" | "help"
@@ -221,49 +222,41 @@ function BNav({
   lang: AppLanguage;
 }) {
   const getTab = (s: Screen) => {
-    if (["home", "whatif"].includes(s)) return "home";
-    if (s === "mycrop") return "mycrop";
-    if (s === "doctor" || s === "disease" || s === "library") return "doctor";
-    if (s === "market") return "market";
-    if (["services", "schemes", "calculator"].includes(s)) return "services";
-    if (s === "ai" || s === "voice") return "ai";
+    if (["home", "whatif", "mycrop", "doctor", "disease"].includes(s)) return "home";
+    if (s === "community") return "community";
+    if (["services", "schemes", "calculator", "library", "market", "weather"].includes(s)) return "services";
     return "profile";
   };
 
   const tab = getTab(screen);
   const items = [
-    { id: "home", icon: Home, label: t("navHome", lang), dest: "home" as Screen },
-    { id: "mycrop", icon: Sprout, label: t("navCrop", lang), dest: "mycrop" as Screen },
-    { id: "doctor", icon: Camera, label: t("navDoctor", lang), dest: "doctor" as Screen },
-    { id: "market", icon: TrendingUp, label: t("navMarket", lang), dest: "market" as Screen },
-    { id: "services", icon: Wrench, label: t("navServices", lang), dest: "services" as Screen },
-    { id: "profile", icon: User, label: t("navProfile", lang), dest: "profile" as Screen },
+    { id: "home", icon: Home, label: lang === "Tamil" ? "என் பண்ணை" : t("navHome", lang), dest: "home" as Screen },
+    { id: "community", icon: MessageCircle, label: lang === "Tamil" ? "சமூகம்" : t("navCommunity", lang), dest: "community" as Screen },
+    { id: "services", icon: Wrench, label: lang === "Tamil" ? "சேவைகள்" : t("navServices", lang), dest: "services" as Screen },
+    { id: "profile", icon: User, label: lang === "Tamil" ? "சுயவிவரம்" : t("navProfile", lang), dest: "profile" as Screen },
   ];
 
   return (
-    <div className="flex items-center border-t px-2 py-2 select-none"
+    <div className="flex items-center border-t px-2 py-1 select-none shrink-0"
       style={{ borderColor: BR, background: SURF, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
       {items.map(it => {
         const active = tab === it.id;
         return (
-          <button key={it.id} onClick={() => navigate(it.dest)}
-            className="flex-1 flex flex-col items-center gap-0.5 py-1 transition-all active:scale-95">
-            {it.id === "ai" ? (
-              <div className="w-12 h-12 rounded-full flex items-center justify-center -mt-5 shadow-lg"
-                style={{ background: `linear-gradient(135deg, ${PL}, ${P})` }}>
-                <it.icon size={22} color="#fff" />
-              </div>
-            ) : (
-              <div className="relative">
-                <it.icon size={21} color={active ? P : MU} strokeWidth={active ? 2.5 : 1.8} />
-              </div>
-            )}
-            {it.id !== "ai" && (
-              <span className="text-[10px] font-semibold" style={{ color: active ? P : MU }}>
-                {it.label}
-              </span>
-            )}
-            {active && it.id !== "ai" && (
+          <button
+            key={it.id}
+            onClick={() => navigate(it.dest)}
+            className="flex-1 min-h-[52px] flex flex-col items-center justify-center gap-0.5 py-1.5 transition-all active:scale-95 cursor-pointer"
+          >
+            <div className="relative">
+              <it.icon size={22} color={active ? P : MU} strokeWidth={active ? 2.5 : 1.8} />
+            </div>
+            <span
+              className="text-[11px] font-bold tracking-tight leading-tight"
+              style={{ color: active ? P : MU }}
+            >
+              {it.label}
+            </span>
+            {active && (
               <div className="w-1.5 h-1.5 rounded-full mt-0.5" style={{ background: P }} />
             )}
           </button>
@@ -512,11 +505,14 @@ function HomeScreen({
   onOpenFeedback,
   isOffline,
   onOpenLangModal,
+  onToggleLanguage,
   onRefreshWeather,
   activeField,
   onSelectField,
   onDetectGps,
-  onUpdateSoilMoisture
+  onUpdateSoilMoisture,
+  onSelectCrop,
+  showToast
 }: {
   navigate: (s: Screen) => void;
   user: UserState;
@@ -525,17 +521,25 @@ function HomeScreen({
   onOpenFeedback: (rec: Recommendation) => void;
   isOffline: boolean;
   onOpenLangModal: () => void;
+  onToggleLanguage?: () => void;
   onRefreshWeather: () => void;
   activeField: LocalField | null;
   onSelectField: (field: LocalField) => void;
   onDetectGps: () => void;
   onUpdateSoilMoisture: (status: "dry" | "optimal" | "wet") => void;
+  onSelectCrop?: (crop: string) => void;
+  showToast?: (msg: string, type?: ToastType) => void;
 }) {
   const primaryRec = decisionResult.primaryRecommendation;
   const lang = user.language;
   const [showAlternative, setShowAlternative] = useState(false);
   const [whyExpanded, setWhyExpanded] = useState(true);
   const [showARFIDrawer, setShowARFIDrawer] = useState(false);
+  const [diagnosisConfirmed, setDiagnosisConfirmed] = useState(false);
+
+  const sprayAdvisory = evaluateSpraySafety(weather);
+  const scanHistory = getDiseaseScanHistory();
+  const latestScan = scanHistory.length > 0 ? scanHistory[0] : null;
 
   return (
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
@@ -550,21 +554,27 @@ function HomeScreen({
         </div>
       )}
 
-      {/* ─── 1. TOP HEADER & FARM STATUS (PRIORITY 8: STEP 1) ─── */}
-      <div className="px-5 pt-3 pb-5"
+      {/* ─── 1. TOP HEADER & FARM STATUS (UZHAVAN-CLASS APP BAR) ─── */}
+      <div className="px-4 pt-3 pb-4"
         style={{ background: `linear-gradient(160deg, ${PD} 0%, ${P} 100%)`, borderRadius: "0 0 28px 28px" }}>
         <SBar light />
 
         <div className="flex justify-between items-center mt-1 mb-2">
           <SyncStatusBar />
-          <div className="flex gap-2">
-            <button onClick={onOpenLangModal}
-              className="px-2.5 h-8 rounded-full flex items-center justify-center gap-1 bg-white/20 text-white text-xs font-bold active:scale-95">
+          <div className="flex gap-2 items-center">
+            {/* Instant Language Toggle: [ EN | தமிழ் ] */}
+            <button
+              onClick={onToggleLanguage || onOpenLangModal}
+              className="h-8 px-2.5 rounded-full flex items-center justify-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold active:scale-95 border border-white/20 transition-all cursor-pointer shadow-xs"
+              title="Instant Language Switch (English / தமிழ்)"
+            >
               <Globe size={13} />
-              <span>{user.language.slice(0, 3)}</span>
+              <span className={lang === "English" ? "text-amber-300 font-black" : "text-white/70"}>EN</span>
+              <span className="text-white/40">|</span>
+              <span className={lang === "Tamil" ? "text-amber-300 font-black" : "text-white/70"}>தமிழ்</span>
             </button>
             <button onClick={() => navigate("notifications")}
-              className="w-8 h-8 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95">
+              className="w-8 h-8 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
               <Bell size={15} color="#fff" />
               <div className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ background: ACC }} />
             </button>
@@ -574,9 +584,9 @@ function HomeScreen({
         <div className="flex justify-between items-start mt-1">
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium text-white/80">Welcome,</span>
+              <span className="text-xs font-medium text-white/80">{lang === "Tamil" ? "வணக்கம்," : "Welcome,"}</span>
             </div>
-            <h2 className="font-black text-2xl text-white mt-0.5">{user.name || "Farmer"} 👋</h2>
+            <h2 className="font-black text-2xl text-white mt-0.5">{user.name || (lang === "Tamil" ? "விவசாயி" : "Farmer")} 👋</h2>
             <div className="flex items-center gap-1 mt-1 text-white/80 text-xs">
               <MapPin size={12} />
               <span>{user.village ? `${user.village}, ` : ""}{user.district}, {user.stateName}</span>
@@ -584,7 +594,7 @@ function HomeScreen({
           </div>
         </div>
 
-        {/* MULTI-FIELD SELECTOR (PRIORITY 1) */}
+        {/* MULTI-FIELD SELECTOR */}
         <div className="mt-3">
           <FieldSelector
             currentField={activeField}
@@ -595,22 +605,60 @@ function HomeScreen({
           />
         </div>
 
+        {/* ─── HORIZONTAL CROP CHIPS (PHASE 4 SPECIFICATION) ─── */}
+        <div className="mt-3">
+          <div className="flex items-center justify-between mb-1.5 px-0.5">
+            <span className="text-[10px] font-black uppercase tracking-wider text-white/90">
+              {lang === "Tamil" ? "பயிர் தேர்வு (CROP SELECT)" : "SELECT CROP"}
+            </span>
+            <span className="text-[9px] text-emerald-200 font-mono">
+              {lang === "Tamil" ? "1-தட்டல் மாற்றம்" : "1-Tap Switch"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+            {[
+              { id: "Paddy (Rice)", label: "🌾 Paddy", labelTa: "🌾 நெல்" },
+              { id: "Tomato", label: "🍅 Tomato", labelTa: "🍅 தக்காளி" },
+              { id: "Maize (Corn)", label: "🌽 Maize", labelTa: "🌽 மக்காச்சோளம்" },
+              { id: "Cotton", label: "🌱 Cotton", labelTa: "🌱 பருத்தி" },
+              { id: "Potato", label: "🥔 Potato", labelTa: "🥔 உருளை" },
+              { id: "Chilli", label: "🌶️ Chilli", labelTa: "🌶️ மிளகாய்" },
+              { id: "Banana", label: "🍌 Banana", labelTa: "🍌 வாழை" }
+            ].map((c) => {
+              const active = (activeField?.currentCrop || user.primaryCrop).toLowerCase().includes(c.id.toLowerCase().split(" ")[0]);
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => onSelectCrop?.(c.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all active:scale-95 flex items-center gap-1 cursor-pointer min-h-[36px] ${
+                    active
+                      ? "bg-amber-400 text-emerald-950 shadow-md ring-2 ring-white font-black"
+                      : "bg-white/15 text-white hover:bg-white/25 border border-white/20"
+                  }`}
+                >
+                  <span>{lang === "Tamil" ? c.labelTa : c.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* FARM STATUS DETAILS */}
-        <div className="mt-3.5 grid grid-cols-4 gap-1.5 text-center">
+        <div className="mt-3 grid grid-cols-4 gap-1.5 text-center">
           <div className="rounded-xl p-2 bg-white/10 backdrop-blur-md">
-            <p className="text-[9px] text-white/70">Crop</p>
+            <p className="text-[9px] text-white/70">{lang === "Tamil" ? "பயிர்" : "Crop"}</p>
             <p className="font-bold text-[11px] text-white mt-0.5 truncate">{user.primaryCrop}</p>
           </div>
           <div className="rounded-xl p-2 bg-white/10 backdrop-blur-md">
-            <p className="text-[9px] text-white/70">Stage</p>
+            <p className="text-[9px] text-white/70">{lang === "Tamil" ? "பருவம்" : "Stage"}</p>
             <p className="font-bold text-[11px] text-amber-300 mt-0.5 truncate">{user.cropStage}</p>
           </div>
           <div className="rounded-xl p-2 bg-white/10 backdrop-blur-md">
-            <p className="text-[9px] text-white/70">Soil</p>
+            <p className="text-[9px] text-white/70">{lang === "Tamil" ? "மண் வகை" : "Soil"}</p>
             <p className="font-bold text-[11px] text-white mt-0.5 truncate">{user.soilType}</p>
           </div>
           <div className="rounded-xl p-2 bg-white/10 backdrop-blur-md">
-            <p className="text-[9px] text-white/70">Area</p>
+            <p className="text-[9px] text-white/70">{lang === "Tamil" ? "பரப்பளவு" : "Area"}</p>
             <p className="font-bold text-[11px] text-white mt-0.5">{user.farmSize} Ac</p>
           </div>
         </div>
@@ -621,6 +669,228 @@ function HomeScreen({
 
       {/* Main Dashboard Scrollable Container */}
       <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3.5" style={{ scrollbarWidth: "none" }}>
+        {/* ─── 1. WEATHER + SPRAY ADVISORY BANNER (PLANTIX + UZHAVAN PATTERN) ─── */}
+        <div className={`rounded-2xl p-3.5 border transition-all shadow-xs ${
+          sprayAdvisory.badgeColor === "emerald" 
+            ? "bg-emerald-50/90 border-emerald-300 text-emerald-950" 
+            : sprayAdvisory.badgeColor === "amber" 
+              ? "bg-amber-50/90 border-amber-300 text-amber-950" 
+              : "bg-rose-50/90 border-rose-300 text-rose-950"
+        }`}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className={`p-1.5 rounded-xl ${
+                sprayAdvisory.badgeColor === "emerald" ? "bg-emerald-600 text-white" : sprayAdvisory.badgeColor === "amber" ? "bg-amber-600 text-white" : "bg-rose-600 text-white"
+              }`}>
+                <CloudRain size={16} />
+              </div>
+              <div>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">
+                  {lang === "Tamil" ? "வானிலை & மருந்து தெளிப்பு வழிகாட்டல்" : "Weather & Spray Advisory"}
+                </div>
+                <div className="text-xs font-bold text-gray-900">
+                  {weather.locationName || user.district || "Coimbatore"} • {weather.temperature}°C, {weather.condition}
+                </div>
+              </div>
+            </div>
+            <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide flex items-center gap-1 ${
+              sprayAdvisory.badgeColor === "emerald"
+                ? "bg-emerald-200 text-emerald-900 border border-emerald-400"
+                : sprayAdvisory.badgeColor === "amber"
+                  ? "bg-amber-200 text-amber-900 border border-amber-400"
+                  : "bg-rose-200 text-rose-900 border border-rose-400"
+            }`}>
+              {sprayAdvisory.isSafe ? "✓ " : "⚠ "}
+              {lang === "Tamil" ? sprayAdvisory.statusTextTamil : sprayAdvisory.statusText}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 my-2 py-2 border-y border-black/5 text-center text-xs">
+            <div>
+              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "மழை வாய்ப்பு" : "Rain Prob"}</div>
+              <div className="font-bold text-gray-800">{weather.rainProbability}%</div>
+            </div>
+            <div>
+              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "மழை அளவு" : "Rain 48h"}</div>
+              <div className="font-bold text-gray-800">{weather.rainfallMmExpected} mm</div>
+            </div>
+            <div>
+              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "காற்று வேகம்" : "Wind"}</div>
+              <div className="font-bold text-gray-800">{weather.windSpeed} km/h</div>
+            </div>
+            <div>
+              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "ஈரப்பதம்" : "Humidity"}</div>
+              <div className="font-bold text-gray-800">{weather.humidity}%</div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] pt-0.5">
+            <span className="font-medium text-gray-700 leading-tight">
+              💡 {lang === "Tamil" ? sprayAdvisory.reasonTamil : sprayAdvisory.reason}
+            </span>
+            <button 
+              onClick={onRefreshWeather}
+              className="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5 shrink-0 ml-2 cursor-pointer"
+            >
+              <RefreshCw size={10} />
+              <span>{weather.lastUpdatedLabel || "Live"}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ─── 2. 3-STEP PLANT DOCTOR CARD WITH ONE BIG CAMERA BUTTON (PLANTIX PATTERN) ─── */}
+        <div className="rounded-2xl p-4 bg-linear-to-br from-emerald-900 via-teal-900 to-emerald-950 text-white shadow-md border border-emerald-700/50 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-emerald-300">
+                <Sparkles size={18} />
+              </div>
+              <div>
+                <h3 className="font-black text-sm text-white tracking-wide">
+                  {lang === "Tamil" ? "3 எளிய படிகளில் பயிர் மருத்துவர்" : "Plant Doctor in 3 Steps"}
+                </h3>
+                <p className="text-[11px] text-emerald-200/80">
+                  {lang === "Tamil" ? "மொபைல் நெட் AI மூலம் நேரடி நோயறிதல்" : "On-Device MobileNetV2 Agronomic Diagnosis"}
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              LiteRT WASM
+            </span>
+          </div>
+
+          {/* 3 Step Sequence */}
+          <div className="grid grid-cols-3 gap-2 py-1 text-center">
+            <div className="bg-white/10 rounded-xl p-2 border border-white/10">
+              <div className="w-6 h-6 mx-auto rounded-full bg-emerald-400/20 text-emerald-300 flex items-center justify-center font-black text-xs mb-1">
+                1
+              </div>
+              <div className="font-bold text-[11px] text-white">
+                {lang === "Tamil" ? "படம் எடு" : "Take Photo"}
+              </div>
+              <div className="text-[9px] text-emerald-200/70 mt-0.5">
+                {lang === "Tamil" ? "இலையை படம் பிடி" : "Single leaf"}
+              </div>
+            </div>
+
+            <div className="bg-white/10 rounded-xl p-2 border border-white/10">
+              <div className="w-6 h-6 mx-auto rounded-full bg-teal-400/20 text-teal-300 flex items-center justify-center font-black text-xs mb-1">
+                2
+              </div>
+              <div className="font-bold text-[11px] text-white">
+                {lang === "Tamil" ? "நோயைக் காண்" : "See Diagnosis"}
+              </div>
+              <div className="text-[9px] text-teal-200/70 mt-0.5">
+                {lang === "Tamil" ? "துல்லிய சதவீதம்" : "Instant score"}
+              </div>
+            </div>
+
+            <div className="bg-white/10 rounded-xl p-2 border border-white/10">
+              <div className="w-6 h-6 mx-auto rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center font-black text-xs mb-1">
+                3
+              </div>
+              <div className="font-bold text-[11px] text-white">
+                {lang === "Tamil" ? "தீர்வு பெறு" : "Get Remedy"}
+              </div>
+              <div className="text-[9px] text-amber-200/70 mt-0.5">
+                {lang === "Tamil" ? "இயற்கை / ரசாயனம்" : "Organic / Chemical"}
+              </div>
+            </div>
+          </div>
+
+          {/* ONE BIG CAMERA BUTTON (>= 48px touch target) */}
+          <button
+            onClick={() => navigate("doctor")}
+            className="w-full min-h-[52px] rounded-xl bg-linear-to-r from-emerald-400 via-green-400 to-emerald-500 hover:from-emerald-300 hover:to-green-400 text-emerald-950 font-black text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 shadow-lg active:scale-[0.98] transition-all border border-emerald-200 cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-full bg-emerald-950/15 flex items-center justify-center">
+              <Camera size={18} className="text-emerald-950" />
+            </div>
+            <span>
+              {lang === "Tamil" ? "பயிர் படம் எடுக்கவும் (CROP DOCTOR)" : "TAKE CROP PHOTO (CROP DOCTOR)"}
+            </span>
+          </button>
+        </div>
+
+        {/* ─── 3. CONFIRM YOUR DIAGNOSIS REMINDER CARD (PHASE 4 SPECIFICATION) ─── */}
+        <div className="rounded-2xl p-3.5 bg-white border border-amber-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center">
+                <CheckCircle size={16} />
+              </div>
+              <span className="font-black text-xs text-amber-950">
+                {lang === "Tamil" ? "நோயறிதலை உறுதிப்படுத்தவும்" : "Confirm Your Diagnosis"}
+              </span>
+            </div>
+            <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+              {lang === "Tamil" ? "விவசாயி கருத்து" : "Farmer Feedback"}
+            </span>
+          </div>
+
+          {latestScan && !diagnosisConfirmed ? (
+            <div className="space-y-2">
+              <p className="text-xs text-gray-700 leading-relaxed">
+                {lang === "Tamil"
+                  ? `சமீபத்திய ஸ்கேன்: ${latestScan.crop} - ${latestScan.diseaseName} (${latestScan.confidence}% துல்லியம்). இந்த நோயறிதல் சரியானதா?`
+                  : `Recent scan: ${latestScan.crop} - ${latestScan.diseaseName} (${latestScan.confidence}% confidence). Was this diagnosis accurate?`}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={async () => {
+                    await recordDiagnosisConfirmation({
+                      crop: latestScan.crop,
+                      predictedDisease: latestScan.diseaseName,
+                      confidence: latestScan.confidence,
+                      farmerVerdict: "CONFIRMED",
+                      imageUrl: latestScan.imagePreviewUrl
+                    });
+                    setDiagnosisConfirmed(true);
+                    showToast?.(lang === "Tamil" ? "நன்றி! உங்கள் உறுதிப்படுத்தல் மாதிரியை மேம்படுத்த உதவுகிறது." : "Thank you! Confirmation recorded to retrain model.", "success");
+                  }}
+                  className="flex-1 min-h-[46px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-xs cursor-pointer"
+                >
+                  <ThumbsUp size={14} />
+                  <span>{lang === "Tamil" ? "ஆம், சரியானது" : "Yes, Correct"}</span>
+                </button>
+                <button
+                  onClick={async () => {
+                    await recordDiagnosisConfirmation({
+                      crop: latestScan.crop,
+                      predictedDisease: latestScan.diseaseName,
+                      confidence: latestScan.confidence,
+                      farmerVerdict: "REJECTED",
+                      imageUrl: latestScan.imagePreviewUrl
+                    });
+                    setDiagnosisConfirmed(true);
+                    showToast?.(lang === "Tamil" ? "பதிவு செய்யப்பட்டது. வல்லுநர் ஆய்வுக்கு அனுப்பப்பட்டது." : "Recorded. Flagged for retraining dataset.", "info");
+                  }}
+                  className="flex-1 min-h-[46px] rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                >
+                  <ThumbsDown size={14} />
+                  <span>{lang === "Tamil" ? "இல்லை, தவறானது" : "Not Quite"}</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-xs text-gray-600 leading-relaxed">
+              {diagnosisConfirmed ? (
+                <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
+                  <CheckCircle size={14} className="text-emerald-600" />
+                  <span>{lang === "Tamil" ? "நன்றி! உங்கள் நோயறிதல் உறுதிப்படுத்தல் சேமிக்கப்பட்டது." : "Thank you! Your diagnosis confirmation was recorded."}</span>
+                </div>
+              ) : (
+                <span>
+                  {lang === "Tamil"
+                    ? "ஒரு இலையை ஸ்கேன் செய்த பிறகு, நோயறிதலை ஆம்/இல்லை என உறுதிப்படுத்துங்கள். இது தமிழ் விவசாயிகளுக்கு மாதிரி துல்லியத்தை உயர்த்தும்."
+                    : "Scan a leaf with Crop Doctor, then confirm if the diagnosis is accurate to help train our Tamil Nadu regional model."}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ─── 4. CORE DECISION ENGINE CARD ─── */}
         {(() => {
           const soilMoistureNum = user.soilMoistureStatus === "dry" ? 25 : user.soilMoistureStatus === "wet" ? 85 : 55;
           const dashboardMarket = getDashboardMarketPrice(user.primaryCrop, user.district);
@@ -2261,11 +2531,17 @@ export default function App() {
             onOpenFeedback={setFeedbackTarget}
             isOffline={isOffline}
             onOpenLangModal={() => setShowLangModal(true)}
+            onToggleLanguage={() => handleLanguageChange(user.language === "Tamil" ? "English" : "Tamil")}
             onRefreshWeather={() => loadLiveWeather(user.district)}
             activeField={selectedField}
             onSelectField={setSelectedField}
             onDetectGps={detectLiveGpsLocation}
             onUpdateSoilMoisture={handleUpdateSoilMoisture}
+            onSelectCrop={(crop: string) => {
+              updateUser({ ...user, primaryCrop: crop });
+              showToast(user.language === "Tamil" ? `பயிர் மாற்றப்பட்டது: ${crop}` : `Crop switched: ${crop}`, "success");
+            }}
+            showToast={showToast}
           />
         )}
 
@@ -2367,6 +2643,31 @@ export default function App() {
                 district={user.district}
                 primaryCrop={selectedField?.currentCrop || user.primaryCrop}
                 language={user.language}
+                onNavigateToScreen={setScreen}
+                onOpenFeedbackModal={() => {
+                  if (decisionResult.primaryRecommendation) {
+                    setFeedbackTarget(decisionResult.primaryRecommendation);
+                  } else {
+                    showToast("No active recommendation to review", "info");
+                  }
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {screen === "community" && (
+          <div className="flex flex-col h-full select-none" style={{ background: BG }}>
+            <div style={{ background: "linear-gradient(160deg, #1B5E20, #2E7D32)", borderRadius: "0 0 24px 24px" }}>
+              <SBar light />
+              <BkHdr title={user.language === "Tamil" ? "விவசாயிகள் சமூகம்" : "Farmers Community"} navigate={setScreen} light />
+            </div>
+            <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: "none" }}>
+              <CommunityScreen
+                district={user.district}
+                primaryCrop={selectedField?.currentCrop || user.primaryCrop}
+                language={user.language}
+                showToast={showToast}
               />
             </div>
           </div>
@@ -2409,7 +2710,7 @@ export default function App() {
       </div>
 
       {/* Persistent Bottom Navigation */}
-      {["home", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile"].includes(screen) && (
+      {["home", "community", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile"].includes(screen) && (
         <BNav screen={screen} navigate={setScreen} lang={user.language} />
       )}
 
