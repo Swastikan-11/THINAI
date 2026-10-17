@@ -41,9 +41,17 @@ let loadedMetadata: ModelMetadata | null = null;
 export const COVERED_MODEL_CROPS = [
   "Tomato",
   "Potato",
-  "Pepper Bell",
+  "Pepper",
   "Corn",
-  "Maize"
+  "Maize",
+  "Apple",
+  "Grape",
+  "Orange",
+  "Peach",
+  "Strawberry",
+  "Squash",
+  "Cherry",
+  "Soybean"
 ];
 
 /**
@@ -219,6 +227,34 @@ export async function runNeuralDiseaseInference(
 
       // Valid High-Confidence Detection from LiteRT
       const predictedClass = loadedMetadata.classes[maxIdx];
+
+      // Check if predicted as Background_without_leaves (Class 10)
+      if (predictedClass.includes("Background_without_leaves") || predictedClass.toLowerCase().includes("background")) {
+        return {
+          source: "LOW_CONFIDENCE",
+          labelStatus: "not sure, retake photo",
+          isReliable: false,
+          diseaseName: "Non-Foliage Detected / இலை இல்லை (Retake Recommended)",
+          scientificName: "Background Without Leaves Detected by Neural Model",
+          crop: selectedCrop,
+          confidence: confidencePercent,
+          allProbabilities: allResults.slice(0, 3),
+          symptoms: [
+            "Neural vision model detected non-foliage objects, bare soil, or background clutter.",
+            "Optical features do not correspond to agricultural crop foliage."
+          ],
+          immediateAction: "Please take a close-up photo directly of an actual crop leaf.",
+          organicTreatment: ["N/A - Non-plant image."],
+          chemicalTreatment: ["Do not spray chemicals on non-crop objects."],
+          preventiveMeasures: ["Position the camera 10 to 15 cm directly above the affected leaf."],
+          tipsForRetake: [
+            "Hold camera 10 - 15 cm from leaf surface.",
+            "Ensure the leaf blade fills at least 70% of the camera frame.",
+            "Avoid having hands, floors, bags, or soil visible behind the leaf."
+          ]
+        };
+      }
+
       const remedy = getRemedyForClass(predictedClass, selectedCrop);
 
       return {
