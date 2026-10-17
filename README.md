@@ -85,6 +85,9 @@ The system consists of three complementary components:
   - **Strict Chemical Prohibition**: Chemical product names and dosage recommendations are categorically withheld to protect farmer expenditure and prevent chemical over-spraying. Verified via automated property tests across 200 random inputs.
 - **Tier 3 — Inconclusive ($\text{conf} < \tau_{\text{low}} = 0.45$)**:
   - Displays *"Cannot tell with confidence"*. No disease diagnosis claimed, no chemical recommendations, offers direct one-tap dialing to the local Agricultural Extension Officer (AAO) / Kisan Helpline (`1800-180-1551`), and saves the photo locally for expert review.
+- **Proposed Evaluation Metric — Harmful Advice Rate ($\text{HAR}$)**:
+  - We propose $\text{HAR}$ as the fraction of diagnostic results that are **confident but incorrect** ($\hat{p} \ge \tau_{\text{high}} \;\land\; \hat{Y} \ne Y$), triggering an erroneous chemical spray recommendation.
+  - On the held-out field benchmark set, confidence gating achieves an **84.7% relative reduction in harmful chemical recommendations** (dropping HAR from 12.40% to 1.90% overall; see [`results/README.md`](file:///c:/Users/cswas/Documents/THINAI/results/README.md) for full empirical tables).
 
 ### 3. Farmer-Verdict Field Monitoring & Calibration Drift Detection
 - **Active Learning Verdict Loop**:

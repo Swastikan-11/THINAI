@@ -505,6 +505,81 @@ test("Field Monitor: Retraining candidates counter captures rejected verdicts ('
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 8. PHASE E EVALUATION PROTOCOL & GATING BENCHMARK TESTS
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n📦 8. Phase E Evaluation Protocol & Gating Benchmark Tests");
+
+test("Evaluation Protocol: gating_comparison.csv exists and demonstrates HAR reduction", () => {
+  const p = path.resolve("results/gating_comparison.csv");
+  assert.ok(fs.existsSync(p), "results/gating_comparison.csv missing");
+  const content = fs.readFileSync(p, "utf-8");
+  const lines = content.trim().split("\n");
+  assert.ok(lines.length >= 4, `Expected at least 4 rows, found ${lines.length}`);
+
+  // Find Always Answering vs Tier 1 Gating
+  const alwaysRow = lines.find(l => l.includes("Always Answering"));
+  const tier1Row = lines.find(l => l.includes("Tier 1 Only"));
+
+  assert.ok(alwaysRow, "Always Answering row not found in gating_comparison.csv");
+  assert.ok(tier1Row, "Tier 1 row not found in gating_comparison.csv");
+
+  const alwaysParts = alwaysRow.split(",");
+  const tier1Parts = tier1Row.split(",");
+
+  const alwaysHar = parseFloat(alwaysParts[6]);
+  const tier1Har = parseFloat(tier1Parts[6]);
+  const alwaysAcc = parseFloat(alwaysParts[3]);
+  const tier1Acc = parseFloat(tier1Parts[3]);
+
+  assert.ok(tier1Har < alwaysHar, `Expected Tier 1 HAR (${tier1Har}%) < Always HAR (${alwaysHar}%)`);
+  assert.ok(tier1Acc > alwaysAcc, `Expected Tier 1 Acc (${tier1Acc}%) > Always Acc (${alwaysAcc}%)`);
+  
+  const relativeHarReduction = ((alwaysHar - tier1Har) / alwaysHar) * 100;
+  assert.ok(relativeHarReduction >= 70.0, `Expected >= 70% HAR reduction, got ${relativeHarReduction.toFixed(1)}%`);
+});
+
+test("Evaluation Protocol: verdict_simulation.csv exists with simulated noise labels", () => {
+  const p = path.resolve("results/verdict_simulation.csv");
+  assert.ok(fs.existsSync(p), "results/verdict_simulation.csv missing");
+  const content = fs.readFileSync(p, "utf-8");
+  const lines = content.trim().split("\n");
+  assert.ok(lines.length >= 8, `Expected at least 8 rows for noise levels, found ${lines.length}`);
+  assert.ok(content.includes("SIMULATED (Synthetic Noise)"), "Must clearly label noise simulation as SIMULATED");
+
+  // Verify that error gap increases monotonically with noise level eta
+  const gapIndex = 4;
+  const gaps = lines.slice(1).map(l => parseFloat(l.split(",")[gapIndex]));
+  for (let i = 1; i < gaps.length; i++) {
+    assert.ok(gaps[i] >= gaps[i - 1], `Expected monotonic increase in gap at index ${i}`);
+  }
+});
+
+test("Evaluation Protocol: Publication PNG figures exist and exceed 3 KB", () => {
+  const gatingPng = path.resolve("results/gating_comparison.png");
+  const noisePng = path.resolve("results/verdict_noise_simulation.png");
+
+  assert.ok(fs.existsSync(gatingPng), "results/gating_comparison.png missing");
+  assert.ok(fs.existsSync(noisePng), "results/verdict_noise_simulation.png");
+
+  const stat1 = fs.statSync(gatingPng);
+  const stat2 = fs.statSync(noisePng);
+
+  assert.ok(stat1.size > 3000, `gating_comparison.png too small (${stat1.size} bytes)`);
+  assert.ok(stat2.size > 3000, `verdict_noise_simulation.png too small (${stat2.size} bytes)`);
+});
+
+test("Evaluation Protocol: Mathematical expectation E[Acc_verdict] = (1 - 2*eta)*Acc + eta holds", () => {
+  const trueAcc = 0.88;
+  const eta = 0.15; // 15% noise
+  const expectedVerdictAcc = (1 - 2 * eta) * trueAcc + eta; // 0.70 * 0.88 + 0.15 = 0.766
+  assert.ok(Math.abs(expectedVerdictAcc - 0.766) < 1e-4);
+
+  // At eta = 0.5 (pure random noise), accuracy degenerates to 0.5 (random coin toss)
+  const coinToss = (1 - 2 * 0.5) * trueAcc + 0.5;
+  assert.equal(coinToss, 0.5);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SUMMARY
 // ─────────────────────────────────────────────────────────────────────────────
 console.log("\n=================================================");

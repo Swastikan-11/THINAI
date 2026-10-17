@@ -1,0 +1,8 @@
+Noise Level (eta %),Simulation Label,True Expert Accuracy (%),Verdict Accuracy Estimate (%),Accuracy Gap (|True - Verdict| % ),Wilson 95% Lower (%),Wilson 95% Upper (%),Reliability Status
+0%,SIMULATED (Synthetic Noise),87.20,87.20,0.00,82.49,90.79,Reliable (Gap < 5%)
+5%,SIMULATED (Synthetic Noise),87.20,83.70,3.50,78.62,87.77,Reliable (Gap < 5%)
+10%,SIMULATED (Synthetic Noise),87.20,79.70,7.50,74.29,84.22,Moderate Drift (Gap < 10%)
+15%,SIMULATED (Synthetic Noise),87.20,75.83,11.37,70.16,80.72,Heavy Drift / Unreliable
+20%,SIMULATED (Synthetic Noise),87.20,72.15,15.05,66.29,77.34,Heavy Drift / Unreliable
+25%,SIMULATED (Synthetic Noise),87.20,68.72,18.48,62.73,74.15,Heavy Drift / Unreliable
+30%,SIMULATED (Synthetic Noise),87.20,64.96,22.24,58.86,70.61,Heavy Drift / Unreliable

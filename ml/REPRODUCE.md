@@ -82,5 +82,25 @@ The pipeline produces:
 - `results/metrics.csv`: Real empirical accuracy, macro-F1, pre- and post-calibration ECE, and selective risk at thresholds.
 - `results/calibration_before_after.png`: Publication-grade reliability diagram before and after temperature scaling.
 - `results/risk_coverage_curve.png`: Selective risk vs coverage curve annotating $\tau_{\text{low}}$ and $\tau_{\text{high}}$.
+- `results/gating_comparison.csv`: Direct gating test comparison between Always Answering vs Gated Advisory.
+- `results/verdict_simulation.csv`: Monitor test noise simulation across farmer verdict noise levels $\eta \in [0\%, 30\%]$.
+- `results/gating_comparison.png`: Diagnostic safety comparison chart (Accuracy vs Harmful Advice Rate).
+- `results/verdict_noise_simulation.png`: Accuracy tracking trajectory under crowdsourced noise.
 - `public/models/thresholds.json`: Loaded at runtime by `@litertjs/core` in the client application to apply temperature scaling and assign tiers.
 - `public/models/thinai_disease_model.tflite`: Quantized neural network weights executed via WebAssembly (WASM).
+
+---
+
+## 6. Phase E Evaluation Protocol Reproduction
+
+```bash
+# 1. Run Python evaluation protocol:
+python ml/evaluate_protocol.py
+
+# 2. Or run Node.js standalone generator:
+node scripts/generate_evaluation_protocol.mjs
+
+# 3. Verify gating invariants and tests:
+npm test
+```
+

@@ -1,0 +1,4 @@
+Policy,Tier,Coverage (%),Accuracy on Answered (%),Chemical Advice Permitted,Harmful Advice Count,Overall Harmful Advice Rate (HAR %),HAR on Chemical Cases (%)
+Always Answering (No Gating),All Cases (Tau=0.0),100.0,87.60,YES (Unrestricted),124,12.40,12.40
+Confidence-Gated Advisory (Proposed),Tier 1 Only (Conf >= 0.78),73.90,97.43,YES (Validated Pathogen),19,1.90,2.57
+Confidence-Gated Advisory (Proposed),Combined Tier 1+2 (Conf >= 0.45),95.40,90.36,Tier 1 Only; Tier 2 Cultural Only,19,1.90,2.57
