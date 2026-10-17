@@ -134,10 +134,10 @@ export const COMMODITY_MARKETS: Record<string, MarketCommodity> = {
       { day: "D-1", price: 2835 },
       { day: "Today", price: 2840 }
     ],
-    marketInsight: "Prices have increased by +2.4% over last 7 days due to regional procurement demand. Trading at +₹540 above official MSP (₹2,300/q).",
-    source: "Agmarknet APMC Auction Feed",
-    isLive: true,
-    status: "LIVE",
+    marketInsight: "Prices referenced from regional procurement benchmark. Benchmark rate +₹540 above official MSP (₹2,300/q).",
+    source: "Agmarknet APMC Reference Feed",
+    isLive: false,
+    status: "STATIC REFERENCE",
     lastVerifiedDate: "27/09/2026"
   },
   wheat: {
@@ -362,8 +362,8 @@ export function getDashboardMarketPrice(cropName: string = "Paddy", district: st
       pricePerQuintal: commodity.currentPrice,
       cropName: commodity.cropName,
       mandi: `${district} / ${commodity.nearbyMandi}`,
-      status: "STATIC REFERENCE", // Honestly marked as benchmark until live Agmarknet API key in Phase 6
-      lastUpdatedLabel: commodity.lastVerifiedDate ? `As of ${commodity.lastVerifiedDate}` : "Benchmark, not live",
+      status: "STATIC REFERENCE",
+      lastUpdatedLabel: commodity.lastVerifiedDate ? `As of ${commodity.lastVerifiedDate} (Benchmark, not live)` : "Benchmark, not live",
       source: "APMC Benchmark Feed",
       isBenchmark: true
     };

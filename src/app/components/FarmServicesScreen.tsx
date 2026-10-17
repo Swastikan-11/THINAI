@@ -37,60 +37,37 @@ export interface EquipmentListing {
   availableDates: string;
   icon: string;
   consentPhoneShare: boolean;
+  isSample?: boolean;
 }
 
 const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
   {
-    id: "p2p-1",
+    id: "sample-p2p-1",
     equipmentName: "Mahindra 575 DI (45 HP) + Rotavator",
-    model: "2023 Model with Paddy Cage Wheels",
-    ownerName: "R. Subramanian",
-    phone: "9842109876",
+    model: "45 HP with Paddy Cage Wheels",
+    ownerName: "Sample Owner / மாதிரி உரிமையாளர்",
+    phone: "Contact via App",
     village: "Thondamuthur",
     district: "Coimbatore",
     ratePerDay: "₹600 / hour (Driver included)",
-    availableDates: "Available all weekdays",
+    availableDates: "Demo Reference Only",
     icon: "🚜",
-    consentPhoneShare: true
+    consentPhoneShare: false,
+    isSample: true
   },
   {
-    id: "p2p-2",
+    id: "sample-p2p-2",
     equipmentName: "VST Shakti 130 DI Power Tiller",
     model: "13 HP Multi-Speed Wet Tiller",
-    ownerName: "M. Kandasamy",
-    phone: "9443212345",
+    ownerName: "Sample Owner / மாதிரி உரிமையாளர்",
+    phone: "Contact via App",
     village: "Kinathukadavu",
     district: "Coimbatore",
     ratePerDay: "₹350 / hour",
-    availableDates: "Available this week",
+    availableDates: "Demo Reference Only",
     icon: "⚙️",
-    consentPhoneShare: true
-  },
-  {
-    id: "p2p-3",
-    equipmentName: "10-Litre Agri Drone Sprayer",
-    model: "Hexacopter GPS Auto-Waypoints",
-    ownerName: "S. Vignesh (Youth Farmer)",
-    phone: "9789045612",
-    village: "Pollachi Rural",
-    district: "Coimbatore",
-    ratePerDay: "₹450 / acre (Chemical spray)",
-    availableDates: "Book 1 day prior",
-    icon: "🛸",
-    consentPhoneShare: true
-  },
-  {
-    id: "p2p-4",
-    equipmentName: "Kubota Mini Combine Harvester",
-    model: "Crawler Tracks for Wet Fields",
-    ownerName: "P. Muthukumar",
-    phone: "9843256789",
-    village: "Madukkarai",
-    district: "Coimbatore",
-    ratePerDay: "₹2,100 / acre",
-    availableDates: "Harvest season booking open",
-    icon: "🌾",
-    consentPhoneShare: true
+    consentPhoneShare: false,
+    isSample: true
   }
 ];
 
@@ -141,6 +118,10 @@ export function FarmServicesScreen({
   });
 
   const handleCreateEquipment = async () => {
+    if (!auth.currentUser) {
+      alert(language === "Tamil" ? "கருவிகளை பதிவிட தயவுசெய்து உள்நுழையவும்." : "Please sign in to post equipment listings.");
+      return;
+    }
     if (!newEquipment.ownerName.trim() || !newEquipment.phone.trim()) {
       alert(language === "Tamil" ? "தயவுசெய்து உரிமையாளர் பெயர் மற்றும் தொலைபேசி எண்ணை உள்ளிடவும்." : "Please enter owner name and mobile phone.");
       return;
@@ -532,7 +513,14 @@ export function FarmServicesScreen({
                         <div className="flex items-center gap-2">
                           <span className="text-xl">{item.icon}</span>
                           <div>
-                            <h4 className="font-bold text-sm text-zinc-900 leading-snug">{item.equipmentName}</h4>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <h4 className="font-bold text-sm text-zinc-900 leading-snug">{item.equipmentName}</h4>
+                              {item.isSample && (
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                  SAMPLE / மாதிரி
+                                </span>
+                              )}
+                            </div>
                             <span className="text-[11px] text-zinc-500 font-medium">Model: {item.model}</span>
                           </div>
                         </div>

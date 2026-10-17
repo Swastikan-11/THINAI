@@ -29,36 +29,30 @@ export interface CommunityPost {
   likesCount: number;
   createdAt: string;
   isOutbreakAlert?: boolean;
+  isSample?: boolean;
 }
 
 const DEFAULT_POSTS: CommunityPost[] = [
   {
-    id: "post-1",
-    authorName: "K. Murugesan",
+    id: "sample-post-1",
+    authorName: "Sample Farmer / மாதிரி விவசாயி",
     district: "Thanjavur",
     crop: "Paddy (CR 1009)",
-    content: "Caution: Early morning mist and high humidity in Orathanadu block. Observed minor leaf folder incidence. Applying Neem oil 3% spray before morning dew dries.",
+    content: "Sample Alert: Early morning mist and high humidity in Orathanadu block. Observed minor leaf folder incidence. Applying Neem oil 3% spray before morning dew dries.",
     likesCount: 14,
-    createdAt: "2 hours ago",
-    isOutbreakAlert: true
+    createdAt: "Demo Reference Only",
+    isOutbreakAlert: true,
+    isSample: true
   },
   {
-    id: "post-2",
-    authorName: "S. Soundararajan",
+    id: "sample-post-2",
+    authorName: "Sample Farmer / மாதிரி விவசாயி",
     district: "Coimbatore",
     crop: "Tomato",
-    content: "Pollachi mandi tomato prices touched ₹28/kg today at the uzhavar sandhai. Good demand for Shivam variety.",
+    content: "Sample Note: Pollachi mandi tomato prices touched ₹28/kg at the uzhavar sandhai. Good demand for Shivam variety.",
     likesCount: 9,
-    createdAt: "4 hours ago"
-  },
-  {
-    id: "post-3",
-    authorName: "M. Selvamani",
-    district: "Madurai",
-    crop: "Paddy",
-    content: "Switched to Alternate Wetting and Drying (AWD) using field water pipe. Saved almost 30% electricity in tubewell pumping this month.",
-    likesCount: 21,
-    createdAt: "Yesterday"
+    createdAt: "Demo Reference Only",
+    isSample: true
   }
 ];
 
@@ -341,8 +335,13 @@ export function CommunityScreen({
               {/* Header */}
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <strong className="text-xs font-extrabold text-zinc-900">{post.authorName}</strong>
+                    {post.isSample && (
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-300">
+                        SAMPLE / மாதிரி
+                      </span>
+                    )}
                     {post.isOutbreakAlert && (
                       <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
                         {language === "Tamil" ? "எச்சரிக்கை" : "Pest Alert"}

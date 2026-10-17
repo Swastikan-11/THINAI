@@ -6,7 +6,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "test": "node scripts/verify_system.mjs"
+    "test": "node scripts/verify_system.mjs && node scripts/test_firestore_rules.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",

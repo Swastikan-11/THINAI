@@ -319,7 +319,7 @@ export function generateContextualResponse(query: string, context: FarmerContext
 
 வணக்கம் ${context.name}! உங்கள் பண்ணை விவரங்களை ஆய்வு செய்ததின் அடிப்படையில்:
 
-1. **காரணம் (Why):** உங்கள் ${context.district} பகுதியில் அடுத்த 24-48 மணி நேரத்தில் **${context.rainfallExpected || 85}mm பலத்த மழை** பெய்ய வாய்ப்புள்ளது. மேலும் மண்ணின் ஈரப்பதம் ஏற்கனவே **${context.soilMoisture || 68}%** அளவில் உள்ளது.
+1. **காரணம் (Why):** உங்கள் ${context.district} பகுதியில் அடுத்த 24-48 மணி நேரத்தில் **${context.rainfallExpected || 0}mm மழை** பெய்ய வாய்ப்புள்ளது. மேலும் மண்ணின் ஈரப்பதம் **${context.soilMoisture || 55}%** அளவில் உள்ளது.
 2. **பயிர் பருவம் (Stage):** உங்கள் ${context.primaryCrop} பயிர் தற்போது **${context.cropStage} (தூர்கட்டும் பருவம்)** பருவத்தில் உள்ளது. இச்சூழலில் கூடுதல் நீர் தேங்கினால் வேர் அழுகல் மற்றும் இலை கருகல் (Blast) பூஞ்சை பரவும் அபாயம் அதிகம்.
 3. **பரிந்துரைக்கப்படும் நடவடிக்கை (Action):** இப்போதைக்கு பாசனத்தை நிறுத்துங்கள். வயல் வடிகால் மதகுகளை தூர்வாரி வையுங்கள்.
 4. **மறுஆய்வு:** மழை நின்ற 24 மணி நேரத்திற்குப் பிறகு மண்ணை சரிபார்த்து முடிவு செய்யவும்.
@@ -332,7 +332,7 @@ export function generateContextualResponse(query: string, context: FarmerContext
 
 नमस्ते ${context.name}! आपके खेत के संदर्भ अनुसार:
 
-1. **कारण (Why):** आपके ${context.district} क्षेत्र में अगले 24-48 घंटों में **${context.rainfallExpected || 85}mm वर्षा** का पूर्वानुमान है। खेत की मिट्टी में नमी पहले से **${context.soilMoisture || 68}%** है।
+1. **कारण (Why):** आपके ${context.district} क्षेत्र में अगले 24-48 घंटों में **${context.rainfallExpected || 0}mm वर्षा** का पूर्वानुमान है। खेत की मिट्टी में नमी **${context.soilMoisture || 55}%** है।
 2. **फसल जोखिम:** आपकी **${context.primaryCrop}** फसल अभी **${context.cropStage}** अवस्था में है। अधिक जलभराव से जड़ें सड़ सकती हैं और झुलसा (Blast) रोग का प्रकोप बढ़ सकता है।
 3. **कार्रवाई (Action):** तत्काल सिंचाई रोकें और मेड़ों के जल निकासी निकास साफ रखें।
 4. **पुनः परीक्षण:** बारिश थमने के 24 घंटे बाद मिट्टी की जांच करें।
@@ -345,7 +345,7 @@ export function generateContextualResponse(query: string, context: FarmerContext
 
 Hello ${context.name}! Based on your active farm parameters:
 
-1. **Environmental Fact:** Upcoming rainfall of **${context.rainfallExpected || 85}mm** is forecasted for ${context.district}. Your **${context.soilType}** soil currently holds **${context.soilMoisture || 68}% moisture**.
+1. **Environmental Fact:** Upcoming rainfall of **${context.rainfallExpected || 0}mm** is forecasted for ${context.district}. Your **${context.soilType}** soil currently holds **${context.soilMoisture || 55}% moisture**.
 2. **Agronomic Risk:** Your **${context.primaryCrop}** is in the critical **${context.cropStage} stage**. Excessive standing water combined with high humidity (${context.weatherCondition}) creates favorable microclimate conditions for fungal blast (*Magnaporthe oryzae*).
 3. **Action:** Immediately delay planned irrigation for 24-48 hours. Ensure field drainage channels are clear of debris.
 4. **When to recheck:** Friday morning after rainfall recedes.
@@ -365,7 +365,7 @@ Hello ${context.name}! Based on your active farm parameters:
     if (lang === "Tamil") {
       return `🍃 **இலைகள் மஞ்சள் நிறமாதல் & நோய் பாதுகாப்பு ஆலோசனை:**
 
-1. **காரணம்:** அதிக மண்ணின் ஈரப்பதம் (${context.soilMoisture || 68}%) மற்றும் காற்றில் 75% ஈரப்பதம் நிலவும்போது, நைட்ரஜன் சத்து வேர்களால் கிரகிக்கப்படாமல் மந்தமாகும் அல்லது பாக்டீரியா இலைக்கருகல் (BLB) பூஞ்சை ஆரம்பிக்கலாம்.
+1. **காரணம்:** அதிக மண்ணின் ஈரப்பதம் (${context.soilMoisture || 55}%) மற்றும் காற்றில் 75% ஈரப்பதம் நிலவும்போது, நைட்ரஜன் சத்து வேர்களால் கிரகிக்கப்படாமல் மந்தமாகும் அல்லது பாக்டீரியா இலைக்கருகல் (BLB) பூஞ்சை ஆரம்பிக்கலாம்.
 2. **நடவடிக்கை:**
    • வயலில் தேங்கியுள்ள நீரை உடனடியாக வெளியேற்றவும்.
    • பயிர் ஸ்கேன் தாவலை பயன்படுத்தி இலை படத்தை பதிவேற்றி ஆய்வு செய்யவும்.
@@ -375,7 +375,7 @@ Hello ${context.name}! Based on your active farm parameters:
     if (lang === "Hindi") {
       return `🍃 **पत्तियों का पीलापन एवं फसल सुरक्षा सलाह:**
 
-1. **कारण:** मिट्टी में अत्यधिक नमी (${context.soilMoisture || 68}%) और 75% आर्द्रता के कारण जड़ों को ऑक्सीजन नहीं मिलती, जिससे नाइट्रोजन अवशोषण रुक जाता है या झुलसा रोग पनप सकता है।
+1. **कारण:** मिट्टी में अत्यधिक नमी (${context.soilMoisture || 55}%) और 75% आर्द्रता के कारण जड़ों को ऑक्सीजन नहीं मिलती, जिससे नाइट्रोजन अवशोषण रुक जाता है या झुलसा रोग पनप सकता है।
 2. **कदम उठाएं:**
    • खेत से अतिरिक्त पानी तुरंत निकालें।
    • 'रोग पहचान' टैब से प्रभावित पत्ती की फोटो स्कैन करें।
@@ -384,10 +384,10 @@ Hello ${context.name}! Based on your active farm parameters:
 
     return `🍃 **Leaf Yellowing & Disease Management Advisory:**
 
-1. **Probable Causes:** In the ${context.cropStage} stage of ${context.primaryCrop}, saturated soil (${context.soilMoisture || 68}%) inhibits root aeration, leading to temporary nitrogen chlorosis or early onset of bacterial blight.
+1. **Probable Causes:** In the ${context.cropStage} stage of ${context.primaryCrop}, saturated soil (${context.soilMoisture || 55}%) inhibits root aeration, leading to temporary nitrogen chlorosis or early onset of bacterial blight.
 2. **Immediate Steps:**
    • Drain stagnant surface water from the plots immediately.
-   • Use the **Scan Crop** feature to run our PlantVillage-trained diagnostic classifier on affected leaves.
+   • Use the **Scan Crop** feature to run our diagnostic classifier on affected leaves.
    • Avoid applying raw chemical nitrogen until drainage is restored.`;
   }
 

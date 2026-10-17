@@ -100,7 +100,7 @@ const PADDY_LIFECYCLE: CropStageGuide[] = [
     diseases: ["Rice Blast (Pyricularia oryzae) spindle lesions", "Sheath Blight (Rhizoctonia solani)"],
     preventiveActions: ["Install 4 pheromone traps/acre for stem borer monitoring; spray Azadirachtin 1% @ 400 ml/acre."],
     weatherRisks: "High humidity (>80%) combined with overcast sky accelerates fungal spore germination.",
-    engineGuidance: "Active THINAI Decision: Soil saturation currently high (68%) with 18mm rain forecast. Delay irrigation by 24h to avoid root hypoxia."
+    engineGuidance: "Active THINAI Decision Rule: When soil moisture status is wet or rain is forecast, delay irrigation by 24h to avoid root hypoxia and nitrogen leaching."
   },
   {
     stageId: "flowering",

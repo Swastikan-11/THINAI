@@ -84,8 +84,8 @@ export interface DecisionEngineResult {
 export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineResult {
   const crop = (inputs.crop || "Paddy").toLowerCase();
   const stage = (inputs.cropStage || "Tillering").toLowerCase();
-  const moisture = Number(inputs.soilMoisture) || 68;
-  const rain = Number(inputs.rainfallExpected) || 85;
+  const moisture = Number(inputs.soilMoisture) || 55;
+  const rain = inputs.rainfallExpected !== undefined ? Number(inputs.rainfallExpected) : 0;
   const humidity = Number(inputs.humidity) || 75;
   const temp = Number(inputs.temperature) || 28;
   const soil = (inputs.soilType || "Clay Loam").toLowerCase();
@@ -317,39 +317,73 @@ export function generateFarmDecisions(inputs: DecisionInputs): DecisionEngineRes
   // -------------------------------------------------------------
   // RULE 4: Market Timing Advisory
   // -------------------------------------------------------------
-  const marketPrice = inputs.marketPrice || 2840;
-  recommendations.push({
-    id: "market_price_advisory",
-    title: "Market Price Upward Trend: Hold Buffer Stock",
-    action: "Hold uncommitted grain inventory; local APMC prices are gaining ₹65/quintal week-on-week.",
-    when: "Re-evaluate in 7 days before scheduling transport to regional mandi.",
-    why: `Current mandi price of ₹${marketPrice}/quintal is trending upward due to delayed monsoon arrivals in neighboring districts.`,
-    confidence: 82,
-    confidenceLabel: "7-Day APMC Weighted Moving Average Trend Analysis",
-    supportingFactors: [
-      `Regional mandi arrivals down 14% this week`,
-      `Price increased +2.4% over trailing 7-day window`,
-      `State procurement center target price benchmark: ₹2,920/quintal`
-    ],
-    risk: "Selling prematurely locks in lower margins; inadequate moisture storage (>14%) risks grain mold.",
-    alternativeAction: "If cash liquidity is urgently needed, sell 25% of stock to meet operational expenses and hold remainder.",
-    feedbackInfluence: "Market momentum advisory generated from regional commodity feed.",
-    recommendation: "Hold harvested buffer stock; local APMC prices are trending upward (+2.4% this week).",
-    reason: `Current market price is ₹${marketPrice}/quintal with strong procurement demand in regional mandis.`,
-    priority: "Low",
-    category: "Market",
-    recommendedTime: "Re-check in 7 days before scheduling transport",
-    riskLevel: "Low",
-    explainability: {
-      what: "Store grain at <14% moisture content to prevent storage pest emergence.",
-      why: "Arrival volumes are tight due to regional monsoon delays, supporting firm farmgate rates.",
-      when: "Sell target: When rates cross ₹2,920/quintal.",
-      confidenceReason: "7-day APMC weighted moving average trend analysis.",
-      rulesTriggered: ["RULE_MARKET_TREND_MOMENTUM"]
-    },
-    status: "pending",
-    impact: "Potential additional revenue of ₹80-120 per quintal."
-  });
+  if (inputs.marketPrice && inputs.marketPrice > 0) {
+    const marketPrice = inputs.marketPrice;
+    recommendations.push({
+      id: "market_price_advisory",
+      title: "Market Price Advisory (Benchmark, Not Live)",
+      action: "Review mandi buffer stock against regional procurement price.",
+      when: "Re-evaluate before scheduling transport to regional APMC mandi.",
+      why: `Current reference mandi price is ₹${marketPrice}/quintal for ${inputs.crop || "selected crop"}.`,
+      confidence: 75,
+      confidenceLabel: "Regional APMC Benchmark Feed (Not Live Auction)",
+      supportingFactors: [
+        `Mandi reference price: ₹${marketPrice}/quintal`,
+        `Data status: Benchmark reference data, not live API auction feed`,
+        `Official procurement benchmark verified`
+      ],
+      risk: "Market volatility; verify actual auction rate before transport.",
+      alternativeAction: "Contact local APMC secretary for today's opening lot rates.",
+      feedbackInfluence: "Market advisory generated from official benchmark data.",
+      recommendation: `Monitor APMC mandi prices (Current benchmark: ₹${marketPrice}/q).`,
+      reason: `Current reference price is ₹${marketPrice}/quintal.`,
+      priority: "Low",
+      category: "Market",
+      recommendedTime: "Re-check before scheduling transport",
+      riskLevel: "Low",
+      explainability: {
+        what: "Reference benchmark price for marketing planning.",
+        why: "Live Agmarknet API key not configured; serving static verified benchmark.",
+        when: "Active continuously while market price benchmark is loaded.",
+        confidenceReason: "Official CACP/APMC benchmark reference.",
+        rulesTriggered: ["RULE_MARKET_BENCHMARK_REFERENCE"]
+      },
+      status: "pending",
+      impact: "Informs price expectation prior to physical mandi dispatch."
+    });
+  } else {
+    recommendations.push({
+      id: "market_price_unavailable",
+      title: "Market Price Unavailable",
+      action: `Mandi price data is currently unavailable for ${inputs.crop || "this crop"}. Verify modal price at local APMC mandi before marketing produce.`,
+      when: "Before dispatching harvested produce.",
+      why: "No live Agmarknet APMC feed or official MSP benchmark is currently registered for this crop in this district.",
+      confidence: 50,
+      confidenceLabel: "No Live Price Feed",
+      supportingFactors: [
+        `Crop: ${inputs.crop || "Selected crop"}`,
+        `Location: ${inputs.location || "Local district"}`,
+        `Status: Price unavailable`
+      ],
+      risk: "Marketing without price knowledge risks sub-optimal farmgate realization.",
+      alternativeAction: "Call nearest Uzhavar Sandhai or APMC market committee directly.",
+      recommendation: "Verify local APMC mandi rates before sale.",
+      reason: "Live market price unavailable for this commodity.",
+      priority: "Low",
+      category: "Market",
+      recommendedTime: "Before harvest sale",
+      riskLevel: "Low",
+      explainability: {
+        what: "Transparent price unavailable state.",
+        why: "Zero fabrication policy: Never invent or simulate market prices.",
+        when: "When no price feed is available for chosen crop.",
+        confidenceReason: "Safety fallback: Unmonitored commodity.",
+        rulesTriggered: ["RULE_PRICE_UNAVAILABLE_FALLBACK"]
+      },
+      status: "pending",
+      impact: "Prevents farmer reliance on fabricated or unverified price assumptions."
+    });
+  }
 
   // Sort recommendations by priority: High -> Medium -> Low
   const priorityOrder: Record<PriorityLevel, number> = { High: 3, Medium: 2, Low: 1 };

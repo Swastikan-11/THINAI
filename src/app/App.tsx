@@ -76,6 +76,8 @@ import {
 } from "../services/i18n";
 import { onAuthStateChange, logoutUser, deleteCurrentUserAccount, updateUserPassword } from "../services/authService";
 import { db, LocalField } from "../services/db";
+import { firestoreDb } from "../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { apiClient } from "../services/apiClient";
 import { syncManager } from "../services/syncService";
 import { SyncStatusBar, OfflineActiveBanner } from "./components/SyncStatusBar";
@@ -1655,7 +1657,7 @@ function AIScreen({
         cropVariety: user.cropVariety,
         cropStage: user.cropStage,
         soilType: user.soilType,
-        soilMoisture: 68,
+        soilMoisture: user.soilMoistureStatus === "dry" ? 25 : user.soilMoistureStatus === "wet" ? 85 : 55,
         weatherCondition: weather.condition,
         rainfallExpected: weather.rainfallMmExpected,
         temperature: weather.temperature,
@@ -1700,7 +1702,7 @@ function AIScreen({
         cropVariety: user.cropVariety,
         cropStage: user.cropStage,
         soilType: user.soilType,
-        soilMoisture: 68,
+        soilMoisture: user.soilMoistureStatus === "dry" ? 25 : user.soilMoistureStatus === "wet" ? 85 : 55,
         weatherCondition: weather.condition,
         rainfallExpected: weather.rainfallMmExpected,
         temperature: weather.temperature,
@@ -2291,7 +2293,7 @@ export default function App() {
       const saved = localStorage.getItem("thinai_farmer_profile");
       if (saved) return JSON.parse(saved);
     } catch {}
-    return { ...INITIAL_USER, name: urlScreen ? "Swastikan S" : INITIAL_USER.name, language: getPersistedLanguage() };
+    return { ...INITIAL_USER, language: getPersistedLanguage() };
   });
 
   useEffect(() => {
@@ -2344,19 +2346,42 @@ export default function App() {
             return;
           }
 
-          // 2. Check Backend API
+          // 2. Check Cloud Firestore (Shared Serverless Backend)
+          try {
+            const profileSnap = await getDoc(doc(firestoreDb, "profiles", fbUser.uid));
+            if (profileSnap.exists()) {
+              const remoteProfile = profileSnap.data() as UserState;
+              await db.profiles.put({
+                id: `profile-${fbUser.uid}`,
+                userId: fbUser.uid,
+                data: remoteProfile as any,
+                updatedAt: new Date().toISOString(),
+                synced: true
+              });
+              setUser(remoteProfile);
+              if (screen === "splash" || screen === "login" || screen === "register") {
+                setScreen("home");
+              }
+              return;
+            }
+          } catch (fsErr) {
+            console.warn("Firestore profile fetch skipped/error:", fsErr);
+          }
+
+          // 3. Fallback to API Client if available
           try {
             const remoteUser = await apiClient.getProfile();
             if (remoteUser && remoteUser.profile) {
               const profileData: UserState = {
-                name: remoteUser.full_name || fbUser.displayName || "Farmer",
+                name: remoteUser.full_name || fbUser.displayName || "",
                 phone: remoteUser.phone || fbUser.phoneNumber || "",
                 email: remoteUser.email || fbUser.email || "",
-                village: remoteUser.profile.village || "Kinathukadavu",
+                village: remoteUser.profile.village || "",
                 district: remoteUser.profile.district || "Coimbatore",
                 stateName: remoteUser.profile.state || "Tamil Nadu",
                 farmSize: "2.0",
                 soilType: "Clay Loam",
+                soilMoistureStatus: "optimal",
                 primaryCrop: "Paddy (Rice)",
                 cropVariety: "Ponni (CO 51)",
                 cropStage: "Tillering Stage",
@@ -2384,7 +2409,7 @@ export default function App() {
             }
           } catch {}
 
-          // 3. Authenticated but no farmer profile exists -> Open Onboarding
+          // 4. Authenticated but no farmer profile exists -> Open Onboarding
           setScreen("onboarding");
 
         } catch (e) {
@@ -2393,7 +2418,7 @@ export default function App() {
         }
       } else {
         (window as any)._currentFirebaseUid = null;
-        if (!urlScreen && screen !== "splash" && screen !== "register") {
+        if (screen !== "splash" && screen !== "register") {
           setScreen("login");
         }
       }
@@ -2456,6 +2481,17 @@ export default function App() {
     setUser(u);
     try {
       localStorage.setItem("thinai_farmer_profile", JSON.stringify(u));
+      const uid = firebaseUser?.uid;
+      if (uid) {
+        db.profiles.put({
+          id: `profile-${uid}`,
+          userId: uid,
+          data: u as any,
+          updatedAt: new Date().toISOString(),
+          synced: true
+        }).catch(err => console.warn("Dexie profile update error:", err));
+        setDoc(doc(firestoreDb, "profiles", uid), u, { merge: true }).catch(err => console.warn("Firestore profile update error:", err));
+      }
     } catch (e) {
       console.error(e);
     }
