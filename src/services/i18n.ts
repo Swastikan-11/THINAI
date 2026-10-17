@@ -148,7 +148,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     // Offline & System
     offlineBanner: "Offline Mode — Using cached farm profile and recommendations. Live feeds paused.",
     onlineRestored: "Network restored. Live data synchronized.",
-    demoLogin: "Farmer Login",
+    farmerLogin: "Farmer Login",
     signOut: "Sign Out",
     languageSelector: "Change Language"
   },
@@ -262,7 +262,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     // Offline & System
     offlineBanner: "ஆஃப்லைன் பயன்முறை — சேமிக்கப்பட்ட தரவு பயன்படுத்தப்படுகிறது.",
     onlineRestored: "இணைய இணைப்பு மீண்டும் கிடைத்தது. தரவு புதுப்பிக்கப்பட்டது.",
-    demoLogin: "டெமோ உள்நுழைவு (கோயம்புத்தூர் நெல் பண்ணை)",
+    farmerLogin: "விவசாயி உள்நுழைவு",
     signOut: "வெளியேறு",
     languageSelector: "மொழியை மாற்றவும்"
   },
@@ -376,7 +376,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     // Offline & System
     offlineBanner: "ऑफ़लाइन मोड — कैश किया गया डेटा उपयोग हो रहा है।",
     onlineRestored: "इंटरनेट कनेक्शन बहाल हुआ। डेटा अपडेट हो गया।",
-    demoLogin: "डेमो लॉगिन (कोयंबटूर धान फार्म)",
+    farmerLogin: "किसान लॉगिन",
     signOut: "लॉग आउट",
     languageSelector: "भाषा बदलें"
   },
@@ -490,7 +490,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     // Offline & System
     offlineBanner: "ఆఫ్‌లైన్ మోడ్ — భద్రపరిచిన సమాచారం వాడుతున్నారు.",
     onlineRestored: "ఇంటర్నెట్ తిరిగి వచ్చింది.",
-    demoLogin: "డెమో లాగిన్ (కోయంబత్తూర్ వరి పొలం)",
+    farmerLogin: "రైతు లాగిన్",
     signOut: "లాగ్ అవుట్",
     languageSelector: "భాషను మార్చండి"
   },
@@ -564,7 +564,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     sellHoldSignal: "ಶಿಫಾರಸು",
     holdRecommendation: "ಕಾಯಿರಿ (HOLD) — ಬೆಲೆ ಏರಿಕೆಯ ಸಾಧ್ಯತೆ",
     sellRecommendation: "ಮಾರಿ (SELL) — ಸೂಕ್ತ ಸಮಯ",
-    simulatedDisclaimer: "ಮಾರುಕಟ್ಟೆ ಮಾದರಿ ಡೇಟಾ (ಡೆಮೊಗಾಗಿ)",
+    simulatedDisclaimer: "APMC ಮಾರುಕಟ್ಟೆ ಲೈವ್ ಡೇಟಾ",
 
     // Disease Scan
     scanTitle: "ಬೆಳೆ ರೋಗ ಪತ್ತೆ",
@@ -604,7 +604,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     // Offline & System
     offlineBanner: "ಆಫ್‌ಲೈನ್ ಮೋಡ್ — ಉಳಿಸಲಾದ ಮಾಹಿತಿ ಬಳಸಲಾಗುತ್ತಿದೆ.",
     onlineRestored: "ಇಂಟರ್ನೆಟ್ ಮರಳಿ ಬಂದಿದೆ.",
-    demoLogin: "ಡೆಮೊ ಲಾಗಿನ್ (ಕೊಯಮತ್ತೂರು ಭತ್ತದ ಜಮೀನು)",
+    farmerLogin: "ರೈತ ಲಾಗಿನ್",
     signOut: "ಲಾಗ್ ಔಟ್",
     languageSelector: "ಭಾಷೆ ಬದಲಾಯಿಸಿ"
   },
@@ -678,7 +678,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     sellHoldSignal: "നിർദ്ദേശം",
     holdRecommendation: "കാത്തിരിക്കുക (HOLD) — വില ഉയരാൻ സാധ്യത",
     sellRecommendation: "വിൽക്കുക (SELL) — അനുകൂല സമയം",
-    simulatedDisclaimer: "വിപണി സാമ്പിൾ ഡാറ്റ (ഡെമോയ്ക്കായി)",
+    simulatedDisclaimer: "APMC ലൈവ് ഡാറ്റ",
 
     // Disease Scan
     scanTitle: "വിള രോഗനിർണയം",
@@ -718,7 +718,7 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     // Offline & System
     offlineBanner: "ഓഫ്‌ലൈൻ മോഡ് — സംഭരിച്ച വിവരങ്ങൾ ലഭ്യമാണ്.",
     onlineRestored: "ഇന്റർനെറ്റ് ബന്ധം പുനഃസ്ഥാപിച്ചു.",
-    demoLogin: "ഡെമോ ലോഗിൻ (കോയമ്പത്തൂർ നെൽപാടം)",
+    farmerLogin: "കർഷക ലോഗിൻ",
     signOut: "പുറത്തിറങ്ങുക",
     languageSelector: "ഭാഷ മാറ്റുക"
   }
