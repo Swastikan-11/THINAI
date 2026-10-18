@@ -604,5 +604,5 @@ console.log("=================================================");
 if (failedCount > 0) {
   process.exit(1);
 } else {
-  console.log("🎉 All automated verification tests passed with 100% success!");
+  console.log("🎉 All automated verification tests passed!");
 }
