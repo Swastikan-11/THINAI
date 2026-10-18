@@ -81,6 +81,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { apiClient } from "../services/apiClient";
 import { syncManager } from "../services/syncService";
 import { SyncStatusBar, OfflineActiveBanner } from "./components/SyncStatusBar";
+import { PendingSyncModal } from "./components/PendingSyncModal";
 import { LoginScreen, RegisterScreen, OnboardingScreen } from "./components/AuthScreens";
 import { FieldSelector } from "./components/FieldSelector";
 import { ARFIDrawer, ARFIData } from "./components/ARFIDrawer";
@@ -515,7 +516,8 @@ function HomeScreen({
   onDetectGps,
   onUpdateSoilMoisture,
   onSelectCrop,
-  showToast
+  showToast,
+  onOpenPendingSync
 }: {
   navigate: (s: Screen) => void;
   user: UserState;
@@ -532,6 +534,7 @@ function HomeScreen({
   onUpdateSoilMoisture: (status: "dry" | "optimal" | "wet") => void;
   onSelectCrop?: (crop: string) => void;
   showToast?: (msg: string, type?: ToastType) => void;
+  onOpenPendingSync?: () => void;
 }) {
   const primaryRec = decisionResult.primaryRecommendation;
   const lang = user.language;
@@ -563,7 +566,7 @@ function HomeScreen({
         <SBar light />
 
         <div className="flex justify-between items-center mt-1 mb-2">
-          <SyncStatusBar />
+          <SyncStatusBar onOpenPendingSync={onOpenPendingSync} />
           <div className="flex gap-2 items-center">
             {/* 1-Tap Instant Language Toggle: [ EN | தமிழ் ] (Plantix/Uzhavan Pattern) */}
             <button
@@ -2335,6 +2338,7 @@ export default function App() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [feedbackTarget, setFeedbackTarget] = useState<Recommendation | null>(null);
   const [showLangModal, setShowLangModal] = useState(false);
+  const [showPendingSyncModal, setShowPendingSyncModal] = useState(false);
   const [weather, setWeather] = useState<WeatherData>({
     isAvailable: true,
     status: "LIVE",
@@ -2727,7 +2731,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Sticky App-Wide Offline Banner across all active screens */}
-      {screen !== "splash" && <OfflineActiveBanner />}
+      {screen !== "splash" && <OfflineActiveBanner onOpenPendingSync={() => setShowPendingSyncModal(true)} />}
 
       {/* Screen Router */}
       <div className="flex-1 overflow-hidden">
@@ -2780,6 +2784,7 @@ export default function App() {
             decisionResult={decisionResult}
             onOpenFeedback={setFeedbackTarget}
             isOffline={isOffline}
+            onOpenPendingSync={() => setShowPendingSyncModal(true)}
             onOpenLangModal={() => setShowLangModal(true)}
             onToggleLanguage={() => handleLanguageChange(user.language === "Tamil" ? "English" : "Tamil")}
             onRefreshWeather={() => loadLiveWeather(user.district)}
@@ -2997,6 +3002,15 @@ export default function App() {
           currentLang={user.language}
           onSelect={handleLanguageChange}
           onClose={() => setShowLangModal(false)}
+        />
+      )}
+
+      {showPendingSyncModal && (
+        <PendingSyncModal
+          isOpen={showPendingSyncModal}
+          onClose={() => setShowPendingSyncModal(false)}
+          language={user.language}
+          showToast={showToast}
         />
       )}
     </div>

@@ -50,7 +50,10 @@ export const apiClient = {
   // System Health
   async checkHealth(): Promise<boolean> {
     try {
-      const res = await fetch("https://api.thinai.com/health", { method: "GET" });
+      const res = await fetch("https://api.thinai.com/health", {
+        method: "GET",
+        signal: AbortSignal.timeout(5000)
+      });
       return res.ok;
     } catch {
       return false;

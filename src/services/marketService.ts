@@ -247,7 +247,7 @@ export async function fetchLiveAgmarknetPrice(
 
   try {
     const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${encodeURIComponent(apiKey)}&format=json&filters%5Bstate%5D=Tamil+Nadu&filters%5Bdistrict%5D=${encodeURIComponent(district)}&filters%5Bcommodity%5D=${encodeURIComponent(commodity)}&limit=1`;
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return null;
     const json = await res.json();
     if (json.records && json.records.length > 0) {

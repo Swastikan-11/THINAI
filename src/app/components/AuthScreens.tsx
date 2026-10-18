@@ -366,10 +366,21 @@ export function LoginScreen({
             <button
               type="submit"
               disabled={loading}
+              title={!navigator.onLine ? (language === "Tamil" ? "இணைய இணைப்பு தேவை" : "Requires active internet connection") : ""}
               className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50 mt-1">
               {loading ? <RefreshCw size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
               <span>{tAuth("signIn", language)}</span>
             </button>
+            {!navigator.onLine && (
+              <div className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1.5">
+                <AlertTriangle size={13} className="text-amber-600 shrink-0" />
+                <span>
+                  {language === "Tamil"
+                    ? "இணைய இணைப்பு தேவை — உள்நுழைவு ஆஃப்லைனில் செயல்படாது"
+                    : "Internet required — Sign-in needs an active connection"}
+                </span>
+              </div>
+            )}
           </form>
         ) : (
           <div className="flex flex-col gap-3">
@@ -391,14 +402,27 @@ export function LoginScreen({
             </div>
 
             {!otpSent ? (
-              <button
-                type="button"
-                onClick={handleSendOtp}
-                disabled={loading || phoneNumber.length !== 10}
-                className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50">
-                {loading ? <RefreshCw size={16} className="animate-spin" /> : <ArrowRight size={16} />}
-                <span>{tAuth("sendOtp", language)}</span>
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={loading || phoneNumber.length !== 10}
+                  title={!navigator.onLine ? (language === "Tamil" ? "இணைய இணைப்பு தேவை" : "Requires active internet connection") : ""}
+                  className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50">
+                  {loading ? <RefreshCw size={16} className="animate-spin" /> : <ArrowRight size={16} />}
+                  <span>{tAuth("sendOtp", language)}</span>
+                </button>
+                {!navigator.onLine && (
+                  <div className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1.5">
+                    <AlertTriangle size={13} className="text-amber-600 shrink-0" />
+                    <span>
+                      {language === "Tamil"
+                        ? "இணைய இணைப்பு தேவை — OTP பெற இணையம் தேவை"
+                        : "Internet required — SMS OTP requires an active connection"}
+                    </span>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex flex-col gap-3">
                 <div>
@@ -461,6 +485,7 @@ export function LoginScreen({
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading}
+          title={!navigator.onLine ? (language === "Tamil" ? "இணைய இணைப்பு தேவை" : "Requires active internet connection") : ""}
           className="w-full py-2.5 px-4 bg-white border border-gray-300 rounded-xl text-xs font-bold text-gray-700 flex items-center justify-center gap-3 shadow-2xs hover:bg-gray-50 active:scale-98 transition-all">
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -482,6 +507,16 @@ export function LoginScreen({
           </svg>
           <span>{tAuth("google", language)}</span>
         </button>
+        {!navigator.onLine && (
+          <div className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1.5">
+            <AlertTriangle size={13} className="text-amber-600 shrink-0" />
+            <span>
+              {language === "Tamil"
+                ? "இணைய இணைப்பு தேவை — Google உள்நுழைவுக்கு இணையம் தேவை"
+                : "Internet required — Google sign-in requires an active connection"}
+            </span>
+          </div>
+        )}
 
         {/* Footer Link */}
         <p className="text-xs text-center text-gray-500 mt-2">
@@ -657,10 +692,21 @@ export function RegisterScreen({
           <button
             type="submit"
             disabled={loading}
+            title={!navigator.onLine ? (language === "Tamil" ? "இணைய இணைப்பு தேவை" : "Requires active internet connection") : ""}
             className="w-full py-3 bg-green-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-green-900 active:scale-98 transition-all disabled:opacity-50 mt-2">
             {loading ? <RefreshCw size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
             <span>{tAuth("createAccount", language)}</span>
           </button>
+          {!navigator.onLine && (
+            <div className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1.5 mt-1">
+              <AlertTriangle size={13} className="text-amber-600 shrink-0" />
+              <span>
+                {language === "Tamil"
+                  ? "இணைய இணைப்பு தேவை — கணக்கு உருவாக்க இணையம் தேவை"
+                  : "Internet required — Account registration needs an active connection"}
+              </span>
+            </div>
+          )}
         </form>
 
         <p className="text-xs text-center text-gray-500 mt-2">

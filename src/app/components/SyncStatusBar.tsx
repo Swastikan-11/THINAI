@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Wifi, WifiOff, RefreshCw, CheckCircle2, AlertCircle, CloudOff, Power } from "lucide-react";
+import { Wifi, WifiOff, RefreshCw, CheckCircle2, AlertCircle, CloudOff, Clock } from "lucide-react";
 import { syncManager, SyncStatusInfo } from "../../services/syncService";
 
-export function SyncStatusBar() {
+interface SyncStatusProps {
+  onOpenPendingSync?: () => void;
+}
+
+export function SyncStatusBar({ onOpenPendingSync }: SyncStatusProps) {
   const [status, setStatus] = useState<SyncStatusInfo>(syncManager.getStatusInfo());
 
   useEffect(() => {
@@ -18,13 +22,17 @@ export function SyncStatusBar() {
 
   const handleManualSync = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (onOpenPendingSync) {
+      onOpenPendingSync();
+      return;
+    }
     if (!status.isManualOffline && status.state !== "SYNCING") {
       syncManager.triggerSync();
     }
   };
 
   const getBadgeStyle = () => {
-    if (status.isManualOffline || status.state === "OFFLINE_MODE") {
+    if (status.isManualOffline || status.state === "OFFLINE_MODE" || !navigator.onLine) {
       return "bg-amber-500/20 text-amber-200 border-amber-400/40 ring-1 ring-amber-400/30";
     }
     switch (status.state) {
@@ -42,46 +50,48 @@ export function SyncStatusBar() {
     }
   };
 
+  const isOffline = status.isManualOffline || !navigator.onLine || status.state === "OFFLINE_MODE" || status.state === "OFFLINE";
+
   return (
-    <div className="flex items-center gap-1.5">
-      {/* Offline Mode Toggle Button */}
+    <div className="flex items-center gap-1.5 flex-wrap">
+      {/* Persistent Small Bilingual App Bar Badge */}
       <button
         onClick={handleToggleOffline}
-        title={status.isManualOffline ? "Switch to Online Mode" : "Switch to Offline Mode"}
-        className={`px-2.5 py-1 rounded-full border text-[11px] font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs ${getBadgeStyle()}`}
+        title={isOffline ? "Offline Mode (Click to Toggle) • ஆஃப்லைன் பயன்முறை" : "Online Mode (Click to Toggle) • ஆன்லைன் பயன்முறை"}
+        className={`px-2.5 py-1 rounded-full border text-[11px] font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer ${getBadgeStyle()}`}
       >
-        {status.isManualOffline ? (
+        {isOffline ? (
           <>
             <CloudOff size={12} className="text-amber-300" />
-            <span>OFFLINE MODE</span>
+            <span>Offline • ஆஃப்லைன்</span>
           </>
         ) : status.state === "SYNCING" ? (
           <>
             <RefreshCw size={12} className="text-blue-300 animate-spin" />
-            <span>SYNCING...</span>
+            <span>Syncing • ஒத்திசைவு...</span>
           </>
         ) : status.state === "SYNCED" ? (
           <>
             <CheckCircle2 size={12} className="text-emerald-300" />
-            <span>SYNCED</span>
+            <span>Synced • ஒத்திசைந்தது</span>
           </>
         ) : (
           <>
             <Wifi size={12} className="text-emerald-300" />
-            <span>ONLINE</span>
+            <span>Online • இணைப்பில்</span>
           </>
         )}
       </button>
 
-      {/* Sync trigger if pending items exist */}
-      {status.pendingCount > 0 && !status.isManualOffline && (
+      {/* Clickable Pending Sync Pill */}
+      {status.pendingCount > 0 && (
         <button
           onClick={handleManualSync}
-          title="Pending updates waiting to sync"
-          className="px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-[10px] text-blue-200 font-mono font-bold flex items-center gap-1 hover:bg-blue-500/30"
+          title="Click to view pending offline changes"
+          className="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[10px] text-amber-200 font-bold flex items-center gap-1 hover:bg-amber-500/30 cursor-pointer active:scale-95 transition-all"
         >
-          <RefreshCw size={10} className="animate-spin" />
-          <span>{status.pendingCount} pending</span>
+          <Clock size={10} className="text-amber-300" />
+          <span>{status.pendingCount} pending • காத்திருக்கிறது</span>
         </button>
       )}
     </div>
@@ -92,7 +102,7 @@ export function SyncStatusBar() {
  * Prominent, sticky banner shown across the app when Offline Mode or disconnected state is active.
  * Bilingual (English + Tamil), displays pending offline queue count, and provides 1-tap retry sync button.
  */
-export function OfflineActiveBanner() {
+export function OfflineActiveBanner({ onOpenPendingSync }: SyncStatusProps) {
   const [status, setStatus] = useState<SyncStatusInfo>(syncManager.getStatusInfo());
 
   useEffect(() => {
@@ -119,50 +129,56 @@ export function OfflineActiveBanner() {
   };
 
   return (
-    <div className="sticky top-0 z-40 bg-amber-500 text-zinc-950 px-3.5 py-2 text-xs font-semibold shadow-md border-b border-amber-600/30 select-none">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
-        <div className="flex items-start sm:items-center gap-2">
+    <div className="sticky top-0 z-40 bg-amber-500 text-zinc-950 px-3.5 py-1.5 text-xs font-semibold shadow-md border-b border-amber-600/30 select-none">
+      <div className="flex items-center justify-between gap-1.5">
+        <div className="flex items-center gap-2 min-w-0">
           {status.state === "SYNCING" ? (
-            <RefreshCw className="w-4 h-4 text-zinc-950 animate-spin shrink-0 mt-0.5 sm:mt-0" />
+            <RefreshCw className="w-3.5 h-3.5 text-zinc-950 animate-spin shrink-0" />
           ) : (
-            <CloudOff className="w-4 h-4 text-zinc-950 shrink-0 mt-0.5 sm:mt-0" />
+            <CloudOff className="w-3.5 h-3.5 text-zinc-950 shrink-0" />
           )}
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-black uppercase tracking-tight">
-                {status.state === "SYNCING" ? "Syncing • ஒத்திசைக்கப்படுகிறது" : "Offline Active • ஆஃப்லைன் பயன்முறை"}
-              </span>
-              {status.pendingCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded bg-zinc-950/20 text-zinc-950 font-mono text-[10px] font-bold">
-                  {status.pendingCount} pending / காத்திருக்கிறது
-                </span>
-              )}
-            </div>
-            <span className="text-[11px] font-medium text-zinc-900 leading-tight">
-              Serving cached agricultural data. Live weather & market will refresh when connected.
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span className="font-black uppercase text-[11px] whitespace-nowrap">
+              {status.state === "SYNCING" ? "Syncing • ஒத்திசைக்கப்படுகிறது" : "Offline • ஆஃப்லைன்"}
             </span>
-            <span className="text-[10px] font-medium text-zinc-800 leading-tight">
-              உள்ளூர் தரவு காட்டப்படுகிறது. இணையம் வந்ததும் தானாக ஒத்திசைக்கப்படும்.
-            </span>
+            {status.pendingCount > 0 && (
+              <button
+                onClick={onOpenPendingSync}
+                className="px-1.5 py-0.5 rounded bg-zinc-950/20 hover:bg-zinc-950/30 text-zinc-950 text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-all border border-zinc-950/20"
+                title="View and manage pending items"
+              >
+                <Clock size={10} />
+                <span>{status.pendingCount} pending • காத்திருக்கிறது</span>
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0 mt-1 sm:mt-0">
+        <div className="flex items-center gap-1.5 shrink-0">
+          {status.pendingCount > 0 && onOpenPendingSync && (
+            <button
+              onClick={onOpenPendingSync}
+              className="px-2 py-0.5 rounded bg-zinc-950/10 hover:bg-zinc-950/20 text-zinc-950 text-[10px] font-bold border border-zinc-950/20 cursor-pointer"
+            >
+              Queue • வரிசை
+            </button>
+          )}
+
           {status.isManualOffline ? (
             <button
               onClick={() => syncManager.toggleManualOffline(false)}
-              className="px-2.5 py-1 rounded-md bg-zinc-950 text-amber-300 text-[10px] font-bold hover:bg-zinc-800 active:scale-95 transition-all uppercase whitespace-nowrap shadow-xs"
+              className="px-2 py-0.5 rounded bg-zinc-950 text-amber-300 text-[10px] font-bold hover:bg-zinc-800 active:scale-95 transition-all uppercase whitespace-nowrap shadow-xs cursor-pointer"
             >
-              Go Online • ஆன்லைன் செல்
+              Go Online
             </button>
           ) : (
             <button
               onClick={handleRetry}
               disabled={status.state === "SYNCING"}
-              className="px-2.5 py-1 rounded-md bg-zinc-950 text-amber-300 text-[10px] font-bold hover:bg-zinc-800 active:scale-95 transition-all flex items-center gap-1 whitespace-nowrap shadow-xs disabled:opacity-50"
+              className="px-2 py-0.5 rounded bg-zinc-950 text-amber-300 text-[10px] font-bold hover:bg-zinc-800 active:scale-95 transition-all flex items-center gap-1 whitespace-nowrap shadow-xs disabled:opacity-50 cursor-pointer"
             >
-              <RefreshCw size={11} className={status.state === "SYNCING" ? "animate-spin" : ""} />
-              <span>Retry • மீண்டும் முயற்சி</span>
+              <RefreshCw size={10} className={status.state === "SYNCING" ? "animate-spin" : ""} />
+              <span>Retry</span>
             </button>
           )}
         </div>
