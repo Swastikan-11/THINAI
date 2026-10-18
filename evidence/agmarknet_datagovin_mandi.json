@@ -1,0 +1,18 @@
+{
+  "label": "Agmarknet_DataGovIn_Mandi",
+  "url": "https://api.data.gov.in/resource/9ef84268-d588-436a-a309-c80ca147ff22?format=json&filters[state]=Tamil+Nadu&limit=10",
+  "status": 400,
+  "statusText": "Bad Request",
+  "latencyMs": 491,
+  "payloadBytes": 44,
+  "headers": {
+    "connection": "Keep-alive",
+    "content-length": "46",
+    "content-type": "application/json",
+    "date": "Sun, 18 Oct 2026 13:27:33 GMT",
+    "via": "1.1 ID-7716077341207407 uproxy-13, 1.1 ID-6630504ed153c463 uproxy-13, 1.1 ID-7716077341203407 uproxy-13",
+    "x-generator": "tyk.io"
+  },
+  "bodySnippet": "{\n  \"error\": \"Authorization field missing\"\n}",
+  "isOk": false
+}

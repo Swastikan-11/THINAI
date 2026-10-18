@@ -1,0 +1,8 @@
+{
+  "label": "Tamil_Nadu_WRD_Water_Resources",
+  "url": "https://wrd.tn.gov.in",
+  "status": "NETWORK_ERROR",
+  "error": "fetch failed",
+  "latencyMs": 198,
+  "isOk": false
+}

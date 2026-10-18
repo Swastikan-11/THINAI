@@ -1,0 +1,23 @@
+{
+  "label": "TNAU_Agritech_Portal",
+  "url": "https://agritech.tnau.ac.in",
+  "status": 200,
+  "statusText": "OK",
+  "latencyMs": 250,
+  "payloadBytes": 43941,
+  "headers": {
+    "accept-ranges": "bytes",
+    "connection": "Keep-Alive",
+    "content-encoding": "gzip",
+    "content-length": "9610",
+    "content-type": "text/html",
+    "date": "Sun, 18 Oct 2026 12:42:09 GMT",
+    "etag": "\"aba5-65db6dc97beb3-gzip\"",
+    "keep-alive": "timeout=5, max=100",
+    "last-modified": "Tue, 13 Oct 2026 11:10:26 GMT",
+    "server": "Apache/2.4.38 (Debian)",
+    "vary": "Accept-Encoding"
+  },
+  "bodySnippet": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\r\n<meta name=\"keywords\" content=\"Agriculture, TNAU, Precision Farming, crop doctor, Organic Farming,Daily News Paper Farm Information, Daily Market Information, TNAU Weather,Horticulture, Organic Agriculture, Agriculture Engineering, Agriculture Marketing, Seed Certification, Crop Protection, Crop Insurance,Fishery, Forestry, Animal Husbandry, Sericulture, Commmunity Radio,KVK, E Extension Center,Govt Schemes & Services,Variety Releases\" />\r\n<title></title>\r\n<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS Feeds By Agritech Portal\" href=\"http://agritech.tnau.ac.in/agritech.xml\" /> \r\n<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\" />\r\n<script type=\"text/javascript\" src=\"jquery-1.4.3.min.js\"></script>\r\n<script type=\"text/jav",
+  "isOk": true
+}

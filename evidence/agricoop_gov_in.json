@@ -1,0 +1,8 @@
+{
+  "label": "AgriCoop_Gov_In",
+  "url": "https://agricoop.nic.in",
+  "status": "NETWORK_ERROR",
+  "error": "fetch failed",
+  "latencyMs": 47,
+  "isOk": false
+}

@@ -1,0 +1,115 @@
+[
+  {
+    "label": "Open_Meteo_Coimbatore_Live",
+    "url": "https://api.open-meteo.com/v1/forecast?latitude=11.0168&longitude=76.9558&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m&hourly=precipitation_probability&daily=precipitation_sum&timezone=auto",
+    "status": 200,
+    "statusText": "OK",
+    "latencyMs": 587,
+    "payloadBytes": 7326,
+    "headers": {
+      "connection": "keep-alive",
+      "content-encoding": "deflate",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Sun, 18 Oct 2026 13:27:32 GMT",
+      "transfer-encoding": "chunked"
+    },
+    "bodySnippet": "{\n  \"latitude\": 11.001758,\n  \"longitude\": 76.99468,\n  \"generationtime_ms\": 0.28502941131591797,\n  \"utc_offset_seconds\": 19800,\n  \"timezone\": \"Asia/Kolkata\",\n  \"timezone_abbreviation\": \"GMT+5:30\",\n  \"elevation\": 431,\n  \"current_units\": {\n    \"time\": \"iso8601\",\n    \"interval\": \"seconds\",\n    \"temperature_2m\": \"°C\",\n    \"relative_humidity_2m\": \"%\",\n    \"apparent_temperature\": \"°C\",\n    \"precipitation\": \"mm\",\n    \"rain\": \"mm\",\n    \"weather_code\": \"wmo code\",\n    \"wind_speed_10m\": \"km/h\"\n  },\n  \"current\": {\n    \"time\": \"2026-10-18T18:45\",\n    \"interval\": 900,\n    \"temperature_2m\": 26.7,\n    \"relative_humidity_2m\": 87,\n    \"apparent_temperature\": 32.6,\n    \"precipitation\": 0,\n    \"rain\": 0,\n    \"weather_code\": 3,\n    \"wind_speed_10m\": 3\n  },\n  \"hourly_units\": {\n    \"time\": \"iso8601\",\n    \"precipitation_probability\": \"%\"\n  },\n  \"hourly\": {\n    \"time\": [\n      \"2026-10-18T00:00\",\n      \"2026-10-18T01:00\",\n      \"2026-10-18T02:00\",\n      \"2026-10-18T03:00\",\n      \"2026-10-18T04:00\",\n      \"2026",
+    "isOk": true
+  },
+  {
+    "label": "Agmarknet_DataGovIn_Mandi",
+    "url": "https://api.data.gov.in/resource/9ef84268-d588-436a-a309-c80ca147ff22?format=json&filters[state]=Tamil+Nadu&limit=10",
+    "status": 400,
+    "statusText": "Bad Request",
+    "latencyMs": 491,
+    "payloadBytes": 44,
+    "headers": {
+      "connection": "Keep-alive",
+      "content-length": "46",
+      "content-type": "application/json",
+      "date": "Sun, 18 Oct 2026 13:27:33 GMT",
+      "via": "1.1 ID-7716077341207407 uproxy-13, 1.1 ID-6630504ed153c463 uproxy-13, 1.1 ID-7716077341203407 uproxy-13",
+      "x-generator": "tyk.io"
+    },
+    "bodySnippet": "{\n  \"error\": \"Authorization field missing\"\n}",
+    "isOk": false
+  },
+  {
+    "label": "PM_KISAN_Portal",
+    "url": "https://pmkisan.gov.in",
+    "status": "NETWORK_ERROR",
+    "error": "fetch failed",
+    "latencyMs": 192,
+    "isOk": false
+  },
+  {
+    "label": "PMFBY_Crop_Insurance",
+    "url": "https://pmfby.gov.in",
+    "status": 200,
+    "statusText": "OK",
+    "latencyMs": 212,
+    "payloadBytes": 6842,
+    "headers": {
+      "accept-ranges": "bytes",
+      "cache-control": "public, max-age=18000",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-security-policy": "frame-ancestors 'self' https://pmfby.gov.in",
+      "content-type": "text/html; charset=UTF-8",
+      "date": "Sun, 18 Oct 2026 13:27:33 GMT",
+      "etag": "W/\"1aba-1a133506900\"",
+      "last-modified": "Tue, 13 Oct 2026 03:31:10 GMT",
+      "permissions-policy": "geolocation=(), camera=(), microphone=(), payment=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "nginx",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "x-powered-by": "Express",
+      "x-xss-protection": "1; mode=block"
+    },
+    "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"google-site-verification\" content=\"FwzmI5zPqGIZIlivpUV93I2y0f05BznuN3WIREn3zCs\" />\n    <meta name=\"google-site-verification\" content=\"-D3-tJ0hKCxKi_TsCgK0p41reRsKftC348WOAaWIctY\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n    <meta http-equiv=\"Content-Security-Policy\" content=\"img-src * 'self' https://pmfby.amnex.co.in blob: data: data: https:; script-src 'self' https://pmfby.amnex.co.in 'unsafe-inline' 'unsafe-eval' *; style-src  'self' https://pmfby.amnex.co.in 'unsafe-inline' *; worker-src * 'self' blob:;\">\n    <title>Pradhan Mantri Fasal Bima Yojana - Crop Insurance | PMFBY - Crop Insurance</title>\n    <meta name=\"keywords\" content=\"Pradhan Mantri Fasal Bima Yojana, PMFBY, Crop Insurance, Online Crop Insurance, Banks, Insurance companie",
+    "isOk": true
+  },
+  {
+    "label": "TNAU_Agritech_Portal",
+    "url": "https://agritech.tnau.ac.in",
+    "status": 200,
+    "statusText": "OK",
+    "latencyMs": 250,
+    "payloadBytes": 43941,
+    "headers": {
+      "accept-ranges": "bytes",
+      "connection": "Keep-Alive",
+      "content-encoding": "gzip",
+      "content-length": "9610",
+      "content-type": "text/html",
+      "date": "Sun, 18 Oct 2026 12:42:09 GMT",
+      "etag": "\"aba5-65db6dc97beb3-gzip\"",
+      "keep-alive": "timeout=5, max=100",
+      "last-modified": "Tue, 13 Oct 2026 11:10:26 GMT",
+      "server": "Apache/2.4.38 (Debian)",
+      "vary": "Accept-Encoding"
+    },
+    "bodySnippet": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\r\n<meta name=\"keywords\" content=\"Agriculture, TNAU, Precision Farming, crop doctor, Organic Farming,Daily News Paper Farm Information, Daily Market Information, TNAU Weather,Horticulture, Organic Agriculture, Agriculture Engineering, Agriculture Marketing, Seed Certification, Crop Protection, Crop Insurance,Fishery, Forestry, Animal Husbandry, Sericulture, Commmunity Radio,KVK, E Extension Center,Govt Schemes & Services,Variety Releases\" />\r\n<title></title>\r\n<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS Feeds By Agritech Portal\" href=\"http://agritech.tnau.ac.in/agritech.xml\" /> \r\n<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\" />\r\n<script type=\"text/javascript\" src=\"jquery-1.4.3.min.js\"></script>\r\n<script type=\"text/jav",
+    "isOk": true
+  },
+  {
+    "label": "Tamil_Nadu_WRD_Water_Resources",
+    "url": "https://wrd.tn.gov.in",
+    "status": "NETWORK_ERROR",
+    "error": "fetch failed",
+    "latencyMs": 198,
+    "isOk": false
+  },
+  {
+    "label": "AgriCoop_Gov_In",
+    "url": "https://agricoop.nic.in",
+    "status": "NETWORK_ERROR",
+    "error": "fetch failed",
+    "latencyMs": 47,
+    "isOk": false
+  }
+]

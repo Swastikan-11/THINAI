@@ -1,0 +1,31 @@
+{
+  "label": "PMFBY_Crop_Insurance",
+  "url": "https://pmfby.gov.in",
+  "status": 200,
+  "statusText": "OK",
+  "latencyMs": 212,
+  "payloadBytes": 6842,
+  "headers": {
+    "accept-ranges": "bytes",
+    "cache-control": "public, max-age=18000",
+    "connection": "keep-alive",
+    "content-encoding": "gzip",
+    "content-security-policy": "frame-ancestors 'self' https://pmfby.gov.in",
+    "content-type": "text/html; charset=UTF-8",
+    "date": "Sun, 18 Oct 2026 13:27:33 GMT",
+    "etag": "W/\"1aba-1a133506900\"",
+    "last-modified": "Tue, 13 Oct 2026 03:31:10 GMT",
+    "permissions-policy": "geolocation=(), camera=(), microphone=(), payment=()",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "server": "nginx",
+    "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+    "transfer-encoding": "chunked",
+    "vary": "Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "SAMEORIGIN",
+    "x-powered-by": "Express",
+    "x-xss-protection": "1; mode=block"
+  },
+  "bodySnippet": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"google-site-verification\" content=\"FwzmI5zPqGIZIlivpUV93I2y0f05BznuN3WIREn3zCs\" />\n    <meta name=\"google-site-verification\" content=\"-D3-tJ0hKCxKi_TsCgK0p41reRsKftC348WOAaWIctY\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n    <meta http-equiv=\"Content-Security-Policy\" content=\"img-src * 'self' https://pmfby.amnex.co.in blob: data: data: https:; script-src 'self' https://pmfby.amnex.co.in 'unsafe-inline' 'unsafe-eval' *; style-src  'self' https://pmfby.amnex.co.in 'unsafe-inline' *; worker-src * 'self' blob:;\">\n    <title>Pradhan Mantri Fasal Bima Yojana - Crop Insurance | PMFBY - Crop Insurance</title>\n    <meta name=\"keywords\" content=\"Pradhan Mantri Fasal Bima Yojana, PMFBY, Crop Insurance, Online Crop Insurance, Banks, Insurance companie",
+  "isOk": true
+}

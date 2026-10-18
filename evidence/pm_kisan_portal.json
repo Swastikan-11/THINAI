@@ -1,0 +1,8 @@
+{
+  "label": "PM_KISAN_Portal",
+  "url": "https://pmkisan.gov.in",
+  "status": "NETWORK_ERROR",
+  "error": "fetch failed",
+  "latencyMs": 192,
+  "isOk": false
+}
