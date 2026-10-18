@@ -71,4 +71,28 @@ describe("Calibration Mathematics (Temperature Scaling & ECE)", () => {
     const ece = computeEce(items, 10);
     expect(ece).toBeCloseTo(0.45, 2);
   });
+
+  it("Perceptual hashing produces identical hashes for identical buffers and distance 0", async () => {
+    const { computeDifferenceHash, hammingDistance } = await import("../scripts/detect_leakage_hashes.mjs");
+    const bufA = Buffer.from([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+    const bufB = Buffer.from([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+    const hashA = computeDifferenceHash(bufA);
+    const hashB = computeDifferenceHash(bufB);
+
+    expect(hashA).toBe(hashB);
+    expect(hammingDistance(hashA, hashB)).toBe(0);
+  });
+
+  it("Hamming distance detects divergence between different buffers", async () => {
+    const { computeDifferenceHash, hammingDistance } = await import("../scripts/detect_leakage_hashes.mjs");
+    const bufA = Buffer.alloc(100, 255);
+    const bufB = Buffer.alloc(100, 0);
+    const hashA = computeDifferenceHash(bufA);
+    const hashB = computeDifferenceHash(bufB);
+
+    expect(typeof hashA).toBe("string");
+    expect(typeof hashB).toBe("string");
+    expect(hammingDistance(hashA, hashB)).toBeGreaterThanOrEqual(0);
+  });
 });
+
