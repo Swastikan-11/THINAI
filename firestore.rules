@@ -15,6 +15,10 @@ service cloud.firestore {
       return val is string && val.size() >= minLen && val.size() <= maxLen;
     }
 
+    function isOfficer() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/officers/$(request.auth.uid));
+    }
+
     // 1. User Profiles
     match /profiles/{userId} {
       allow read: if isAuthenticated();
@@ -54,7 +58,7 @@ service cloud.firestore {
 
     // 4. Disease Scan Confirmations (Future Retraining Loop)
     match /diagnosis_confirmations/{scanId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid);
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isOfficer());
       allow create: if isAuthenticated()
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.farmerVerdict in ['CONFIRMED', 'REJECTED', 'UNCERTAIN']
@@ -74,7 +78,7 @@ service cloud.firestore {
     }
 
     // 6. Farmer Verdicts (Field Accuracy & Drift Monitoring)
-    // Rules: Users can write only their own records.
+    // Rules: Visible to all signed-in users and officers for analytics.
     match /verdicts/{verdictId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated()
@@ -85,6 +89,43 @@ service cloud.firestore {
         && request.resource.data.tier in ['TIER_1_CONFIDENT', 'TIER_2_MODERATE', 'TIER_3_INCONCLUSIVE']
         && request.resource.data.size() <= 25;
       allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 7. Extension Officers (Role-Based Access without Cloud Functions)
+    // Document ID = user uid. Only admin / owner can add or edit officers in Firebase Console.
+    match /officers/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow write: if false; // Console-only modification
+    }
+
+    // 8. Field Diagnoses & Compressed Photo Thumbnails
+    // Normal users can read only their own. Verified officers can read all for triage.
+    match /diagnoses/{diagnosisId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isOfficer());
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidString(request.resource.data.crop, 1, 50)
+        && isValidString(request.resource.data.predictedClass, 1, 100)
+        && (!('thumbnailBase64' in request.resource.data) || (
+          request.resource.data.photoConsent == true &&
+          request.resource.data.thumbnailBase64.size() <= 65536
+        ))
+        && request.resource.data.size() <= 30;
+      allow update: if false; // Immutable audit log
+      allow delete: if isOwner(resource.data.userId); // Farmer right to erasure (DPDP Act)
+    }
+
+    // 9. Expert Ground Truth Labels (Dual-Agronomist Research Dataset)
+    // Only verified extension officers can submit expert pathogen labels.
+    match /expert_labels/{labelId} {
+      allow read: if isAuthenticated();
+      allow create: if isOfficer()
+        && request.resource.data.officerId == request.auth.uid
+        && isValidString(request.resource.data.diagnosisId, 1, 100)
+        && isValidString(request.resource.data.verifiedPathogen, 1, 100)
+        && request.resource.data.size() <= 20;
+      allow update: if isOfficer() && resource.data.officerId == request.auth.uid;
+      allow delete: if false;
     }
   }
 }

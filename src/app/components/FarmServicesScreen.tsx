@@ -311,6 +311,23 @@ export function FarmServicesScreen({
             <ArrowRight className="w-3 h-3" />
           </button>
         </div>
+
+        {/* Direct Link to Extension Officer Dashboard */}
+        <div className="pt-2 border-t border-zinc-100 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span className="text-[11px] font-bold text-zinc-800">
+              {language === "Tamil" ? "வேளாண் அலுவலர் கட்டுப்பாட்டகம்" : "Extension Officer Dashboard (AAO)"}
+            </span>
+          </div>
+          <button
+            onClick={() => onNavigateToScreen?.("officerDashboard")}
+            className="px-2.5 py-1 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white text-[10px] font-bold flex items-center gap-1 transition-colors"
+          >
+            <span>{language === "Tamil" ? "கட்டுப்பாட்டகம் காண்க" : "Open Dashboard"}</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
       </div>
 
 

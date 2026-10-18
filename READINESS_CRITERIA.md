@@ -23,19 +23,19 @@ Per audit guidelines, every gate is strictly binary (**PASS** or **FAIL**). A wa
 | **G7** | **Mobile Native & Android 16 on Target** | Signed APK executed on physical Android 16 device or API 36 emulator with recorded logcat and feature run. | **FAIL** | Workstation has no physical Android device attached (`adb devices` empty) and no local AVD configured. (Formerly waived; waived = FAIL). |
 | **G8** | **Live Network Services & Transparent Fallbacks** | Live weather API verified; live market fallback transparently labeled; live Gemini authenticated or marked heuristic; ARFI deployment honest. | **FAIL** | Open-Meteo and Agmarknet fallback pass, but Cloud Gemini is **NOT IMPLEMENTED** (uses client-side rule templates) and ARFI FastAPI backend is **NOT DEPLOYED** (`https://api.thinai.com` unreachable). |
 | **G9** | **Security, Keystore & Zero Committed Secrets** | Compromised keystores purged; release passwords externalized to CI secrets; zero `.env` files in git history; Firestore security rules pass. | **PASS** | Keystore purged in `30fda66`; dynamic signing in `build.gradle`; CI Run #17 green with secret decoding; 13/13 Firestore rules pass; zero secrets in git log. |
-| **G10** | **Field Pilot Protocol & Extension Dashboard** | Pre-registered pilot protocol committed before pilot; DPDP Act consent; extension officer collection operational on Firebase Spark free tier. | **FAIL** | Pilot protocol document and extension officer dashboard are scheduled for Sprint 2 / Phase 4 implementation. |
+| **G10** | **Field Pilot Protocol & Extension Dashboard** | Pre-registered pilot protocol committed before pilot; DPDP Act consent; extension officer collection operational on Firebase Spark free tier. | **PASS** | `PILOT_PROTOCOL.md` committed with pre-registered thresholds and stop rules; `firestore.rules` updated with officers and thumbnail cap; `OfficerDashboardScreen.tsx` with paginated query and CSV export; 23/23 rules pass; `tests/officer_dashboard.test.ts` pass. |
 
 ---
 
 ## 2. Gate Scorecard Summary
 
 * **Total Gates Evaluated**: 10
-* **PASSED Gates**: 5 (**G1, G2, G5, G6, G9**)
-* **FAILED Gates**: 5 (**G3, G4, G7, G8, G10**)
+* **PASSED Gates**: 6 (**G1, G2, G5, G6, G9, G10**)
+* **FAILED Gates**: 4 (**G3, G4, G7, G8**)
 * **Waived Gates Count**: 0 (all previous waivers converted to FAIL)
 * **Overall Evaluation**:
   ```
-  THINAI IS NOT READY - failing gates: G3, G4, G7, G8, G10
+  THINAI IS NOT READY - failing gates: G3, G4, G7, G8
   ```
 
 ---

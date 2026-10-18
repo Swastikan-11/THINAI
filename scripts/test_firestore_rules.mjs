@@ -98,7 +98,62 @@ class FirestoreSecurityRulesSimulator {
     }
     return false;
   }
+
+  evaluateOfficers({ auth, operation, userId, requestResource }) {
+    const isAuthenticated = auth !== null && auth.uid !== undefined;
+    if (operation === "read") {
+      return isAuthenticated && auth.uid === userId;
+    }
+    if (operation === "write" || operation === "create" || operation === "update" || operation === "delete") {
+      return false; // Console-only write
+    }
+    return false;
+  }
+
+  evaluateDiagnoses({ auth, operation, resource, requestResource, isOfficer = false }) {
+    const isAuthenticated = auth !== null && auth.uid !== undefined;
+    if (operation === "read") {
+      if (!isAuthenticated) return false;
+      return resource.data.userId === auth.uid || isOfficer;
+    }
+    if (operation === "create") {
+      if (!isAuthenticated) return false;
+      const data = requestResource.data;
+      if (data.userId !== auth.uid) return false;
+      if (!this.isValidString(data.crop, 1, 50)) return false;
+      if (!this.isValidString(data.predictedClass, 1, 100)) return false;
+      if ("thumbnailBase64" in data) {
+        if (data.photoConsent !== true) return false;
+        if (data.thumbnailBase64.length > 65536) return false;
+      }
+      if (Object.keys(data).length > 30) return false;
+      return true;
+    }
+    if (operation === "delete") {
+      return isAuthenticated && resource.data.userId === auth.uid;
+    }
+    return false;
+  }
+
+  evaluateExpertLabels({ auth, operation, resource, requestResource, isOfficer = false }) {
+    const isAuthenticated = auth !== null && auth.uid !== undefined;
+    if (operation === "read") return isAuthenticated;
+    if (operation === "create") {
+      if (!isAuthenticated || !isOfficer) return false;
+      const data = requestResource.data;
+      if (data.officerId !== auth.uid) return false;
+      if (!this.isValidString(data.diagnosisId, 1, 100)) return false;
+      if (!this.isValidString(data.verifiedPathogen, 1, 100)) return false;
+      if (Object.keys(data).length > 20) return false;
+      return true;
+    }
+    if (operation === "update") {
+      return isAuthenticated && isOfficer && resource.data.officerId === auth.uid;
+    }
+    return false;
+  }
 }
+
 
 const sim = new FirestoreSecurityRulesSimulator();
 let passed = 0;
@@ -317,8 +372,147 @@ runTest("Verdicts: Non-owner cannot delete another user's verdict", () => {
   assert.equal(allowed, false);
 });
 
+console.log("\n📦 4. Officers Collection Rules Tests");
+
+runTest("Officers: User can read own officer verification document", () => {
+  const allowed = sim.evaluateOfficers({
+    auth: { uid: "officer-soundararajan" },
+    operation: "read",
+    userId: "officer-soundararajan"
+  });
+  assert.equal(allowed, true);
+});
+
+runTest("Officers: Normal farmer cannot write or spoof officer doc", () => {
+  const allowed = sim.evaluateOfficers({
+    auth: { uid: "farmer-attacker" },
+    operation: "create",
+    userId: "farmer-attacker",
+    requestResource: { data: { role: "extension_officer" } }
+  });
+  assert.equal(allowed, false);
+});
+
+console.log("\n📦 5. Diagnoses & Compressed Thumbnail Rules Tests");
+
+runTest("Diagnoses: Normal farmer can read their own diagnosis", () => {
+  const allowed = sim.evaluateDiagnoses({
+    auth: { uid: "farmer-1" },
+    operation: "read",
+    resource: { data: { userId: "farmer-1" } }
+  });
+  assert.equal(allowed, true);
+});
+
+runTest("Diagnoses: Normal farmer CANNOT read another farmer's diagnosis", () => {
+  const allowed = sim.evaluateDiagnoses({
+    auth: { uid: "farmer-2" },
+    operation: "read",
+    resource: { data: { userId: "farmer-1" } },
+    isOfficer: false
+  });
+  assert.equal(allowed, false);
+});
+
+runTest("Diagnoses: Verified extension officer CAN read farmer's diagnosis for triage", () => {
+  const allowed = sim.evaluateDiagnoses({
+    auth: { uid: "officer-revathi" },
+    operation: "read",
+    resource: { data: { userId: "farmer-1" } },
+    isOfficer: true
+  });
+  assert.equal(allowed, true);
+});
+
+runTest("Diagnoses: Thumbnail with photoConsent=true and size <= 64KB is ALLOWED", () => {
+  const allowed = sim.evaluateDiagnoses({
+    auth: { uid: "farmer-1" },
+    operation: "create",
+    requestResource: {
+      data: {
+        userId: "farmer-1",
+        crop: "Tomato",
+        predictedClass: "Tomato___Early_blight",
+        photoConsent: true,
+        thumbnailBase64: "a".repeat(20000) // 20 KB thumbnail
+      }
+    }
+  });
+  assert.equal(allowed, true);
+});
+
+runTest("Diagnoses: Thumbnail exceeding 64KB size cap is DENIED", () => {
+  const allowed = sim.evaluateDiagnoses({
+    auth: { uid: "farmer-1" },
+    operation: "create",
+    requestResource: {
+      data: {
+        userId: "farmer-1",
+        crop: "Tomato",
+        predictedClass: "Tomato___Early_blight",
+        photoConsent: true,
+        thumbnailBase64: "a".repeat(70000) // 70 KB > 64 KB cap
+      }
+    }
+  });
+  assert.equal(allowed, false);
+});
+
+runTest("Diagnoses: Thumbnail uploaded without photoConsent is DENIED", () => {
+  const allowed = sim.evaluateDiagnoses({
+    auth: { uid: "farmer-1" },
+    operation: "create",
+    requestResource: {
+      data: {
+        userId: "farmer-1",
+        crop: "Tomato",
+        predictedClass: "Tomato___Early_blight",
+        photoConsent: false,
+        thumbnailBase64: "a".repeat(10000)
+      }
+    }
+  });
+  assert.equal(allowed, false);
+});
+
+console.log("\n📦 6. Expert Ground Truth Labels Rules Tests");
+
+runTest("Expert Labels: Verified officer submitting expert label is ALLOWED", () => {
+  const allowed = sim.evaluateExpertLabels({
+    auth: { uid: "officer-1" },
+    operation: "create",
+    isOfficer: true,
+    requestResource: {
+      data: {
+        officerId: "officer-1",
+        diagnosisId: "diag-100",
+        verifiedPathogen: "Alternaria solani",
+        severity: "Moderate"
+      }
+    }
+  });
+  assert.equal(allowed, true);
+});
+
+runTest("Expert Labels: Non-officer farmer attempting to create expert label is DENIED", () => {
+  const allowed = sim.evaluateExpertLabels({
+    auth: { uid: "farmer-1" },
+    operation: "create",
+    isOfficer: false,
+    requestResource: {
+      data: {
+        officerId: "farmer-1",
+        diagnosisId: "diag-100",
+        verifiedPathogen: "Alternaria solani"
+      }
+    }
+  });
+  assert.equal(allowed, false);
+});
+
 console.log("\n=================================================");
 console.log(`🏁 FIRESTORE RULES TESTS: ${passed} PASSED, ${failed} FAILED`);
 console.log("=================================================");
 
 if (failed > 0) process.exit(1);
+

@@ -96,12 +96,13 @@ import { FertilizerCalculatorScreen } from "./components/FertilizerCalculatorScr
 import { CropDoctorScreen } from "./components/CropDoctorScreen";
 import { CommunityScreen } from "./components/CommunityScreen";
 import { FieldAccuracyScreen } from "./components/FieldAccuracyScreen";
+import { OfficerDashboardScreen } from "./components/OfficerDashboardScreen";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
   | "splash" | "onboarding" | "login" | "register"
   | "home" | "community" | "mycrop" | "doctor" | "disease" | "weather"
-  | "market" | "schemes" | "services" | "library" | "calculator" | "fieldAccuracy"
+  | "market" | "schemes" | "services" | "library" | "calculator" | "fieldAccuracy" | "officerDashboard"
   | "ai" | "voice" | "reports" | "notifications"
   | "profile" | "editprofile" | "settings" | "help"
   | "whatif";
@@ -2855,6 +2856,18 @@ export default function App() {
             <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: "none" }}>
               <FieldAccuracyScreen
                 onBack={() => setScreen("doctor")}
+                language={user.language}
+                showToast={showToast}
+              />
+            </div>
+          </div>
+        )}
+
+        {screen === "officerDashboard" && (
+          <div className="flex flex-col h-full select-none" style={{ background: BG }}>
+            <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+              <OfficerDashboardScreen
+                onBack={() => setScreen("services")}
                 language={user.language}
                 showToast={showToast}
               />

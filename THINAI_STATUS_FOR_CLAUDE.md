@@ -10,7 +10,7 @@
 * **Target Platforms**: Android (Native Capacitor APK, Android 7.0 to Android 16 / API 24–36), Modern Mobile Browsers (Progressive Web App with Service Worker Precache)
 * **Readiness Evaluation**:
   ```
-  THINAI IS NOT READY - failing gates: G3, G4, G7, G8, G10
+  THINAI IS NOT READY - failing gates: G3, G4, G7, G8
   ```
 
 ---
@@ -76,6 +76,7 @@ Every feature is classified with exactly one status tag: **WORKING**, **PARTIAL*
 | **Push Notifications** | **NOT BUILT** | Push notifications for weather alerts or rental confirmations. | FCM and native local notifications are not integrated. | Codebase inspection (no `@capacitor/push-notifications` plugin in `package.json`) |
 | **AI Farm Assistant Chat** | **HEURISTIC** | Multilingual rule-based template assistant across 6 regional languages. | Cloud Gemini API call is **NOT BUILT / SIMULATED IN PRIOR CLAIMS**; uses local decision trees. | `src/services/aiAssistantService.ts` (0 fetch calls to Gemini; pure local template logic) |
 | **User Authentication** | **WORKING** | Firebase Auth supporting Email/Password, Google OAuth, and Phone OTP. | Live SMS OTP on Spark free tier capped at 10/day; console test numbers used for testing. | `e2e/workflow.spec.ts` (Test 1 passed); `src/services/authService.ts` |
+| **Extension-Officer Dashboard** | **WORKING** | Triage console with paginated 25-record queries, weak verdict badges, expert ground-truth labeling, and research CSV export. | Operates without Cloud Functions via Firestore security rules and Spark 64 KB thumbnail cap. | `node scripts/test_firestore_rules.mjs` (23/23 passed); `tests/officer_dashboard.test.ts` (4/4 passed) |
 | **Native Android Execution** | **UNTESTED** | Execution of compiled APK on physical Android 16 device or API 36 AVD. | No physical device connected; no local AVD configured on CI workstation. | `adb devices` returns empty list; `emulator.exe -list-avds` returns empty list |
 
 ---
@@ -270,19 +271,20 @@ Evaluated against the 10 formal gates defined in `READINESS_CRITERIA.md`:
 | **G7** | Mobile Native & Android 16 on Target | **FAIL** | Workstation lacks connected physical hardware or configured API 36 AVD. |
 | **G8** | Live Network Services & Fallbacks | **FAIL** | Gemini AI chat is not built/called; ARFI FastAPI backend is not deployed to cloud. |
 | **G9** | Security, Keystore & Zero Secrets | **PASS** | New release keystore, passwords in CI secrets, zero secrets in git history, rules passing. |
-| **G10** | Field Pilot Protocol & Extension Dashboard | **FAIL** | Pre-registered pilot protocol and extension officer dashboard are pending implementation. |
+| **G10** | Field Pilot Protocol & Extension Dashboard | **PASS** | `PILOT_PROTOCOL.md` committed with pre-registered thresholds; `OfficerDashboardScreen.tsx` with paginated queries and CSV export; 23/23 Firestore rules pass. |
 
 ---
 
 ## 12. FINAL VERDICT LINE
 
 ```
-THINAI IS NOT READY - failing gates: G3, G4, G7, G8, G10
+THINAI IS NOT READY - failing gates: G3, G4, G7, G8
 ```
 
 ### Skeptical Examiner Summary
-THINAI demonstrates exceptional engineering in its offline-first architecture, type safety, bilingual Tamil/English UX, and mathematically invariant selective advice gating (zero chemical remedies on uncertain scans). However, the platform is **NOT READY** for field pilot deployment because:
-1. The machine learning model has only been validated on laboratory images (PlantVillage); real field performance, macro-F1, and ECE on held-out field photography are unmeasured.
+THINAI demonstrates exceptional engineering in its offline-first architecture, type safety, bilingual Tamil/English UX, mathematically invariant selective advice gating (zero chemical remedies on uncertain scans), and full field pilot protocol preparation with role-based extension officer oversight. However, the platform remains **NOT READY** for field pilot deployment because:
+1. The machine learning model has only been validated on laboratory images (PlantVillage); real field performance, macro-F1, and ECE on held-out field photography remain unmeasured.
 2. The APK has not been executed on physical Android 16 hardware or an API 36 emulator.
 3. The AI conversational assistant is an offline rule-based template engine rather than a live Gemini integration, and the Python ARFI backend is not deployed to a live server.
-4. The field pilot protocol and extension officer dashboard must be completed and committed before distributing the application to smallholders.
+4. Independent held-out field test images with cryptographic hash deduplication have not yet been collected and evaluated.
+
