@@ -211,3 +211,14 @@ To transition THINAI from capstone evaluation into active farmer field deploymen
 3. **Execute Smallholder Field Pilot**:
    - Follow the Pilot Checklist in Section 3-C to collect $N=100$ field leaf photos paired with AAO / KVK verified diagnoses.
    - Run `python ml/train_calibrated_model.py` with pilot data to update calibration temperature and deployment thresholds.
+
+---
+
+## 7. Developer & Distribution Notes (Zero-Cost Scope)
+> [!NOTE]
+> **Google Play Store Policy & Commercial Accounts**:
+> Publishing an application on the Google Play Store requires a Google Play Console developer account with a mandatory one-time registration fee ($25 USD). In adherence to the strict **zero-cost evaluation guidelines** of this project, a commercial Play Store listing is out of scope.
+> 
+> For field pilots and extension deployments, THINAI is distributed directly via:
+> 1. Standalone signed release APKs (`app-release.apk`) distributed via **Firebase App Distribution** (available on the free Spark plan).
+> 2. PWA installation directly from modern mobile browsers via **Firebase Hosting** (free Spark tier).
