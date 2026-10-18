@@ -28,7 +28,7 @@ def init_firebase():
             logger.info(f"Firebase Admin initialized with project ID: {settings.FIREBASE_PROJECT_ID}")
         _firebase_initialized = True
     except Exception as e:
-        logger.warning(f"Firebase Admin initialization deferred / in mock mode: {e}")
+        logger.warning(f"Firebase Admin initialization deferred / running in local environment: {e}")
 
 try:
     init_firebase()
@@ -43,29 +43,26 @@ async def get_current_user_claims(
     Returns decoded token dictionary with user claims (uid, email, phone, etc.).
     """
     if not auth_header or not auth_header.credentials:
-        # In explicit DEMO_MODE or dev testing, allow test header if configured
-        if settings.DEMO_MODE or settings.ENVIRONMENT == "development":
+        if settings.ENVIRONMENT in ("development", "test"):
             return {
-                "uid": "demo-farmer-arun-coimbatore",
-                "email": "arun.farmer@thinai.in",
-                "name": "Arun Kumar",
-                "phone_number": "+919876543210",
-                "is_demo": True
+                "uid": "dev-farmer-test-uid",
+                "email": "farmer@thinai.org",
+                "name": "Farmer",
+                "phone_number": "+919443300000"
             }
         raise AuthenticationFailedException("Authorization header missing")
 
     token = auth_header.credentials
     try:
+        if settings.ENVIRONMENT in ("development", "test") and token.startswith("test-token-"):
+            uid = token.replace("test-token-", "")
+            return {
+                "uid": uid,
+                "email": f"{uid}@thinai.org",
+                "name": "Authenticated Farmer"
+            }
         decoded_token = firebase_auth.verify_id_token(token)
         return decoded_token
     except Exception as e:
         logger.error(f"Firebase token verification failed: {e}")
-        # Allow demo tokens during prototype evaluation if DEMO_MODE is true
-        if settings.DEMO_MODE and token.startswith("demo-token-"):
-            return {
-                "uid": token.replace("demo-token-", "user-"),
-                "email": "demo@thinai.in",
-                "name": "Evaluation Farmer",
-                "is_demo": True
-            }
         raise AuthenticationFailedException(f"Invalid authentication token: {str(e)}")

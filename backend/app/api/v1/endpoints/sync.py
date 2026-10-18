@@ -127,6 +127,7 @@ def push_offline_mutations(
                     field_id = p.get("field_id") or default_field_id or f"field-default-{uid[:8]}"
                     scan = DiseaseScan(
                         id=cid,
+                        user_id=uid,
                         field_id=field_id,
                         disease_name=p.get("disease_name", "Healthy Leaf"),
                         scientific_name=p.get("scientific_name"),
@@ -140,6 +141,7 @@ def push_offline_mutations(
                         model_version=p.get("model_version", "DiseaseNet-v1.3-offline"),
                         scanned_at=datetime.datetime.utcnow()
                     )
+
                     db.add(scan)
                     synced_count += 1
                 else:

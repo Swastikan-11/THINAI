@@ -109,10 +109,10 @@ def generate_recommendation_for_field(
     )
     db.add(arfi)
 
-    for sc in arfi_data.get("stress_scenarios", []):
+    for idx, sc in enumerate(arfi_data.get("stress_scenarios", []), 1):
         stress_rec = StressScenario(
-            id=f"stress-{int(datetime.datetime.utcnow().timestamp())}-{sc['scenario_name'][:5]}",
-            arfi_id=arfi_id,
+            id=f"stress-{arfi_id}-{idx}",
+            arfi_assessment_id=arfi_id,
             scenario_name=sc["scenario_name"],
             rainfall_delta_percent=sc["rainfall_delta_percent"],
             temp_delta_celsius=sc["temp_delta_celsius"],

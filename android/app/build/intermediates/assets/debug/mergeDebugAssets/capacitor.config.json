@@ -1,9 +1,0 @@
-{
-	"appId": "com.thinai.agriapp",
-	"appName": "THINAI",
-	"webDir": "dist",
-	"bundledWebRuntime": false,
-	"android": {
-		"allowMixedContent": true
-	}
-}

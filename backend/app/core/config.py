@@ -10,8 +10,7 @@ class Settings(BaseSettings):
     
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
-    DEMO_MODE: bool = os.getenv("DEMO_MODE", "False").lower() == "true"
+    DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     
     # Database (Defaults to local SQLite for out-of-the-box local dev, supports PostgreSQL via env)
     DATABASE_URL: str = os.getenv(
@@ -39,9 +38,11 @@ class Settings(BaseSettings):
     ARFI_WEIGHT_SCENARIO_SENSITIVITY: float = 0.15
     ARFI_WEIGHT_STRESS_ROBUSTNESS: float = 0.15
     ARFI_WEIGHT_DECISION_RISK: float = 0.15
+    
+    # Offline Synchronization Grace Period (Hours)
+    OFFLINE_SYNC_GRACE_PERIOD_HOURS: int = 72
 
     class Config:
         case_sensitive = True
-        env_file = ".env"
 
 settings = Settings()

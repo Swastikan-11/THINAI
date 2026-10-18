@@ -161,6 +161,12 @@ def run_agricultural_stress_scenarios(
 
         scenario_outputs.append({
             "scenario_name": sc["name"],
+            "rainfall_delta_percent": round((sc["r_mult"] - 1.0) * 100.0, 1),
+            "temp_delta_celsius": sc["t_add"],
+            "market_price_delta_percent": 0.0,
+            "input_cost_delta_percent": 0.0,
+            "crop_rank_change": 1 if is_flipped else 0,
+            "fragility_status": "STABLE" if not is_flipped else "SENSITIVE",
             "simulated_rainfall": round(r_mod, 1),
             "simulated_temperature": round(t_mod, 1),
             "top_recommended_crop": sim_top,
@@ -168,6 +174,7 @@ def run_agricultural_stress_scenarios(
             "retained_original_crop": not is_flipped,
             "status": "STABLE" if not is_flipped else "SENSITIVE"
         })
+
 
     # Sensitivity: proportion of scenarios where recommendation flipped
     sensitivity = round(float(flips / len(scenarios)), 4)

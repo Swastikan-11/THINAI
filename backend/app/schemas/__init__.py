@@ -148,8 +148,8 @@ class WhatIfRequest(BaseModel):
     input_cost_delta_percent: float = 0.0 # e.g. +10%
 
 class WhatIfResponse(BaseModel):
-    original_action: str
-    modified_action: str
+    original_crop: str
+    modified_crop: str
     arfi_before: float
     arfi_after: float
     fragility_status: str
@@ -157,6 +157,8 @@ class WhatIfResponse(BaseModel):
     risk_impact_summary: str
     recommendation_changed: bool
     reason_changed: str
+    modified_parameters: Optional[Dict[str, Any]] = None
+
 
 # ─── CROP RECOMMENDATION ML SCHEMAS (PHASE 7) ────────────────────────────────
 class MLPredictionCandidate(BaseModel):

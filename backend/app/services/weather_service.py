@@ -16,6 +16,8 @@ async def fetch_weather_by_coordinates(latitude: float, longitude: float) -> Dic
         f"&timezone=auto"
     )
 
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
     try:
         async with httpx.AsyncClient(timeout=4.0) as client:
             res = await client.get(url)
@@ -36,24 +38,24 @@ async def fetch_weather_by_coordinates(latitude: float, longitude: float) -> Dic
             "humidity": round(float(current.get("relative_humidity_2m", 75.0)), 1),
             "feels_like": round(float(current.get("apparent_temperature", 30.0)), 1),
             "precipitation_mm": round(float(current.get("precipitation", 0.0)), 1),
-            "forecast_48h_rain_mm": round(max(rain_48h, 85.0), 1), # Default to evaluation rainfall
+            "forecast_48h_rain_mm": round(rain_48h, 1),
             "wind_speed_kmh": round(float(current.get("wind_speed_10m", 12.0)), 1),
-            "recorded_at": datetime.datetime.utcnow().isoformat(),
+            "recorded_at": now_iso,
             "status_label": "Live Weather Verified"
         }
     except Exception as e:
-        # Transparent fallback with explicit labeling (Phase 12 requirement)
+        # Transparent fallback with explicit labeling
         return {
             "is_live": False,
-            "source": "Cached Baseline Weather Model (Demo/Offline)",
+            "source": "Cached Regional Agro-Climatic Baseline (Offline Backup)",
             "latitude": latitude,
             "longitude": longitude,
             "temperature": 28.0,
-            "humidity": 78.0,
-            "feels_like": 31.0,
-            "precipitation_mm": 5.0,
-            "forecast_48h_rain_mm": 88.0,
-            "wind_speed_kmh": 14.0,
-            "recorded_at": datetime.datetime.utcnow().isoformat(),
-            "status_label": "Demo/Cached Data - Not Live (Fallback)"
+            "humidity": 75.0,
+            "feels_like": 30.0,
+            "precipitation_mm": 0.0,
+            "forecast_48h_rain_mm": 0.0,
+            "wind_speed_kmh": 12.0,
+            "recorded_at": now_iso,
+            "status_label": "Cached Data - Offline Mode"
         }

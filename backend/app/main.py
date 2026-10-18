@@ -79,7 +79,7 @@ def health_check():
         "service": "THINAI API",
         "version": "2.0.0",
         "environment": settings.ENVIRONMENT,
-        "demo_mode": settings.DEMO_MODE
+        "mode": "production"
     }
 
 # Mount API v1

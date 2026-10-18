@@ -64,7 +64,8 @@ def record_disease_scan(
             field_id = f"field-default-{uid[:8]}"
 
     scan = DiseaseScan(
-        id=f"scan-{int(datetime.datetime.utcnow().timestamp())}",
+        id=f"scan-{int(datetime.datetime.now(datetime.timezone.utc).timestamp())}",
+        user_id=uid,
         field_id=field_id,
         disease_name=scan_in.disease_name,
         scientific_name=scan_in.scientific_name,
@@ -76,9 +77,10 @@ def record_disease_scan(
         lesion_area_ratio=scan_in.lesion_area_ratio,
         immediate_action=scan_in.immediate_action,
         model_version=scan_in.model_version,
-        scanned_at=datetime.datetime.utcnow()
+        scanned_at=datetime.datetime.now(datetime.timezone.utc)
     )
     db.add(scan)
     db.commit()
     db.refresh(scan)
     return scan
+
