@@ -62,6 +62,24 @@ export function hammingDistance(hexA, hexB) {
 }
 
 /**
+ * Recursively collects image files from directory
+ */
+function collectImageFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const results = [];
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...collectImageFiles(fullPath));
+    } else if (entry.isFile() && /\.(jpg|jpeg|png|webp)$/i.test(entry.name)) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
+/**
  * Scans directories to detect pairwise duplicates or cross-split leakage
  */
 export function auditSplitLeakage(directories = []) {
@@ -73,18 +91,19 @@ export function auditSplitLeakage(directories = []) {
 
   for (const dir of directories) {
     if (!fs.existsSync(dir)) {
-      console.log(`Directory not present: ${dir} (Skipping)`);
+      console.log(`Directory not present on disk: ${dir} (Skipping)`);
       continue;
     }
 
-    const files = fs.readdirSync(dir);
-    for (const f of files) {
-      const fullPath = path.join(dir, f);
-      const stat = fs.statSync(fullPath);
-      if (stat.isFile() && /\.(jpg|jpeg|png|webp)$/i.test(f)) {
+    const imagePaths = collectImageFiles(dir);
+    for (const fullPath of imagePaths) {
+      try {
         const buf = fs.readFileSync(fullPath);
         const hash = computeDifferenceHash(buf);
-        fileHashes.push({ file: f, path: fullPath, dir, hash });
+        const parentFolder = path.basename(path.dirname(fullPath));
+        fileHashes.push({ file: path.basename(fullPath), path: fullPath, parentFolder, hash });
+      } catch (e) {
+        // Skip unreadable files
       }
     }
   }
@@ -114,7 +133,7 @@ export function auditSplitLeakage(directories = []) {
   console.log(`- Leakage / Duplicate Pairs Found: ${nearDuplicates}`);
 
   if (nearDuplicates > 0) {
-    console.log("⚠️ WARNING: Near-duplicate pairs detected:");
+    console.log("⚠️ WARNING: Near-duplicate pairs detected across splits:");
     for (const p of duplicatePairs) {
       console.log(`  * Dist ${p.hammingDistance}: ${p.fileA} <-> ${p.fileB}`);
     }
@@ -128,9 +147,12 @@ export function auditSplitLeakage(directories = []) {
 
 // Standalone execution
 if (process.argv[1]?.endsWith("detect_leakage_hashes.mjs")) {
-  const dirsToScan = [
+  const customDir = process.argv[2] ? path.resolve(process.argv[2]) : null;
+  const dirsToScan = customDir ? [customDir] : [
     path.resolve("gallery"),
-    path.resolve("evidence")
+    path.resolve("evidence"),
+    path.resolve("data"),
+    path.resolve("ml/data")
   ];
   auditSplitLeakage(dirsToScan);
 }

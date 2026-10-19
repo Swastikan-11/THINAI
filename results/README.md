@@ -19,18 +19,19 @@ Evaluated on $N = 1,000$ held-out field test images across validated solanaceous
 
 ---
 
-## 2. Gating Test: Always Answering vs Gated Advice
+## 2. Gating Test: Always Answering vs Gated Advice (SYNTHETIC SIMULATION)
 
-We evaluate the diagnostic safety benefit of selective confidence gating against an unrestricted "Always Answering" baseline on the held-out field test set ($N = 1,000$):
+> [!WARNING]
+> **SIMULATION NOTICE**: The numbers in the table below are produced by a stochastic binomial simulation (`ml/simulate_protocol.py`, $N = 1,000$ synthetic trials with assumed error distributions) to model selective gating behavior. Empirical field accuracy and real-world Harmful Advice Rate on natural field photography remain **NOT MEASURED**.
 
-| Policy | Selective Tier | Coverage (%) | Diagnostic Accuracy (%) | Chemical Advice Permitted? | Erroneous Chemical Advisories | Harmful Advice Rate (HAR %) | HAR on Chemical Cases (%) |
+| Policy | Selective Tier | Coverage (%) | Simulated Diagnostic Accuracy (%) | Chemical Advice Permitted? | Simulated Erroneous Advisories | Simulated Harmful Advice Rate (HAR %) | Simulated HAR on Chemical Cases (%) |
 |---|---|---|---|---|---|---|---|
 | **Always Answering (Baseline)** | Unrestricted ($\tau = 0.0$) | 100.00% | 87.60% | YES (Unrestricted) | 124 | **12.40%** | **12.40%** |
-| **Confidence-Gated (Proposed)** | Tier 1 Only ($\text{conf} \ge 0.78$) | 73.90% | **97.43%** | YES (Validated Pathogen) | **19** | **1.90%** | **2.57%** |
-| **Confidence-Gated (Proposed)** | Combined Tier 1 + Tier 2 ($\text{conf} \ge 0.45$) | 95.40% | 90.36% | Tier 1 Only; Tier 2 Cultural Only | **19** | **1.90%** | **2.57%** |
+| **Confidence-Gated (Simulation)** | Tier 1 Only ($\text{conf} \ge 0.78$) | 73.90% | **97.43%** | YES (Validated Pathogen) | **19** | **1.90%** | **2.57%** |
+| **Confidence-Gated (Simulation)** | Combined Tier 1 + Tier 2 ($\text{conf} \ge 0.45$) | 95.40% | 90.36% | Tier 1 Only; Tier 2 Cultural Only | **19** | **1.90%** | **2.57%** |
 
-> [!IMPORTANT]
-> **Key Finding**: Confidence-Gated Selective Advisory reduces the occurrence of erroneous chemical recommendations from **124 to 19 cases** per 1,000 field queries — an **84.7% relative reduction in harmful chemical over-application**.
+> [!NOTE]
+> **Simulation Illustration**: In this synthetic model, selective confidence gating models a theoretical reduction in erroneous chemical suggestions from **124 to 19 cases** per 1,000 trials under the assumed Beta error distribution. Empirical validation on real Tamil Nadu field photography is pending collection under `DATASETS.md`.
 
 ---
 
@@ -85,8 +86,7 @@ To evaluate the reliability of crowdsourced farmer field verdicts ($V_i \in \{\t
 - Identifies optimal operating points: $\tau_{\text{high}} = 0.78$ (Risk $\le 2.1\%$) and $\tau_{\text{low}} = 0.45$ (Risk $\le 6.4\%$).
 
 ### Figure 3: Diagnostic Safety Comparison (`gating_comparison.png`)
-- Bar chart comparing Always Answering vs Gated Advisory across Diagnostic Accuracy and Harmful Advice Rate.
-- Illustrates the dramatic decline of hazardous chemical advice rate from 12.4% down to 1.9%.
+- Illustrates the simulated decline of hazardous chemical advice rate under the synthetic benchmark scenario (from 12.40% baseline down to 1.90% under Tier 1 selective gating).
 
 ### Figure 4: Verdict Noise Simulation (`verdict_noise_simulation.png`)
 - Trajectory of verdict-based accuracy estimate against true expert accuracy across farmer noise levels $\eta \in [0\%, 30\%]$ with Wilson 95% confidence bands.

@@ -1,518 +1,302 @@
 // THINAI Firestore Security Rules Verification Test Suite
-// Verifies security constraints defined in firestore.rules
-// Run with: node scripts/test_firestore_rules.mjs
+// Executes against real Firestore Emulator Suite using @firebase/rules-unit-testing
+// Run with: npx firebase emulators:exec --only firestore --project demo-thinai-test "node scripts/test_firestore_rules.mjs"
 
-import assert from "node:assert/strict";
+import { initializeTestEnvironment, assertFails, assertSucceeds } from "@firebase/rules-unit-testing";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import fs from "node:fs";
 import path from "node:path";
 
 console.log("=================================================");
-console.log("🔒 THINAI FIRESTORE SECURITY RULES VERIFICATION");
+console.log("🔒 THINAI FIRESTORE SECURITY RULES REAL EMULATOR SUITE");
 console.log("=================================================\n");
 
-// Read firestore.rules to verify schema declaration exists on disk
 const rulesPath = path.resolve("firestore.rules");
-assert.ok(fs.existsSync(rulesPath), "firestore.rules file must exist");
+if (!fs.existsSync(rulesPath)) {
+  console.error("❌ firestore.rules not found at " + rulesPath);
+  process.exit(1);
+}
 const rulesContent = fs.readFileSync(rulesPath, "utf-8");
 
-// Mock evaluator that models Firestore Security Rules logic exactly as defined in firestore.rules
-class FirestoreSecurityRulesSimulator {
-  isValidString(val, minLen, maxLen) {
-    return typeof val === "string" && val.length >= minLen && val.length <= maxLen;
-  }
+import { execSync } from "node:child_process";
 
-  evaluateEquipmentListings({ auth, operation, resource, requestResource }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-
-    if (operation === "read") {
-      return isAuthenticated;
-    }
-
-    if (operation === "create") {
-      if (!isAuthenticated) return false;
-      const data = requestResource.data;
-      if (data.userId !== auth.uid) return false;
-      if (!this.isValidString(data.equipmentName, 2, 100)) return false;
-      if (!this.isValidString(data.village, 2, 80)) return false;
-      if (!this.isValidString(data.district, 2, 80)) return false;
-      if (typeof data.consentPhoneShare !== "boolean") return false;
-      if (data.consentPhoneShare !== true && (data.phone && data.phone !== "")) return false;
-      if (Object.keys(data).length > 20) return false;
-      return true;
-    }
-
-    if (operation === "update" || operation === "delete") {
-      if (!isAuthenticated) return false;
-      return resource.data.userId === auth.uid;
-    }
-
-    return false;
-  }
-
-  evaluateProfiles({ auth, operation, userId, requestResource }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-    const isOwner = isAuthenticated && auth.uid === userId;
-
-    if (operation === "read") return isAuthenticated;
-    if (operation === "create" || operation === "update") {
-      return isOwner && typeof requestResource?.data?.name === "string" && requestResource.data.name.length <= 100;
-    }
-    if (operation === "delete") return isOwner;
-    return false;
-  }
-
-  evaluateFeedbacks({ auth, operation, resource, requestResource }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-    if (operation === "read") return isAuthenticated && resource.data.userId === auth.uid;
-    if (operation === "create") {
-      if (!isAuthenticated) return false;
-      const data = requestResource.data;
-      if (data.userId !== auth.uid) return false;
-      if (!this.isValidString(data.recommendationId, 1, 100)) return false;
-      if (typeof data.rating !== "number" || data.rating < 1 || data.rating > 5) return false;
-      return true;
-    }
-    if (operation === "update" || operation === "delete") {
-      return isAuthenticated && resource.data.userId === auth.uid;
-    }
-    return false;
-  }
-
-  evaluateVerdicts({ auth, operation, resource, requestResource }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-    if (operation === "read") return isAuthenticated;
-    if (operation === "create") {
-      if (!isAuthenticated) return false;
-      const data = requestResource?.data;
-      if (!data) return false;
-      if (data.userId !== auth.uid) return false;
-      if (!["YES", "NO", "NOT_SURE"].includes(data.verdict)) return false;
-      if (!this.isValidString(data.predictedClass, 1, 100)) return false;
-      if (typeof data.calibratedConfidence !== "number") return false;
-      if (!["TIER_1_CONFIDENT", "TIER_2_MODERATE", "TIER_3_INCONCLUSIVE"].includes(data.tier)) return false;
-      if (Object.keys(data).length > 25) return false;
-      return true;
-    }
-    if (operation === "update" || operation === "delete") {
-      return isAuthenticated && resource?.data?.userId === auth.uid;
-    }
-    return false;
-  }
-
-  evaluateOfficers({ auth, operation, userId, requestResource }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-    if (operation === "read") {
-      return isAuthenticated && auth.uid === userId;
-    }
-    if (operation === "write" || operation === "create" || operation === "update" || operation === "delete") {
-      return false; // Console-only write
-    }
-    return false;
-  }
-
-  evaluateDiagnoses({ auth, operation, resource, requestResource, isOfficer = false }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-    if (operation === "read") {
-      if (!isAuthenticated) return false;
-      return resource.data.userId === auth.uid || isOfficer;
-    }
-    if (operation === "create") {
-      if (!isAuthenticated) return false;
-      const data = requestResource.data;
-      if (data.userId !== auth.uid) return false;
-      if (!this.isValidString(data.crop, 1, 50)) return false;
-      if (!this.isValidString(data.predictedClass, 1, 100)) return false;
-      if ("thumbnailBase64" in data) {
-        if (data.photoConsent !== true) return false;
-        if (data.thumbnailBase64.length > 65536) return false;
-      }
-      if (Object.keys(data).length > 30) return false;
-      return true;
-    }
-    if (operation === "delete") {
-      return isAuthenticated && resource.data.userId === auth.uid;
-    }
-    return false;
-  }
-
-  evaluateExpertLabels({ auth, operation, resource, requestResource, isOfficer = false }) {
-    const isAuthenticated = auth !== null && auth.uid !== undefined;
-    if (operation === "read") return isAuthenticated;
-    if (operation === "create") {
-      if (!isAuthenticated || !isOfficer) return false;
-      const data = requestResource.data;
-      if (data.officerId !== auth.uid) return false;
-      if (!this.isValidString(data.diagnosisId, 1, 100)) return false;
-      if (!this.isValidString(data.verifiedPathogen, 1, 100)) return false;
-      if (Object.keys(data).length > 20) return false;
-      return true;
-    }
-    if (operation === "update") {
-      return isAuthenticated && isOfficer && resource.data.officerId === auth.uid;
-    }
-    return false;
-  }
-}
-
-
-const sim = new FirestoreSecurityRulesSimulator();
-let passed = 0;
-let failed = 0;
-
-function runTest(name, fn) {
+if (!process.env.FIRESTORE_EMULATOR_HOST && !process.env.THINAI_EMULATOR_CHILD) {
+  console.log("FIRESTORE_EMULATOR_HOST not set. Launching Firebase Emulator Suite...");
   try {
-    fn();
-    console.log(`  ✅ PASS: ${name}`);
-    passed++;
+    execSync('npx firebase emulators:exec --only firestore --project demo-thinai-test "node scripts/test_firestore_rules.mjs"', {
+      stdio: "inherit",
+      env: { ...process.env, THINAI_EMULATOR_CHILD: "1" }
+    });
+    process.exit(0);
   } catch (err) {
-    console.error(`  ❌ FAIL: ${name} -> ${err.message}`);
-    failed++;
+    process.exit(err.status || 1);
   }
 }
 
-console.log("📦 1. Equipment Listings Rules Tests");
+const hostPort = process.env.FIRESTORE_EMULATOR_HOST || "127.0.0.1:8080";
+const [host, portStr] = hostPort.split(":");
+const port = parseInt(portStr, 10) || 8080;
 
-runTest("Equipment: Unauthenticated read is DENIED", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: null,
-    operation: "read",
-    resource: { data: { userId: "user-123" } }
-  });
-  assert.equal(allowed, false);
+console.log(`Connecting to Firestore Emulator at ${host}:${port} with real firestore.rules...\n`);
+
+const testEnv = await initializeTestEnvironment({
+  projectId: "demo-thinai-test",
+  firestore: {
+    rules: rulesContent,
+    host,
+    port
+  }
 });
 
-runTest("Equipment: Signed-in farmer read is ALLOWED", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: { uid: "farmer-1" },
-    operation: "read",
-    resource: { data: { userId: "farmer-2" } }
-  });
-  assert.equal(allowed, true);
-});
+let passedCount = 0;
+let failedCount = 0;
 
-runTest("Equipment: Create with matching userId and consent=true is ALLOWED", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        equipmentName: "Mahindra 575 DI Tractor",
-        village: "Kinathukadavu",
+async function runTest(name, testFn) {
+  try {
+    await testFn();
+    console.log(`  ✅ PASS: ${name}`);
+    passedCount++;
+  } catch (err) {
+    console.error(`  ❌ FAIL: ${name}`);
+    console.error(`     Error: ${err.message}`);
+    failedCount++;
+  }
+}
+
+try {
+  // Pre-seed an extension officer in /officers collection using admin privileges (bypass rules)
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    const adminDb = context.firestore();
+    await setDoc(doc(adminDb, "officers", "officer_murugan"), {
+      officerId: "officer_murugan",
+      name: "Murugan AAO",
+      district: "Coimbatore",
+      active: true
+    });
+  });
+
+  const unauthContext = testEnv.unauthenticatedContext();
+  const unauthDb = unauthContext.firestore();
+
+  const farmerContext = testEnv.authenticatedContext("farmer_selvam");
+  const farmerDb = farmerContext.firestore();
+
+  const otherFarmerContext = testEnv.authenticatedContext("farmer_kumar");
+  const otherFarmerDb = otherFarmerContext.firestore();
+
+  const officerContext = testEnv.authenticatedContext("officer_murugan");
+  const officerDb = officerContext.firestore();
+
+  console.log("📦 1. Equipment Listings Rules Tests");
+  await runTest("Equipment: Unauthenticated read is DENIED", async () => {
+    await assertFails(getDoc(doc(unauthDb, "equipment_listings", "eq_1")));
+  });
+
+  await runTest("Equipment: Signed-in farmer read is ALLOWED", async () => {
+    await assertSucceeds(getDoc(doc(farmerDb, "equipment_listings", "eq_1")));
+  });
+
+  await runTest("Equipment: Create with matching userId and consent=true is ALLOWED", async () => {
+    await assertSucceeds(setDoc(doc(farmerDb, "equipment_listings", "eq_selvam_1"), {
+      userId: "farmer_selvam",
+      equipmentName: "Power Tiller 14HP",
+      village: "Pollachi",
+      district: "Coimbatore",
+      consentPhoneShare: true,
+      phone: "+91 94444 11111"
+    }));
+  });
+
+  await runTest("Equipment: Create spoofing another user's userId is DENIED", async () => {
+    await assertFails(setDoc(doc(farmerDb, "equipment_listings", "eq_spoofed"), {
+      userId: "farmer_kumar",
+      equipmentName: "Tractor",
+      village: "Pollachi",
+      district: "Coimbatore",
+      consentPhoneShare: false
+    }));
+  });
+
+  await runTest("Equipment: Privacy rule: phone provided with consent=false is DENIED", async () => {
+    await assertFails(setDoc(doc(farmerDb, "equipment_listings", "eq_selvam_leak"), {
+      userId: "farmer_selvam",
+      equipmentName: "Rotavator",
+      village: "Pollachi",
+      district: "Coimbatore",
+      consentPhoneShare: false,
+      phone: "+91 94444 11111"
+    }));
+  });
+
+  await runTest("Equipment: Owner can delete their own listing", async () => {
+    await assertSucceeds(deleteDoc(doc(farmerDb, "equipment_listings", "eq_selvam_1")));
+  });
+
+  await runTest("Equipment: Non-owner cannot delete another farmer's listing", async () => {
+    // Re-create listing as selvam
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), "equipment_listings", "eq_selvam_2"), {
+        userId: "farmer_selvam",
+        equipmentName: "Rotavator",
+        village: "Pollachi",
         district: "Coimbatore",
-        ratePerDay: "₹650/hour",
-        phone: "9842109876",
         consentPhoneShare: true
-      }
-    }
+      });
+    });
+    await assertFails(deleteDoc(doc(otherFarmerDb, "equipment_listings", "eq_selvam_2")));
   });
-  assert.equal(allowed, true);
-});
 
-runTest("Equipment: Create spoofing another user's userId is DENIED", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: { uid: "farmer-attacker" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-victim",
-        equipmentName: "Mahindra 575 DI Tractor",
-        village: "Kinathukadavu",
-        district: "Coimbatore",
-        consentPhoneShare: true
-      }
-    }
+  console.log("\n📦 2. Profiles and Feedback Rules Tests");
+  await runTest("Profiles: User can only update their own profile", async () => {
+    await assertSucceeds(setDoc(doc(farmerDb, "profiles", "farmer_selvam"), {
+      name: "Selvam Periasamy"
+    }));
+    await assertFails(setDoc(doc(farmerDb, "profiles", "farmer_kumar"), {
+      name: "Spoofed Kumar"
+    }));
   });
-  assert.equal(allowed, false);
-});
 
-runTest("Equipment: Privacy rule: phone provided with consent=false is DENIED", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        equipmentName: "Mahindra 575 DI Tractor",
-        village: "Kinathukadavu",
-        district: "Coimbatore",
-        phone: "9842109876",
-        consentPhoneShare: false // User did not tick consent, but phone is in payload!
-      }
-    }
+  await runTest("Feedbacks: Rating must be integer between 1 and 5", async () => {
+    await assertSucceeds(setDoc(doc(farmerDb, "feedbacks", "fb_valid"), {
+      userId: "farmer_selvam",
+      recommendationId: "rec_101",
+      rating: 5
+    }));
+    await assertFails(setDoc(doc(farmerDb, "feedbacks", "fb_invalid"), {
+      userId: "farmer_selvam",
+      recommendationId: "rec_101",
+      rating: 6
+    }));
   });
-  assert.equal(allowed, false);
-});
 
-runTest("Equipment: Owner can delete their own listing", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: { uid: "farmer-1" },
-    operation: "delete",
-    resource: { data: { userId: "farmer-1" } }
+  console.log("\n📦 3. Farmer Verdicts Rules Tests");
+  await runTest("Verdicts: Unauthenticated create is DENIED", async () => {
+    await assertFails(setDoc(doc(unauthDb, "verdicts", "v_unauth"), {
+      userId: "farmer_selvam",
+      verdict: "YES",
+      predictedClass: "Tomato___Early_blight",
+      calibratedConfidence: 0.88,
+      tier: "TIER_1_CONFIDENT"
+    }));
   });
-  assert.equal(allowed, true);
-});
 
-runTest("Equipment: Non-owner cannot delete another farmer's listing", () => {
-  const allowed = sim.evaluateEquipmentListings({
-    auth: { uid: "farmer-intruder" },
-    operation: "delete",
-    resource: { data: { userId: "farmer-owner" } }
+  await runTest("Verdicts: Signed-in user writing own verdict is ALLOWED", async () => {
+    await assertSucceeds(setDoc(doc(farmerDb, "verdicts", "v_selvam_1"), {
+      userId: "farmer_selvam",
+      verdict: "YES",
+      predictedClass: "Tomato___Early_blight",
+      calibratedConfidence: 0.88,
+      tier: "TIER_1_CONFIDENT"
+    }));
   });
-  assert.equal(allowed, false);
-});
 
-console.log("\n📦 2. Profiles and Feedback Rules Tests");
-
-runTest("Profiles: User can only update their own profile", () => {
-  const allowedOwner = sim.evaluateProfiles({
-    auth: { uid: "farmer-1" },
-    operation: "update",
-    userId: "farmer-1",
-    requestResource: { data: { name: "R. Murugan" } }
+  await runTest("Verdicts: Signed-in user spoofing another farmer's userId is DENIED", async () => {
+    await assertFails(setDoc(doc(farmerDb, "verdicts", "v_spoofed"), {
+      userId: "farmer_kumar",
+      verdict: "YES",
+      predictedClass: "Tomato___Early_blight",
+      calibratedConfidence: 0.88,
+      tier: "TIER_1_CONFIDENT"
+    }));
   });
-  assert.equal(allowedOwner, true);
 
-  const allowedIntruder = sim.evaluateProfiles({
-    auth: { uid: "farmer-intruder" },
-    operation: "update",
-    userId: "farmer-1",
-    requestResource: { data: { name: "Hacked" } }
+  await runTest("Verdicts: Non-owner cannot delete another user's verdict", async () => {
+    await assertFails(deleteDoc(doc(otherFarmerDb, "verdicts", "v_selvam_1")));
   });
-  assert.equal(allowedIntruder, false);
-});
 
-runTest("Feedbacks: Rating must be integer between 1 and 5", () => {
-  const valid = sim.evaluateFeedbacks({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        recommendationId: "rec-irrigation-1",
-        rating: 5
-      }
-    }
+  console.log("\n📦 4. Officers Collection Rules Tests");
+  await runTest("Officers: User can read own officer verification document", async () => {
+    await assertSucceeds(getDoc(doc(officerDb, "officers", "officer_murugan")));
   });
-  assert.equal(valid, true);
 
-  const invalidRating = sim.evaluateFeedbacks({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        recommendationId: "rec-irrigation-1",
-        rating: 10 // Invalid out-of-bounds rating
-      }
-    }
+  await runTest("Officers: Normal farmer cannot write or spoof officer doc (Console only)", async () => {
+    await assertFails(setDoc(doc(farmerDb, "officers", "farmer_selvam"), {
+      officerId: "farmer_selvam",
+      active: true
+    }));
   });
-  assert.equal(invalidRating, false);
-});
 
-console.log("\n📦 3. Farmer Verdicts Rules Tests");
-
-runTest("Verdicts: Unauthenticated create is DENIED", () => {
-  const allowed = sim.evaluateVerdicts({
-    auth: null,
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        predictedClass: "Tomato___Early_blight",
-        verdict: "YES",
-        calibratedConfidence: 82.5,
-        tier: "TIER_1_CONFIDENT"
-      }
-    }
+  console.log("\n📦 5. Diagnoses & Compressed Thumbnail Rules Tests");
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), "diagnoses", "diag_selvam_1"), {
+      userId: "farmer_selvam",
+      crop: "Tomato",
+      predictedClass: "Tomato___Early_blight"
+    });
   });
-  assert.equal(allowed, false);
-});
 
-runTest("Verdicts: Signed-in user writing own verdict is ALLOWED", () => {
-  const allowed = sim.evaluateVerdicts({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        predictedClass: "Tomato___Early_blight",
-        verdict: "YES",
-        calibratedConfidence: 82.5,
-        tier: "TIER_1_CONFIDENT"
-      }
-    }
+  await runTest("Diagnoses: Normal farmer can read their own diagnosis", async () => {
+    await assertSucceeds(getDoc(doc(farmerDb, "diagnoses", "diag_selvam_1")));
   });
-  assert.equal(allowed, true);
-});
 
-runTest("Verdicts: Signed-in user spoofing another farmer's userId is DENIED", () => {
-  const allowed = sim.evaluateVerdicts({
-    auth: { uid: "farmer-attacker" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-victim",
-        predictedClass: "Potato___Late_blight",
-        verdict: "NO",
-        calibratedConfidence: 62.0,
-        tier: "TIER_2_MODERATE"
-      }
-    }
+  await runTest("Diagnoses: Normal farmer CANNOT read another farmer's diagnosis", async () => {
+    await assertFails(getDoc(doc(otherFarmerDb, "diagnoses", "diag_selvam_1")));
   });
-  assert.equal(allowed, false);
-});
 
-runTest("Verdicts: Non-owner cannot delete another user's verdict", () => {
-  const allowed = sim.evaluateVerdicts({
-    auth: { uid: "farmer-2" },
-    operation: "delete",
-    resource: { data: { userId: "farmer-1" } }
+  await runTest("Diagnoses: Verified extension officer CAN read farmer's diagnosis for triage", async () => {
+    await assertSucceeds(getDoc(doc(officerDb, "diagnoses", "diag_selvam_1")));
   });
-  assert.equal(allowed, false);
-});
 
-console.log("\n📦 4. Officers Collection Rules Tests");
-
-runTest("Officers: User can read own officer verification document", () => {
-  const allowed = sim.evaluateOfficers({
-    auth: { uid: "officer-soundararajan" },
-    operation: "read",
-    userId: "officer-soundararajan"
+  await runTest("Diagnoses: Thumbnail with photoConsent=true and size <= 64KB is ALLOWED", async () => {
+    const validBase64 = "A".repeat(30000); // 30 KB base64 string
+    await assertSucceeds(setDoc(doc(farmerDb, "diagnoses", "diag_with_thumb"), {
+      userId: "farmer_selvam",
+      crop: "Tomato",
+      predictedClass: "Tomato___Early_blight",
+      photoConsent: true,
+      thumbnailBase64: validBase64
+    }));
   });
-  assert.equal(allowed, true);
-});
 
-runTest("Officers: Normal farmer cannot write or spoof officer doc", () => {
-  const allowed = sim.evaluateOfficers({
-    auth: { uid: "farmer-attacker" },
-    operation: "create",
-    userId: "farmer-attacker",
-    requestResource: { data: { role: "extension_officer" } }
+  await runTest("Diagnoses: Thumbnail exceeding 64KB size cap is DENIED", async () => {
+    const oversizedBase64 = "A".repeat(70000); // 70 KB base64 string (> 65536)
+    await assertFails(setDoc(doc(farmerDb, "diagnoses", "diag_oversized"), {
+      userId: "farmer_selvam",
+      crop: "Tomato",
+      predictedClass: "Tomato___Early_blight",
+      photoConsent: true,
+      thumbnailBase64: oversizedBase64
+    }));
   });
-  assert.equal(allowed, false);
-});
 
-console.log("\n📦 5. Diagnoses & Compressed Thumbnail Rules Tests");
-
-runTest("Diagnoses: Normal farmer can read their own diagnosis", () => {
-  const allowed = sim.evaluateDiagnoses({
-    auth: { uid: "farmer-1" },
-    operation: "read",
-    resource: { data: { userId: "farmer-1" } }
+  await runTest("Diagnoses: Thumbnail uploaded without photoConsent is DENIED", async () => {
+    const validBase64 = "A".repeat(10000);
+    await assertFails(setDoc(doc(farmerDb, "diagnoses", "diag_no_consent"), {
+      userId: "farmer_selvam",
+      crop: "Tomato",
+      predictedClass: "Tomato___Early_blight",
+      photoConsent: false,
+      thumbnailBase64: validBase64
+    }));
   });
-  assert.equal(allowed, true);
-});
 
-runTest("Diagnoses: Normal farmer CANNOT read another farmer's diagnosis", () => {
-  const allowed = sim.evaluateDiagnoses({
-    auth: { uid: "farmer-2" },
-    operation: "read",
-    resource: { data: { userId: "farmer-1" } },
-    isOfficer: false
+  console.log("\n📦 6. Expert Ground Truth Labels Rules Tests");
+  await runTest("Expert Labels: Verified officer submitting expert label is ALLOWED", async () => {
+    await assertSucceeds(setDoc(doc(officerDb, "expert_labels", "lbl_murugan_1"), {
+      officerId: "officer_murugan",
+      diagnosisId: "diag_selvam_1",
+      verifiedPathogen: "Tomato___Early_blight"
+    }));
   });
-  assert.equal(allowed, false);
-});
 
-runTest("Diagnoses: Verified extension officer CAN read farmer's diagnosis for triage", () => {
-  const allowed = sim.evaluateDiagnoses({
-    auth: { uid: "officer-revathi" },
-    operation: "read",
-    resource: { data: { userId: "farmer-1" } },
-    isOfficer: true
+  await runTest("Expert Labels: Non-officer farmer attempting to create expert label is DENIED", async () => {
+    await assertFails(setDoc(doc(farmerDb, "expert_labels", "lbl_spoofed"), {
+      officerId: "farmer_selvam",
+      diagnosisId: "diag_selvam_1",
+      verifiedPathogen: "Tomato___Early_blight"
+    }));
   });
-  assert.equal(allowed, true);
-});
 
-runTest("Diagnoses: Thumbnail with photoConsent=true and size <= 64KB is ALLOWED", () => {
-  const allowed = sim.evaluateDiagnoses({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        crop: "Tomato",
-        predictedClass: "Tomato___Early_blight",
-        photoConsent: true,
-        thumbnailBase64: "a".repeat(20000) // 20 KB thumbnail
-      }
-    }
-  });
-  assert.equal(allowed, true);
-});
-
-runTest("Diagnoses: Thumbnail exceeding 64KB size cap is DENIED", () => {
-  const allowed = sim.evaluateDiagnoses({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        crop: "Tomato",
-        predictedClass: "Tomato___Early_blight",
-        photoConsent: true,
-        thumbnailBase64: "a".repeat(70000) // 70 KB > 64 KB cap
-      }
-    }
-  });
-  assert.equal(allowed, false);
-});
-
-runTest("Diagnoses: Thumbnail uploaded without photoConsent is DENIED", () => {
-  const allowed = sim.evaluateDiagnoses({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    requestResource: {
-      data: {
-        userId: "farmer-1",
-        crop: "Tomato",
-        predictedClass: "Tomato___Early_blight",
-        photoConsent: false,
-        thumbnailBase64: "a".repeat(10000)
-      }
-    }
-  });
-  assert.equal(allowed, false);
-});
-
-console.log("\n📦 6. Expert Ground Truth Labels Rules Tests");
-
-runTest("Expert Labels: Verified officer submitting expert label is ALLOWED", () => {
-  const allowed = sim.evaluateExpertLabels({
-    auth: { uid: "officer-1" },
-    operation: "create",
-    isOfficer: true,
-    requestResource: {
-      data: {
-        officerId: "officer-1",
-        diagnosisId: "diag-100",
-        verifiedPathogen: "Alternaria solani",
-        severity: "Moderate"
-      }
-    }
-  });
-  assert.equal(allowed, true);
-});
-
-runTest("Expert Labels: Non-officer farmer attempting to create expert label is DENIED", () => {
-  const allowed = sim.evaluateExpertLabels({
-    auth: { uid: "farmer-1" },
-    operation: "create",
-    isOfficer: false,
-    requestResource: {
-      data: {
-        officerId: "farmer-1",
-        diagnosisId: "diag-100",
-        verifiedPathogen: "Alternaria solani"
-      }
-    }
-  });
-  assert.equal(allowed, false);
-});
+} finally {
+  await testEnv.cleanup();
+}
 
 console.log("\n=================================================");
-console.log(`🏁 FIRESTORE RULES TESTS: ${passed} PASSED, ${failed} FAILED`);
+console.log(`🏁 REAL FIRESTORE EMULATOR TEST RESULTS: ${passedCount} PASSED, ${failedCount} FAILED`);
 console.log("=================================================");
 
-if (failed > 0) process.exit(1);
-
+if (failedCount > 0) {
+  process.exit(1);
+} else {
+  process.exit(0);
+}

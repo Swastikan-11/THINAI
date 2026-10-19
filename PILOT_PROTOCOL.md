@@ -32,18 +32,20 @@
 
 ---
 
-## 2. Pre-Registered Machine Learning Thresholds (Frozen)
+## 2. Machine Learning Thresholds (STATUS: PROPOSED-BY-AGENT)
 
-These thresholds are formally committed **BEFORE** initiating farmer enrollment and **CANNOT BE MODIFIED** during or after the pilot:
+> [!WARNING]
+> **GOVERNANCE STATUS: PROPOSED-BY-AGENT**
+> The values below were derived from laboratory PlantVillage validation calibration (`ml/train_calibrated_model.py`) and are marked **PROPOSED-BY-AGENT**. They remain provisional proposals until the repository owner reviews, validates, and formally signs off on them in a dedicated commit prior to pilot enrollment. Once approved by the owner, they freeze and cannot be altered.
 
-| Parameter | Symbol | Frozen Value | Agronomic Rationale & Operational Rule |
-|---|:---:|:---:|---|
-| **Optimal Temperature Scaling Parameter** | $T^*$ | **$1.28$** | Fitted by NLL minimization; softens neural network overconfidence on field foliage. |
-| **Tier 1 High-Confidence Threshold** | $\tau_{\text{high}}$ | **$0.78$** | Minimum calibrated probability required to permit chemical fungicide/bactericide recommendations. |
-| **Tier 2 Moderate-Confidence Threshold** | $\tau_{\text{low}}$ | **$0.45$** | Bounds cultural sanitation and organic bio-control; **chemical recommendations strictly prohibited**. |
-| **Minimum Sample Guard for Wilson Interval** | $N_{\min}$ | **$10$** | Wilson confidence intervals and accuracy percentages are withheld until $\ge 10$ farmer verdicts are recorded. |
-| **Calibration Drift Trigger Delta** | $\Delta\text{ECE}_{\text{alarm}}$ | **$\ge 0.05$** ($5.0\%$) | Flag triggers in extension officer dashboard if recent field calibration diverges by more than 5 percentage points. |
-| **Maximum Permissible Harmful Advice Rate** | $\text{HAR}_{\max}$ | **$2.50\%$** | Absolute upper tolerance bound across the entire pilot sample. |
+| Parameter | Symbol | Proposed Value | Origin & Data Source | Governance Status |
+|---|:---:|:---:|---|:---:|
+| **Optimal Temperature Scaling Parameter** | $T^*$ | **$1.28$** | Fitted by NLL minimization on PlantVillage lab validation set | **PROPOSED-BY-AGENT** |
+| **Tier 1 High-Confidence Threshold** | $\tau_{\text{high}}$ | **$0.78$** | Lab risk-coverage curve target ($\text{HAR} \le 2.1\%$) | **PROPOSED-BY-AGENT** |
+| **Tier 2 Moderate-Confidence Threshold** | $\tau_{\text{low}}$ | **$0.45$** | Minimum selective coverage boundary | **PROPOSED-BY-AGENT** |
+| **Minimum Sample Guard for Wilson Interval** | $N_{\min}$ | **$10$** | Statistical stability threshold | **PROPOSED-BY-AGENT** |
+| **Calibration Drift Trigger Delta** | $\Delta\text{ECE}_{\text{alarm}}$ | **$\ge 0.05$** ($5.0\%$) | Operational tripwire | **PROPOSED-BY-AGENT** |
+| **Maximum Permissible Harmful Advice Rate** | $\text{HAR}_{\max}$ | **$2.50\%$** | Agronomic safety ceiling | **PROPOSED-BY-AGENT** |
 
 ---
 
@@ -80,16 +82,16 @@ In accordance with India's **Digital Personal Data Protection Act, 2023 (DPDP Ac
 
 ## 5. Agronomist Remedy Sign-Off Registry
 
-Under no circumstances may a synthetic chemical recommendation enter Tier 1 without documented agronomist sign-off:
+Under no circumstances may a synthetic chemical recommendation enter Tier 1 without documented agronomist sign-off. Until signed, all remedies remain **UNVERIFIED**:
 
-| Disease Class | Approved Chemical Formulation | Prescribed Dosage | Signing Agronomist / Expert | Date of Review | Authoritative Reference Document |
-|---|---|---|---|:---:|---|
-| **Tomato Early Blight** | Mancozeb 75% WP or Chlorothalonil 75% WP | $2.0\text{ g/L}$ water | Dr. K. Soundararajan, Ph.D. (Plant Pathology) | 2026-09-15 | TNAU Agritech Portal: Tomato Crop Protection; CPPC |
-| **Potato Early Blight** | Mancozeb 75% WP | $2.0\text{ g/L}$ water | Dr. K. Soundararajan, Ph.D. (Plant Pathology) | 2026-09-15 | TNAU Crop Production Guide (Horticulture) |
-| **Tomato Late Blight** | Metalaxyl 8% + Mancozeb 64% WP (Ridomil MZ) | $2.5\text{ g/L}$ water | Dr. M. Revathi, M.Sc. (Agri) | 2026-09-18 | TNAU Agritech Portal: Vegetables; CIBRC Fungicide Compendium |
-| **Potato Late Blight** | Metalaxyl 8% + Mancozeb 64% WP | $2.5\text{ g/L}$ water | Dr. M. Revathi, M.Sc. (Agri) | 2026-09-18 | TNAU CPPC Potato Late Blight Guide |
-| **Bacterial Leaf Spot (Chilli & Tomato)** | Copper Oxychloride 50% WP + Streptocycline | $2.5\text{ g/L} + 0.1\text{ g/L}$ (100 ppm) | Dr. K. Soundararajan, Ph.D. (Plant Pathology) | 2026-09-22 | TNAU Crop Protection Guide; ICAR-IIHR Bulletin |
-| **All Other Classes** | *Chemicals Withheld* | N/A | Extension Safety Board | 2026-09-22 | Zero unverified chemical molecules permitted |
+| Disease Class | Approved Chemical Formulation | Prescribed Dosage | Signing Agronomist / Expert | Date of Review | Verification Status | Authoritative Reference Document |
+|---|---|---|---|:---:|:---:|---|
+| **Tomato Early Blight** | Mancozeb 75% WP or Chlorothalonil 75% WP | $2.0\text{ g/L}$ water | *(Pending Sign-Off)* | *(Pending)* | **UNVERIFIED** | TNAU Agritech Portal: Tomato Crop Protection |
+| **Potato Early Blight** | Mancozeb 75% WP | $2.0\text{ g/L}$ water | *(Pending Sign-Off)* | *(Pending)* | **UNVERIFIED** | TNAU Crop Production Guide (Horticulture) |
+| **Tomato Late Blight** | Metalaxyl 8% + Mancozeb 64% WP (Ridomil MZ) | $2.5\text{ g/L}$ water | *(Pending Sign-Off)* | *(Pending)* | **UNVERIFIED** | TNAU Agritech Portal: Vegetables; CIBRC |
+| **Potato Late Blight** | Metalaxyl 8% + Mancozeb 64% WP | $2.5\text{ g/L}$ water | *(Pending Sign-Off)* | *(Pending)* | **UNVERIFIED** | TNAU CPPC Potato Late Blight Guide |
+| **Bacterial Leaf Spot (Chilli & Tomato)** | Copper Oxychloride 50% WP + Streptocycline | $2.5\text{ g/L} + 0.1\text{ g/L}$ (100 ppm) | *(Pending Sign-Off)* | *(Pending)* | **UNVERIFIED** | TNAU Crop Protection Guide; ICAR-IIHR Bulletin |
+| **All Other Classes** | *Chemicals Withheld* | N/A | Extension Safety Board | *(Pending)* | **SAFE / WITHHELD** | Zero unverified chemical molecules permitted |
 
 ---
 
@@ -104,9 +106,7 @@ Under no circumstances may a synthetic chemical recommendation enter Tier 1 with
 ### 6.2 Zero-Cost Pilot Authentication
 To navigate Firebase Spark's 10 SMS/day limit without incurring cloud costs:
 1. **Primary Pilot Sign-In**: Email/Password and Google OAuth.
-2. **Phone Number Testing**: Pre-configured test phone numbers registered in the Firebase Console:
-   - Primary Tester: `+91 9876543210` (Verification Code: `123456`)
-   - Extension Officer Tester: `+91 9876543211` (Verification Code: `123456`)
+2. **Phone Number Testing**: Pre-configured test phone numbers registered privately in the Firebase Console for developer testing.
 3. **Daily SMS Exceeded Warning**: If a user attempts real SMS verification and the daily Spark quota is exhausted, the UI displays a clear bilingual message:
    *"SMS OTP quota reached for today. Please sign in with Email, Google, or use the pre-configured pilot test number."*
 

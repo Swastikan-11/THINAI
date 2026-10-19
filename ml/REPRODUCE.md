@@ -94,8 +94,8 @@ The pipeline produces:
 ## 6. Phase E Evaluation Protocol Reproduction
 
 ```bash
-# 1. Run Python evaluation protocol:
-python ml/evaluate_protocol.py
+# 1. Run Python simulation protocol:
+python ml/simulate_protocol.py
 
 # 2. Or run Node.js standalone generator:
 node scripts/generate_evaluation_protocol.mjs

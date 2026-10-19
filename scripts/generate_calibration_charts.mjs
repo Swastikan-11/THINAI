@@ -401,15 +401,15 @@ This directory contains empirical calibration results, selective risk-coverage c
 
 ## 1. Summary of Empirical Metrics
 
-Derived from evaluation on the held-out real-world field test set:
+Derived from laboratory validation and provisional temperature calibration (provisional T=1.28):
 
 | Metric | Pre-Calibration ($T=1.00$) | Post-Calibration ($T=1.28$) | Relative Delta |
 |---|---|---|---|
-| **Expected Calibration Error (ECE)** | **8.41%** | **2.63%** | **-68.7%** (Substantial calibration improvement) |
-| **Field Test Accuracy** | 89.40% | 89.40% | Invariant (Temperature scaling preserves class rank) |
-| **Macro-F1 Score** | 0.8870 | 0.8870 | Invariant |
-| **Confidence Tier 1 Coverage ($\ge \tau_{\text{high}}$)** | 74.8% | 74.8% | Selective Risk $\le$ 2.1% |
-| **Confidence Tier 2 Coverage ($\tau_{\text{low}} \le \text{conf} < \tau_{\text{high}}$)** | 16.4% | 16.4% | Selective Risk $\le$ 6.4% |
+| **Expected Calibration Error (ECE - Lab)** | **8.41%** | **2.63%** | **-68.7%** (Calibration improvement on validation set) |
+| **Field Test Accuracy** | NOT MEASURED | NOT MEASURED | (Field photos pending collection under DATASETS.md) |
+| **Field Macro-F1 Score** | NOT MEASURED | NOT MEASURED | (Field photos pending collection under DATASETS.md) |
+| **Confidence Tier 1 Coverage ($\ge \tau_{\text{high}}$)** | 74.8% | 74.8% | (Provisional simulation) |
+| **Confidence Tier 2 Coverage ($\tau_{\text{low}} \le \text{conf} < \tau_{\text{high}}$)** | 16.4% | 16.4% | (Provisional simulation) |
 | **Confidence Tier 3 Inconclusive ($< \tau_{\text{low}}$)** | 8.8% | 8.8% | Routed to Extension Officer / KVK Queue |
 
 ---

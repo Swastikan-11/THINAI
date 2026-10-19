@@ -2,15 +2,15 @@ metric,value,unit,description
 model_architecture,MobileNetV2,string,ImageNet transfer learning base
 dataset_coverage,Pepper_Potato_Tomato_Maize,crops,Restricted bounded scope
 optimal_temperature_T,1.28,scalar,Fitted via NLL minimization on calibration set
-ece_pre_calibration,0.0982,ratio,Expected Calibration Error before temperature scaling
-ece_post_calibration,0.0100,ratio,Expected Calibration Error after temperature scaling
-ece_reduction_pct,89.82,percent,Relative calibration error improvement
-test_accuracy_clean,0.8940,ratio,Macro accuracy on held-out field test set
-macro_f1,0.8870,ratio,Harmonic mean of precision and recall across classes
-tau_high,0.78,threshold,Tier 1 threshold (specific diagnosis and chemical advice allowed)
-tau_low,0.45,threshold,Tier 2 threshold (cultural advice only; chemicals withheld)
-selective_risk_tau_high,0.0210,ratio,Diagnostic error rate on Tier 1 cases (<= 2.1%)
-coverage_tau_high,0.7480,ratio,Fraction of uploads meeting Tier 1 confidence
-selective_risk_tau_low,0.0640,ratio,Diagnostic error rate on Tier 2 cases (<= 6.4%)
-coverage_tau_low,0.9120,ratio,Fraction of uploads meeting Tier 2 confidence
-inconclusive_rate_tier3,0.0880,ratio,Fraction routed to extension officer and expert queue
+ece_pre_calibration,0.0982,ratio,SIMULATION: Expected Calibration Error before temperature scaling
+ece_post_calibration,0.0100,ratio,SIMULATION: Expected Calibration Error after temperature scaling
+ece_reduction_pct,89.82,percent,SIMULATION: Relative calibration error improvement
+test_accuracy_clean,0.8940,ratio,SIMULATION: Synthetic uncalibrated accuracy in simulation model
+macro_f1,0.8870,ratio,SIMULATION: Synthetic macro-F1 in simulation model
+tau_high,0.78,threshold,Tier 1 threshold (PROVISIONAL - PROPOSED-BY-AGENT)
+tau_low,0.45,threshold,Tier 2 threshold (PROVISIONAL - PROPOSED-BY-AGENT)
+selective_risk_tau_high,0.0210,ratio,SIMULATION: Diagnostic error rate on Tier 1 cases (<= 2.1%)
+coverage_tau_high,0.7480,ratio,SIMULATION: Fraction of uploads meeting Tier 1 confidence
+selective_risk_tau_low,0.0640,ratio,SIMULATION: Diagnostic error rate on Tier 2 cases (<= 6.4%)
+coverage_tau_low,0.9120,ratio,SIMULATION: Fraction of uploads meeting Tier 2 confidence
+inconclusive_rate_tier3,0.0880,ratio,SIMULATION: Fraction routed to extension officer and expert queue

@@ -28,4 +28,5 @@ backend/thinai.db
 test_screen.jpg
 thinai_screen_dashboard.jpg
 test-results/
-playwright-report/
+playwright-report/
+*.log

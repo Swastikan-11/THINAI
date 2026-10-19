@@ -49,39 +49,43 @@ THINAI implements and evaluates a novel framework: **"Confidence-Gated Advisory 
 
 ---
 
-## 3. Evaluation Protocol & Empirical Benchmark Results
+---
 
-Full benchmarking scripts and raw artifact data are preserved in [`results/`](file:///c:/Users/cswas/Documents/THINAI/results):
+## 3. Simulation Protocol & Theoretical Risk Benchmark
 
-### A. Gating Test (Held-Out Field Test Set, $N = 3{,}140$)
-We compare standard **Always-Answering Inference** ($T=1.00$, no threshold) against **Confidence-Gated Selective Advisory** ($T^*=1.28, \tau_{\text{high}}=0.78, \tau_{\text{low}}=0.45$):
+> [!WARNING]
+> **SIMULATION NOTICE**: The metrics below are generated from stochastic numerical simulation (`ml/simulate_protocol.py`) to theoretically evaluate selective gating protocols under synthetic distributions. **Real field performance metrics (accuracy, macro-F1, and ECE) are NOT MEASURED** pending the empirical field pilot in Tamil Nadu. All operational thresholds ($T=1.28, \tau_{\text{high}}=0.78, \tau_{\text{low}}=0.45$) are **PROVISIONAL (PROPOSED-BY-AGENT)** and derived from lab PlantVillage calibration data.
+
+Full simulation scripts and synthetic artifacts are preserved in [`results/`](file:///c:/Users/cswas/Documents/THINAI/results):
+
+### A. Gating Policy Simulation Protocol
+We compare a hypothetical unrestricted answering model against our proposed confidence-gated selective advisory policy ($T=1.28, \tau_{\text{high}}=0.78, \tau_{\text{low}}=0.45$):
 
 $$\text{Harmful Advice Rate (HAR)} = \frac{\sum_{i=1}^N \mathbf{1}(\hat{p}_i \ge \tau_{\text{high}} \;\land\; \hat{Y}_i \ne Y_i)}{N}$$
 
-| Diagnostic Strategy | Coverage | Accuracy on Answered Cases | Macro-F1 | ECE | Harmful Advice Rate (HAR) |
-|---|---|---|---|---|---|
-| **Always Answering** | 100.0% | 88.20% | 0.865 | 8.41% | **12.40%** |
-| **Gated (Tier 1 Confident)** | **64.20%** | **97.10%** | **0.968** | **2.63%** | **1.90%** (**84.7% Reduction**) |
-| **Gated (Tier 2 Moderate)** | 24.80% | — (Cultural/Retake only) | — | — | 0.00% (No chemicals) |
-| **Gated (Tier 3 Inconclusive)**| 11.00% | — (Saved for Expert) | — | — | 0.00% (No chemicals) |
+| Diagnostic Strategy (SIMULATION) | Simulated Coverage | Simulated Accuracy on Answered Cases | Status | Harmful Advice Permitted |
+|---|---|---|---|---|
+| **Always Answering (Baseline Simulation)** | 100.0% | Baseline Synthetic Acc | SIMULATION | YES (Unrestricted - High Hazard) |
+| **Gated (Tier 1 Confident)** | Selective Fraction | High Precision Subset | SIMULATION | YES (Validated Pathogens Only) |
+| **Gated (Tier 2 Moderate)** | Intermediate Fraction | Cultural/Monitoring Only | SIMULATION | NO (Chemicals Withheld) |
+| **Gated (Tier 3 Inconclusive)**| Residual Fraction | Routed to Expert Queue | SIMULATION | NO (Chemicals Withheld) |
 
-> **Key Finding**: Gating advice reduces the Harmful Advice Rate from **12.40% to 1.90%** (an **84.7% relative reduction**), preventing farmers from spraying expensive and potentially toxic chemicals when the model is uncertain.
+> **Theoretical Rationale**: By withholding synthetic chemical advice whenever calibrated confidence is below $\tau_{\text{high}}$, selective gating isolates high-consequence chemical treatments to confident predictions, mitigating toxic pesticide expenditure during ambiguous visual presentations.
 
-### B. Monitor Test: Ground Truth vs Simulated Farmer Verdict Noise
-Using an expert-confirmed ground truth benchmark ($N=1{,}000$, True Accuracy = $88.20\%$), we evaluated the verdict-based accuracy estimator $\hat{A}_{\text{verdict}}$ across simulated farmer misclassification noise levels $\eta \in [0\%, 30\%]$:
+### B. Monitor Simulation: Theoretical Effect of Crowdsourced Farmer Verdict Noise
+In `ml/simulate_protocol.py`, we model how crowdsourced farmer feedback ($V_i \in \{\text{YES}, \text{NO}, \text{NOT\_SURE}\}$) degrades under varying farmer response noise levels $\eta \in [0\%, 30\%]$:
 
 $$\mathbb{E}[\hat{A}_{\text{verdict}}] = (1 - 2\eta) A_{\text{true}} + \eta$$
 
-| Simulated Farmer Noise ($\eta$) | Verdict-Based Accuracy Estimate | Wilson 95% Confidence Interval | Gap to True Accuracy |
+| Simulated Noise Parameter ($\eta$) | Verdict-Based Accuracy Decay (Simulation) | Mathematical Expectation | Reliability Classification |
 |---|---|---|---|
-| **$\eta = 0\%$ (Perfect Experts)** | 88.20% | [86.05%, 90.08%] | 0.00% |
-| **$\eta = 5\%$ (Agronomy Students)** | 84.44% | [82.07%, 86.57%] | -3.76% |
-| **$\eta = 10\%$ (Experienced Farmers)** | 80.59% | [78.03%, 82.93%] | -7.61% |
-| **$\eta = 15\%$ (Average Smallholders)** | 76.71% | [73.99%, 79.24%] | -11.49% |
-| **$\eta = 20\%$ (High Visual Ambiguity)**| 72.82% | [69.99%, 75.48%] | -15.38% |
-| **$\eta = 30\%$ (Severe Noise)** | 65.11% | [62.09%, 68.01%] | -23.09% |
+| **$\eta = 0\%$ (Hypothetical Perfect Feedback)** | Matches True Accuracy | $A_{\text{true}}$ | Reliable Baseline |
+| **$\eta = 5\%$ (Low Error Noise)** | Mild Attenuation | $0.90 \cdot A_{\text{true}} + 0.05$ | Usable with Drift Monitoring |
+| **$\eta = 10\%$ (Moderate Noise)** | Moderate Attenuation | $0.80 \cdot A_{\text{true}} + 0.10$ | Usable for Rank-Ordering Only |
+| **$\eta = 15\%$ (Substantial Field Noise)** | Pronounced Attenuation | $0.70 \cdot A_{\text{true}} + 0.15$ | Weak Field Indicator |
+| **$\eta \ge 20\%$ (Severe Noise / Misdiagnosis)** | Severe Attenuation towards 50% | $(1 - 2\eta) A_{\text{true}} + \eta$ | Unreliable for Point Estimates |
 
-*Interpretation*: While verdict noise introduces attenuation towards $50\%$, the Wilson 95% interval accurately bounds the trend, and relative rank-order across classes remains preserved, validating the monitor as an effective field drift indicator.
+*Implication*: Because farmer verdicts are noisy weak labels, THINAI enforces a **strict minimum sample guard ($\ge 10$ verdicts)** and 95% Wilson score confidence intervals before presenting any class-wise estimates in the Field Monitor. Real ground truth requires extension officer confirmation.
 
 ### C. Plain Pilot Checklist for Field Photo Collection ($N = 100$)
 > [!IMPORTANT]

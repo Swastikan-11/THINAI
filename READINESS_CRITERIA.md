@@ -14,29 +14,30 @@ Per audit guidelines, every gate is strictly binary (**PASS** or **FAIL**). A wa
 
 | Gate ID | Gate Name | Measurable Pass Threshold | Evaluated Status | Concrete Failure / Pass Evidence |
 |:---:|---|---|:---:|---|
-| **G1** | **Code Quality & Build** | `tsc --noEmit` exits 0, production Vite bundle builds without errors. | **PASS** | `npx tsc --noEmit` exit 0 (0 errors); `npm run build` succeeds in 6.55s. |
-| **G2** | **Automated Test Suites** | All unit, E2E, and security rule suites pass without regression. | **PASS** | `npx vitest run` (41/41 pass); `npx playwright test` (11/11 pass); `node scripts/test_firestore_rules.mjs` (13/13 pass). |
-| **G3** | **Dataset Provenance & Leakage Proof** | Cryptographic hash check proving no image overlap between calibration and held-out test splits; distinct separation of lab vs. field data. | **FAIL** | Held-out field test split with cryptographic deduplication is not yet constructed on disk; training uses lab PlantVillage. |
-| **G4** | **Field ML Performance & Calibration** | Empirical accuracy, macro-F1, and ECE measured on real field images; simulation parameters not used as field findings. | **FAIL** | Real field accuracy and ECE are **NOT MEASURED**. Prior reported field metrics ($89.4\%$ accuracy, $1.00\%$ ECE) were generated via stochastic simulation in `ml/evaluate_protocol.py`. |
-| **G5** | **Selective Gating & Safety Invariants** | Zero chemical remedy emitted in Tiers 2 and 3; all Tier 1 remedies cited with official TNAU/ICAR document and exact dilution dosage. | **PASS** | 200 random input trials in `tests/gating_engine.test.ts` pass with 0 chemical emissions; 3 active disease remedies verified against TNAU Agritech Portal. |
+| **G1** | **Code Quality & Build** | `tsc --noEmit` exits 0, production Vite bundle builds without errors. | **PASS** | `npx tsc --noEmit` exit 0 (0 errors); `npm run build` succeeds in 6.69s. |
+| **G2** | **Automated Test Suites** | All unit, E2E, and security rule suites pass without regression. | **PASS** | `npx vitest run` (49/49 pass across 8 test suites including OOD safety); `npx playwright test` (11/11 pass); `npm test` passes 35 system tests and 23 real Firestore Emulator tests. |
+| **G3** | **Dataset Provenance & Leakage Proof** | Cryptographic hash check proving no image overlap between calibration and held-out test splits; distinct separation of lab vs. field data. | **FAIL** | Held-out field test split with cryptographic deduplication is not yet constructed on disk; training uses lab PlantVillage. Full datasets kept off-repo per `DATASETS.md`. |
+| **G4** | **Field ML Performance & Calibration** | Empirical accuracy, macro-F1, and ECE measured on real field images; simulation parameters not used as field findings. | **FAIL** | Real field accuracy, macro-F1, and ECE are **NOT MEASURED**. Simulation script renamed to `ml/simulate_protocol.py`; synthetic numbers (89.4%, 84.7%, 12.40%, 9.82%, 1.90%) purged/labeled as simulation. |
+| **G5** | **Selective Gating & Safety Invariants** | Zero chemical remedy emitted in Tiers 2 and 3; all Tier 1 remedies cited with official TNAU/ICAR document and exact dilution dosage. | **PASS** | 200 random input trials in `tests/gating_engine.test.ts` pass with 0 chemical emissions; 100% of out-of-domain images rejected to Tier 3 in `tests/ood_safety.test.ts`; all chemical remedies prepended with pilot officer confirmation safeguard; source doc/product label claim/unverified status populated. |
 | **G6** | **Offline Capability & Sync** | App shell loads in Airplane mode from Service Worker; on-device inference runs locally; FIFO queue flushes with Last-Write-Wins conflict resolution. | **PASS** | `e2e/offline_scenarios.spec.ts` (O4-1 through O4-5 pass); DOM loads in 6ms offline; FIFO/LWW tested in `tests/reconnect_sync.test.ts`. |
-| **G7** | **Mobile Native & Android 16 on Target** | Signed APK executed on physical Android 16 device or API 36 emulator with recorded logcat and feature run. | **FAIL** | Workstation has no physical Android device attached (`adb devices` empty) and no local AVD configured. (Formerly waived; waived = FAIL). |
-| **G8** | **Live Network Services & Transparent Fallbacks** | Live weather API verified; live market fallback transparently labeled; live Gemini authenticated or marked heuristic; ARFI deployment honest. | **FAIL** | Open-Meteo and Agmarknet fallback pass, but Cloud Gemini is **NOT IMPLEMENTED** (uses client-side rule templates) and ARFI FastAPI backend is **NOT DEPLOYED** (`https://api.thinai.com` unreachable). |
-| **G9** | **Security, Keystore & Zero Committed Secrets** | Compromised keystores purged; release passwords externalized to CI secrets; zero `.env` files in git history; Firestore security rules pass. | **PASS** | Keystore purged in `30fda66`; dynamic signing in `build.gradle`; CI Run #17 green with secret decoding; 13/13 Firestore rules pass; zero secrets in git log. |
-| **G10** | **Field Pilot Protocol & Extension Dashboard** | Pre-registered pilot protocol committed before pilot; DPDP Act consent; extension officer collection operational on Firebase Spark free tier. | **PASS** | `PILOT_PROTOCOL.md` committed with pre-registered thresholds and stop rules; `firestore.rules` updated with officers and thumbnail cap; `OfficerDashboardScreen.tsx` with paginated query and CSV export; 23/23 rules pass; `tests/officer_dashboard.test.ts` pass. |
+| **G7** | **Mobile Native & Android 16 on Target** | Signed APK executed on physical Android 16 device or API 36 emulator with recorded logcat and feature run. | **FAIL** | Workstation has no physical Android device attached (`adb devices` empty) and no local AVD configured. (Formerly waived; waived = FAIL; awaiting user logcat). |
+| **G8** | **Live Network Services & Transparent Fallbacks** | Live weather API verified; live market fallback transparently labeled; live Gemini authenticated or marked heuristic; ARFI deployment honest. | **FAIL** | Open-Meteo and Agmarknet fallback pass, but Cloud Gemini was dropped in `f14182f` and replaced with offline rule-based assistant; ARFI is formally decided as a client-side heuristic with its FastAPI backend uncommissioned. |
+| **G9** | **Security, Keystore & Zero Committed Secrets** | Compromised keystores purged; release passwords externalized to CI secrets; zero `.env` files in git history; Firestore security rules pass. | **FAIL (or CONDITIONAL PASS)** | Repository `Swastikan-11/THINAI` is **PUBLIC**. Secret scan found old keystore `thinai-release-key.jks` and password `thinai2026` in commit `d774219` (deleted from HEAD in `30fda66`). Formally retired with zero distributed signing, but secret remains in public git history until `git filter-repo` is run. Auth demo credentials restricted to `DEV`. 23/23 real emulator rules pass. |
+| **G10** | **Field Pilot Protocol & Extension Dashboard** | Pre-registered pilot protocol committed before pilot; DPDP Act consent; extension officer collection operational on Firebase Spark free tier. | **PASS** | `PILOT_PROTOCOL.md` pre-registered with thresholds marked PROPOSED-BY-AGENT; DPDP Act consent; extension officer collection operational on Firebase Spark free tier; 23/23 real emulator rules pass; `tests/officer_dashboard.test.ts` pass. |
 
 ---
 
 ## 2. Gate Scorecard Summary
 
 * **Total Gates Evaluated**: 10
-* **PASSED Gates**: 6 (**G1, G2, G5, G6, G9, G10**)
-* **FAILED Gates**: 4 (**G3, G4, G7, G8**)
+* **PASSED Gates**: 5 or 6 (G1, G2, G5, G6, G10; G9 conditional on key retirement vs history purge)
+* **FAILED Gates**: 4 or 5 (**G3, G4, G7, G8**, and **G9** under unpurged git history)
 * **Waived Gates Count**: 0 (all previous waivers converted to FAIL)
 * **Overall Evaluation**:
   ```
   THINAI IS NOT READY - failing gates: G3, G4, G7, G8
   ```
+  *(Note: If unpurged git history in commit `d774219` is counted as an active secret vulnerability, failing gates are `G3, G4, G7, G8, G9`).*
 
 ---
 

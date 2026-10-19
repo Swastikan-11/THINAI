@@ -59,6 +59,7 @@ export function CropDoctorScreen({
   const [savedForExpert, setSavedForExpert] = useState(false);
   const [showPickList, setShowPickList] = useState(false);
   const [selectedActualClass, setSelectedActualClass] = useState("");
+  const [selectedCrop, setSelectedCrop] = useState<string>("Tomato");
   const [currentVerdict, setCurrentVerdict] = useState<"YES" | "NO" | "NOT_SURE" | null>(null);
 
   // Stop speech when component unmounts
@@ -364,8 +365,8 @@ export function CropDoctorScreen({
     setErrorMessage(null);
 
     try {
-      // Pass captured image directly to the genuine CV classification pipeline
-      const result = await detectCropDisease(photoPreview, primaryCrop);
+      // Pass captured image directly to the genuine CV classification pipeline with selected crop
+      const result = await detectCropDisease(photoPreview, selectedCrop);
       setDiagnosis(result);
 
       if (!result.isReliable) {
@@ -532,6 +533,77 @@ export function CropDoctorScreen({
             </span>
           </div>
         </div>
+      </div>
+
+      {/* ─── CROP SELECTION WITH ICONS (OUT-OF-DOMAIN RESTRICTION) ─── */}
+      <div className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-black text-zinc-900">
+              {language === "Tamil" ? "பயிரைத் தேர்ந்தெடுக்கவும்" : "Select Crop Before Scanning"}
+            </span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              {language === "Tamil" ? "கட்டாயம்" : "Required"}
+            </span>
+          </div>
+          <span className="text-[10px] text-zinc-500">
+            {language === "Tamil" ? "தேர்வு:" : "Active:"} <strong className="text-emerald-700">{selectedCrop}</strong>
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          {[
+            { id: "Tomato", label: "Tomato", tamil: "தக்காளி", icon: "🍅", validated: true },
+            { id: "Potato", label: "Potato", tamil: "உருளை", icon: "🥔", validated: true },
+            { id: "Pepper", label: "Chilli / Pepper", tamil: "மிளகாய்", icon: "🌶️", validated: true },
+            { id: "Paddy", label: "Paddy (Rice)", tamil: "நெல்", icon: "🌾", validated: false },
+            { id: "Cotton", label: "Cotton", tamil: "பருத்தி", icon: "☁️", validated: false },
+            { id: "Corn", label: "Maize", tamil: "சோளம்", icon: "🌽", validated: false }
+          ].map((crop) => {
+            const isSelected = selectedCrop === crop.id;
+            return (
+              <button
+                key={crop.id}
+                type="button"
+                onClick={() => {
+                  setSelectedCrop(crop.id);
+                  setDiagnosis(null);
+                  setErrorMessage(null);
+                }}
+                className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                  isSelected
+                    ? "border-emerald-600 bg-emerald-50/80 shadow-xs ring-2 ring-emerald-500/30"
+                    : "border-zinc-200 bg-zinc-50/60 hover:bg-zinc-100/70"
+                }`}
+              >
+                <span className="text-2xl mb-1">{crop.icon}</span>
+                <span className={`text-[11px] font-bold leading-tight ${isSelected ? "text-emerald-900" : "text-zinc-800"}`}>
+                  {language === "Tamil" ? crop.tamil : crop.label}
+                </span>
+                <span className={`text-[8px] font-semibold mt-0.5 px-1 rounded ${
+                  crop.validated ? "text-emerald-700 bg-emerald-100/70" : "text-amber-800 bg-amber-100/80"
+                }`}>
+                  {crop.validated
+                    ? (language === "Tamil" ? "பரிசோதிக்கப்பட்டது" : "Validated")
+                    : (language === "Tamil" ? "நிலை 3 (பரிந்துரை)" : "Tier 3 Referral")}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tier 3 Notice for unvalidated crops */}
+        {(selectedCrop === "Paddy" || selectedCrop === "Cotton" || selectedCrop === "Corn") && (
+          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <strong>{language === "Tamil" ? "நிலை 3 வழிகாட்டல்:" : "Tier 3 Expert Referral Active:"} </strong>
+              {language === "Tamil"
+                ? `${selectedCrop} பயிர்க்கான பார்வைக் கணிப்பு மாதிரி தமிழ்நாடு கள மதிப்பீட்டுக்காக காத்திருக்கிறது. ரசாயன மருந்துகள் முற்றிலும் தடுக்கப்பட்டு வேளாண் அலுவலர் ஆலோசனைக்கு அனுப்பப்படும்.`
+                : `${selectedCrop} is in Tier 3 (Agronomist Referral). On-device model has no trained weights for this crop; diagnosis will withhold all chemical advice and route to an Extension Officer.`}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ─── 2. CAPTURE / UPLOAD OPTIONS OR PHOTO PREVIEW ─── */}

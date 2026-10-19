@@ -71,7 +71,7 @@ export const COVERED_MODEL_CROPS = [
 
 // Default fallback thresholds if thresholds.json is not yet fetched
 const DEFAULT_THRESHOLDS: CalibrationThresholds = {
-  model_version: "thinai-mobilenetv2-calibrated-v1",
+  model_version: "thinai-mobilenetv2-calibrated-v1-PROVISIONAL-LAB",
   architecture: "MobileNetV2",
   framework: "LiteRT.js / TensorFlow Lite",
   temperature: 1.28,
@@ -445,7 +445,71 @@ export async function runNeuralDiseaseInference(
         };
       }
 
+      // 3. Crop Mismatch & Out-Of-Domain Rejection
+      const selectedCropLower = selectedCrop.toLowerCase();
+      const expectedPrefix = (selectedCropLower.includes("pepper") || selectedCropLower.includes("chilli"))
+        ? "pepper"
+        : selectedCropLower.includes("potato")
+        ? "potato"
+        : selectedCropLower.includes("tomato")
+        ? "tomato"
+        : (selectedCropLower.includes("corn") || selectedCropLower.includes("maize"))
+        ? "corn"
+        : selectedCropLower;
+
+      const predictedClassLower = predictedClass.toLowerCase();
+      const isCropMatch = predictedClassLower.startsWith(expectedPrefix);
+
+      // Sum calibrated probability mass for classes belonging to the selected crop
+      const selectedCropProbMass = calibratedProbs.reduce((acc, p, idx) => {
+        const clsName = loadedMetadata!.classes[idx]?.toLowerCase() || "";
+        return clsName.startsWith(expectedPrefix) ? acc + p : acc;
+      }, 0);
+
+      if (!isCropMatch || selectedCropProbMass < 0.40) {
+        return {
+          source: "UNSUPPORTED_CROP",
+          tier: "TIER_3_INCONCLUSIVE",
+          calibratedConfidence: calibratedPercent,
+          rawConfidence: rawPercent,
+          temperatureApplied: temperature,
+          labelStatus: "crop mismatch / out-of-domain rejected",
+          isReliable: false,
+          diseaseName: `Crop Mismatch Detected / பயிர் பொருந்தவில்லை (Selected: ${selectedCrop})`,
+          scientificName: "Out-of-Domain Foliage Mismatch",
+          crop: selectedCrop,
+          confidence: Math.round(selectedCropProbMass * 1000) / 10,
+          allProbabilities: allResults.slice(0, 3),
+          symptoms: [
+            `You selected ${selectedCrop}, but the model classified the specimen as non-${selectedCrop} foliage (top match: ${predictedClass.replace(/___/g, " - ")}).`,
+            `Total model confidence for ${selectedCrop} is only ${(selectedCropProbMass * 100).toFixed(1)}% (minimum required is 40%).`,
+            "To prevent dangerous misapplication of agricultural inputs, diagnosis is rejected."
+          ],
+          immediateAction: `Please ensure the photograph is of a ${selectedCrop} leaf and re-scan, or consult an extension officer.`,
+          organicTreatment: ["No treatment advised on mismatched crop."],
+          chemicalTreatment: ["Chemical application strictly prohibited for mismatched or out-of-domain foliage."],
+          preventiveMeasures: ["Confirm crop identity before taking pathology photograph."],
+          tipsForRetake: [
+            `Select the correct crop matching the plant before scanning.`,
+            `Capture a clear, well-lit photo of an actual ${selectedCrop} leaf.`,
+            `Avoid capturing mixed foliage, weeds, or non-crop objects.`
+          ]
+        };
+      }
+
       const remedy = getRemedyForClass(predictedClass, selectedCrop);
+
+      // Check whether this crop is among the 3 clinically validated crops (Tomato, Potato, Pepper)
+      const isValidatedCrop = ["tomato", "potato", "pepper"].some(c => selectedCropLower.includes(c));
+
+      // In Pilot Mode: Chemical treatments require explicit agronomist/officer confirmation
+      const pilotGatedChemicals = (!isValidatedCrop)
+        ? ["Chemical remedies are withheld: crop is outside validated pilot scope."]
+        : remedy.chemicalTreatment.map(c =>
+            c.includes("No chemical") || c.includes("withheld")
+              ? c
+              : `[PILOT SAFEGUARD - REQUIRES OFFICER CONFIRMATION] ${c}`
+          );
 
       // ─────────────────────────────────────────────────────────────────────────
       // 3-TIER SELECTIVE CONFIDENCE GATING
@@ -469,7 +533,7 @@ export async function runNeuralDiseaseInference(
           symptoms: remedy.symptoms,
           immediateAction: remedy.immediateAction,
           organicTreatment: remedy.organicTreatment,
-          chemicalTreatment: remedy.chemicalTreatment,
+          chemicalTreatment: pilotGatedChemicals,
           preventiveMeasures: remedy.preventiveMeasures
         };
       }
@@ -580,7 +644,16 @@ function getRemedyForClass(className: string, crop: string) {
       immediateAction: "Continue scheduled irrigation and balanced organic nutrient application.",
       organicTreatment: ["Apply Panchagavya 3% as prophylactic foliar spray every 15 days."],
       chemicalTreatment: ["No chemical treatment required."],
-      preventiveMeasures: ["Inspect crops weekly for pest arrivals and maintain weed-free bunds."]
+      preventiveMeasures: ["Inspect crops weekly for pest arrivals and maintain weed-free bunds."],
+      sourceDocument: {
+        title: "TNAU Agritech Portal: Good Agricultural Practices for Horticultural Crops",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot.html",
+        section: "Vegetable Crops General Prophylaxis"
+      },
+      productLabelClaim: "General organic tonic / non-pesticidal prophylactic management",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
     };
   }
 
@@ -591,8 +664,17 @@ function getRemedyForClass(className: string, crop: string) {
       symptoms: ["Concentric brown/black rings (target-board / bullseye pattern).", "Yellow chlorotic halo surrounding necrotic lesions."],
       immediateAction: "Prune lower infected leaves and avoid overhead sprinkler watering.",
       organicTreatment: ["Spray Neem Oil (3%) or Trichoderma harzianum @ 5g/L."],
-      chemicalTreatment: ["Mancozeb 75% WP @ 2g/L or Chlorothalonil 75% WP @ 2g/L."],
-      preventiveMeasures: ["Practice 3-year crop rotation and mulch soil around plant base."]
+      chemicalTreatment: ["Mancozeb 75% WP @ 2.0g/L or Chlorothalonil 75% WP @ 2.0g/L."],
+      preventiveMeasures: ["Practice 3-year crop rotation and mulch soil around plant base."],
+      sourceDocument: {
+        title: "TNAU Agritech Portal: Crop Protection -> Vegetables -> Tomato Diseases",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_veg_tomato.html",
+        section: "Early Blight (Alternaria solani) Control Measures"
+      },
+      productLabelClaim: "CIBRC registered for Solanaceous Early Blight foliar application (2.0g/L)",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
     };
   }
 
@@ -603,8 +685,17 @@ function getRemedyForClass(className: string, crop: string) {
       symptoms: ["Water-soaked dark lesions rapidly expanding across leaf tips.", "White cottony fungal growth on leaf undersides in humid conditions."],
       immediateAction: "Immediately remove severely blighted foliage to prevent spore dispersal.",
       organicTreatment: ["Apply Bordeaux mixture 1% or Copper Hydroxide spray."],
-      chemicalTreatment: ["Metalaxyl + Mancozeb (Ridomil MZ) @ 2.5g/L water."],
-      preventiveMeasures: ["Ensure wide plant spacing for aeration and avoid wet night foliage."]
+      chemicalTreatment: ["Metalaxyl 8% + Mancozeb 64% WP (Ridomil MZ) @ 2.5g/L water."],
+      preventiveMeasures: ["Ensure wide plant spacing for aeration and avoid wet night foliage."],
+      sourceDocument: {
+        title: "TNAU Crop Protection Compendium (CPPC): Horticultural Crops",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_veg_potato.html",
+        section: "Late Blight (Phytophthora infestans) Fungicide Schedule"
+      },
+      productLabelClaim: "CIBRC approved dual-action systemic and contact fungicide for Solanaceous Late Blight",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
     };
   }
 
@@ -615,8 +706,17 @@ function getRemedyForClass(className: string, crop: string) {
       symptoms: ["Small, water-soaked circular dark spots with yellow halos.", "Spots turning scab-like or tearing through leaf lamina."],
       immediateAction: "Avoid handling or working among plants while foliage is wet.",
       organicTreatment: ["Foliar spray of fresh cow dung supernatant (20%) + neem oil."],
-      chemicalTreatment: ["Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 0.1g/L."],
-      preventiveMeasures: ["Use certified pathogen-free seeds and hot water seed treatment at 50°C."]
+      chemicalTreatment: ["Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 0.1g/L (100 ppm)."],
+      preventiveMeasures: ["Use certified pathogen-free seeds and hot water seed treatment at 50°C."],
+      sourceDocument: {
+        title: "TNAU Crop Protection Guide (Horticulture) & ICAR-IIHR Technical Bulletin",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_veg_chilli.html",
+        section: "Bacterial Leaf Spot (Xanthomonas campestris pv. vesicatoria)"
+      },
+      productLabelClaim: "CIBRC label recommendation for Solanaceous bacterial spot/canker management",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
     };
   }
 
@@ -628,6 +728,15 @@ function getRemedyForClass(className: string, crop: string) {
     immediateAction: "Consult the nearest Assistant Agricultural Officer (AAO) for field confirmation.",
     organicTreatment: ["Apply bio-fungicide formulations (Pseudomonas fluorescens 10g/L)."],
     chemicalTreatment: ["Consult agronomy extension specialist before applying chemicals."],
-    preventiveMeasures: ["Sanitize pruning tools and harvest shears with 70% alcohol."]
+    preventiveMeasures: ["Sanitize pruning tools and harvest shears with 70% alcohol."],
+    sourceDocument: {
+      title: "TNAU Agritech Portal: General Integrated Pest & Disease Management",
+      url: "https://agritech.tnau.ac.in/crop_protection/crop_prot.html",
+      section: "General Referral Protocol"
+    },
+    productLabelClaim: "Bio-rational prophylactic spray only; synthetic chemical withheld pending agronomist review",
+    reviewerName: "",
+    reviewerDate: "",
+    verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
   };
 }

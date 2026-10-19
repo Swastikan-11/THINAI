@@ -184,8 +184,8 @@ function pseudoRandom(seed = 42) {
 
 const rng = pseudoRandom(42);
 
-// Generate held-out field test set aligned with Phase B empirical evaluation
-// (Total N=1000 field test samples; overall accuracy = 89.4%)
+// [SYNTHETIC SIMULATION ONLY] Generates synthetic sample distribution for selective gating curve simulation
+// Real field test accuracy on actual field photography is NOT MEASURED.
 const samples = [];
 for (let i = 0; i < N_SAMPLES; i++) {
   const isCorrect = rng() < 0.894 ? 1 : 0;
