@@ -1,6 +1,6 @@
 # THINAI Bug Tracking & Verification Report (`BUGS.md`)
 **Version**: 1.0.0-rc  
-**Last Updated**: October 17, 2026  
+**Last Updated**: October 19, 2026  
 **Methodology**: Rigorous triage by severity (P0 = Blocker, P1 = High, P2 = Medium, P3 = Low). All P0 and P1 defects must be fixed and re-verified via automated test suites prior to deployment. Never claim something works without running it.
 
 ---
@@ -23,23 +23,29 @@
 ## 2. Automated Test Verification Summary
 
 ### A. Vitest Suite (`npx vitest run`)
-- **Total Test Files**: 4 passed (4)
-- **Total Test Cases**: 22 passed (22)
+- **Total Test Files**: 7 passed (7)
+- **Total Test Cases**: 47 passed (47)
 - **Suite Breakdown**:
   1. `tests/gating_engine.test.ts`: 7 tests passing (Confidence threshold mapping, Tier 1/2/3 remedy distribution, 200-trial property-based test confirming zero chemical recommendations below $\tau_{\text{high}}$).
-  2. `tests/calibration_maths.test.ts`: 6 tests passing (Temperature scaling softmax stability, temperature effect on entropy, ECE calculation on perfectly calibrated vs uncalibrated sets).
-  3. `tests/wilson_interval.test.ts`: 4 tests passing (Boundary conditions, $0 \le \text{lower} \le \text{center} \le \text{upper} \le 1$, analytical accuracy, convergence to $p$ as $n \to \infty$).
+  2. `tests/calibration_maths.test.ts`: 8 tests passing (Temperature scaling softmax stability, temperature effect on entropy, ECE calculation, perceptual difference hashing dHash, Hamming distance).
+  3. `tests/wilson_interval.test.ts`: 4 tests passing (Boundary conditions, analytical accuracy center = 0.7167, convergence to $p$ as $n \to \infty$).
   4. `tests/i18n_parity.test.ts`: 5 tests passing (EN/TA dictionary symmetry $\ge 100$ keys, non-empty translations, 4-tab terminology exact match, fallback safety).
+  5. `tests/reconnect_sync.test.ts`: 7 tests passing (FIFO reconnect synchronization, LWW conflict resolution, storage quota recovery on QuotaExceededError).
+  6. `tests/offline_matrix.test.ts`: 12 tests passing (Offline state matrix transitions, airplane mode cold start, mutation queue persistence).
+  7. `tests/officer_dashboard.test.ts`: 4 tests passing (Extension officer privacy consent, weak verdict labels, CSV export sanitization, Spark thumbnail size cap).
 
 ### B. Playwright E2E Suite (`npx playwright test`)
-- **Total Scenarios**: 5 passed (5)
+- **Total Scenarios**: 11 passed (11) across 2 spec files
 - **Browser**: Chromium Headless
 - **Scenarios Verified**:
-  1. `1. Login and Auth Screen Navigation`: Displays authentic THINAI sign-in surface with email/phone credentials.
-  2. `2. Crop Doctor Diagnosis and 3-Step Strip`: 3-step strip rendered (`1. Take Picture` $\to$ `2. Diagnosis` $\to$ `3. Gated Remedy`) with covered crop selectors.
-  3. `3. Farmer-Verdict Field Monitor: Weak Labels and Wilson CIs`: Renders crowd-sourced weak labels disclaimer, Wilson 95% intervals, and calibration drift monitor.
-  4. `4. Equipment Board and Phone Sharing Consent`: P2P machinery board renders with mandatory phone number sharing consent.
-  5. `5. Offline Queuing and Online Synchronization`: Verified offline detection, IndexedDB persistence, and online restoration.
+  1. `workflow.spec.ts`: Login & auth screens, Crop Doctor 3-step diagnosis strip, Field Monitor weak labels and Wilson intervals, Equipment Board phone sharing consent, offline queuing and restoration.
+  2. `offline_scenarios.spec.ts`: O4-1 SW precache & local DOM execution (2-6ms), O4-2 offline sign-in guards, O4-3 offline core tools and rule banner, O4-4 mid-use network drop & reconnect FIFO sync, O4-5 throttled 3G latency (44ms render), O4-6 model load benchmark (198ms) and first inference (6ms).
+
+### C. System & Security Rule Suites
+- **System Verification (`scripts/verify_system.mjs`)**: 35/35 tests passing (Spray advisory weather rules, cache expiration policies, crop normalization, TFLite assets, drift alarms).
+- **Firestore Security Rules (`scripts/test_firestore_rules.mjs`)**: 23/23 tests passing (Unauthenticated deny, equipment listing permissions, phone privacy consent, user profile immutability, officer RBAC, 64 KB thumbnail cap, expert ground truth labels).
+- **Perceptual Hash Duplicate Audit (`scripts/detect_leakage_hashes.mjs`)**: 6 images scanned, 0 near-duplicate pairs detected.
+
 
 ---
 
