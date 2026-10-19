@@ -1,0 +1,63 @@
+--------- beginning of main
+10-19 16:39:53.494 W/chromium( 1860): [1019/163953.474083:WARNING:components/cronet/url_request_context_config.cc:769] Unrecognized Cronet experimental option "enable_telemetry" with params "false
+10-19 16:39:53.494 W/chromium( 1860): 
+10-19 16:39:54.219 I/chromium( 3255): [1019/163954.205442:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+10-19 16:39:54.231 I/chromium( 3255): [1019/163954.230808:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+10-19 16:39:56.489 D/Capacitor( 3255): Starting BridgeActivity
+10-19 16:39:56.538 D/Capacitor( 3255): Registering plugin instance: CapacitorCookies
+10-19 16:39:56.543 D/Capacitor( 3255): Registering plugin instance: WebView
+10-19 16:39:56.547 D/Capacitor( 3255): Registering plugin instance: CapacitorHttp
+10-19 16:39:56.550 D/Capacitor( 3255): Registering plugin instance: SystemBars
+10-19 16:39:56.557 D/Capacitor( 3255): Registering plugin instance: Camera
+10-19 16:39:56.759 W/chromium( 1860): [1019/163956.454129:WARNING:url_request_context_config.cc(715)] Unrecognized Cronet experimental option "enable_telemetry" with params "false
+10-19 16:39:56.759 W/chromium( 1860): 
+10-19 16:39:56.907 W/Capacitor( 3255): Unable to read file at path public/plugins
+10-19 16:39:56.916 D/Capacitor( 3255): Loading app at https://localhost
+10-19 16:39:57.081 D/Capacitor( 3255): App started
+10-19 16:39:57.267 D/Capacitor( 3255): App resumed
+10-19 16:39:57.535 D/Capacitor( 3255): Handling local request: https://localhost/
+10-19 16:39:57.542 W/chromium( 3255): [WARNING:viz_main_impl.cc(85)] VizNullHypothesis is disabled (not a warning)
+10-19 16:39:57.723 W/chromium( 3324): [WARNING:runtime_features.cc(560)] Fenced frames cannot be enabled in this configuration. Use --enable-features=FencedFrames instead.
+10-19 16:39:57.726 W/chromium( 3324): [WARNING:runtime_features.cc(585)] Topics cannot be enabled in this configuration. Use --enable-features=BrowsingTopics in addition.
+10-19 16:39:57.726 W/chromium( 3324): [WARNING:runtime_features.cc(606)] SharedStorage cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI in addition.
+10-19 16:39:58.365 D/Capacitor( 3255): Handling local request: https://localhost/assets/index-Blv9XJYA.js
+10-19 16:39:58.377 D/Capacitor( 3255): Handling local request: https://localhost/assets/index-CyCUMEbi.css
+10-19 16:40:01.050 D/Capacitor( 3255): Handling local request: https://localhost/sw.js
+10-19 16:40:01.353 E/chromium( 3414): [1019/164001.302063:ERROR:aw_component_update_service.cc(285)] No directory found for component llkgjffcdpffmhiakmfcdcblohccpfmo
+10-19 16:40:01.787 D/Capacitor( 3255): Handling local request: https://localhost/favicon.ico
+10-19 16:40:05.278 I/Capacitor/Console( 3255): File: https://localhost/assets/index-Blv9XJYA.js - Line 4603 - Msg: THINAI ServiceWorker registered with scope: https://localhost/
+10-19 16:40:05.295 D/Capacitor( 3255): Handling local request: https://localhost/
+10-19 16:40:05.297 D/Capacitor( 3255): Handling local request: https://localhost/index.html
+10-19 16:40:05.300 D/Capacitor( 3255): Handling local request: https://localhost/models/labels.json
+10-19 16:40:05.335 D/Capacitor( 3255): Handling local request: https://localhost/models/thresholds.json
+10-19 16:40:05.342 D/Capacitor( 3255): Handling local request: https://localhost/models/thinai_disease_model.tflite
+10-19 16:40:05.361 D/Capacitor( 3255): Handling local request: https://localhost/litert/litert_wasm_internal.js
+10-19 16:40:05.383 D/Capacitor( 3255): Handling local request: https://localhost/litert/litert_wasm_internal.wasm
+10-19 16:40:05.408 D/Capacitor( 3255): Handling local request: https://localhost/litert/litert_wasm_compat_internal.js
+10-19 16:40:05.516 D/Capacitor( 3255): Handling local request: https://localhost/litert/litert_wasm_compat_internal.wasm
+10-19 16:40:48.994 I/chromium( 4553): [1019/164048.985551:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+10-19 16:40:48.995 I/chromium( 4553): [1019/164048.995740:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+10-19 16:40:49.775 W/chromium( 4610): [WARNING:runtime_features.cc(560)] Fenced frames cannot be enabled in this configuration. Use --enable-features=FencedFrames instead.
+10-19 16:40:49.775 W/chromium( 4610): [WARNING:runtime_features.cc(585)] Topics cannot be enabled in this configuration. Use --enable-features=BrowsingTopics in addition.
+10-19 16:40:49.775 W/chromium( 4610): [WARNING:runtime_features.cc(606)] SharedStorage cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI in addition.
+10-19 16:40:50.254 W/chromium( 4553): [WARNING:viz_main_impl.cc(85)] VizNullHypothesis is disabled (not a warning)
+10-19 16:40:50.877 W/chromium( 4553): [1019/164050.875664:WARNING:components/cronet/url_request_context_config.cc:769] Unrecognized Cronet experimental option "enable_telemetry" with params "false
+10-19 16:40:50.877 W/chromium( 4553): 
+10-19 16:41:01.962 W/Capacitor/Console( 3255): File: https://localhost/assets/index-Blv9XJYA.js - Line 566 - Msg: Failed to create WebGPU Context Provider
+10-19 16:41:01.963 W/Capacitor/Console( 3255): File: https://localhost/assets/index-Blv9XJYA.js - Line 566 - Msg: Failed to create default WebGPU device: Error: No GPU adapter found.
+10-19 16:41:01.983 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [environment.cc:36] Creating LiteRT environment with options
+10-19 16:41:01.983 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: WARNING: [npu_registry.cc:34] NPU accelerator could not be loaded and registered: kLiteRtStatusErrorInvalidArgument.
+10-19 16:41:01.984 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xc5f98, name=GPU WebGPU
+10-19 16:41:01.984 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [gpu_registry.cc:87] Statically linked GPU accelerator registered.
+10-19 16:41:01.985 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0xc6160, name=CpuAccelerator
+10-19 16:41:01.985 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+10-19 16:41:02.261 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [environment.cc:36] Creating LiteRT environment with options
+10-19 16:41:02.262 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: WARNING: [npu_registry.cc:34] NPU accelerator could not be loaded and registered: kLiteRtStatusErrorInvalidArgument.
+10-19 16:41:02.277 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0x52a918, name=GPU WebGPU
+10-19 16:41:02.278 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [gpu_registry.cc:87] Statically linked GPU accelerator registered.
+10-19 16:41:02.278 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [accelerator_registry.cc:54] RegisterAccelerator: ptr=0x52aae0, name=CpuAccelerator
+10-19 16:41:02.292 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [cpu_registry.cc:75] XNNPACK CPU accelerator registered.
+10-19 16:41:02.398 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: [compiled_model.cc:812] Flatbuffer model initialized directly from incoming litert model.
+10-19 16:41:02.421 E/Capacitor/Console( 3255): File: https://localhost/litert/litert_wasm_internal.js - Line 1343 - Msg: INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+10-19 16:41:02.812 I/Capacitor/Console( 3255): File: https://localhost/assets/index-Blv9XJYA.js - Line 566 - Msg: THINAI LiteRT.js MobileNetV2 model compiled successfully via WASM.
+10-19 16:41:03.418 I/Capacitor/Console( 3255): File: https://localhost/assets/index-Blv9XJYA.js - Line 566 - Msg: [LiteRT] State check: [object Object]

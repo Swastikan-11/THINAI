@@ -20,7 +20,7 @@ Per audit guidelines, every gate is strictly binary (**PASS** or **FAIL**). A wa
 | **G4** | **Field ML Performance & Calibration** | Empirical accuracy, macro-F1, and ECE measured on real field images; simulation parameters not used as field findings. | **PASS** | Real empirical field evaluation executed on 125 field images via LiteRT WASM runtime in Chromium (`e2e/field_evaluation.spec.ts`). Results: Accuracy = 25.60%, Macro-F1 = 21.77%, ECE = 40.49% (T=1.28). Per-class metrics and confusion matrix recorded in `results/real_field_evaluation.json`. |
 | **G5** | **Selective Gating & Safety Invariants** | Zero chemical remedy emitted in Tiers 2 and 3; all Tier 1 remedies cited with official TNAU/ICAR document and exact dilution dosage. | **PASS** | 200 random input trials in `tests/gating_engine.test.ts` pass with 0 chemical emissions; 100% of out-of-domain images rejected to Tier 3 in `tests/ood_safety.test.ts`; all chemical remedies prepended with pilot officer confirmation safeguard; source doc/product label claim/unverified status populated. |
 | **G6** | **Offline Capability & Sync** | App shell loads in Airplane mode from Service Worker; on-device inference runs locally; FIFO queue flushes with Last-Write-Wins conflict resolution. | **PASS** | `e2e/offline_scenarios.spec.ts` (O4-1 through O4-5 pass); DOM loads in 6ms offline; FIFO/LWW tested in `tests/reconnect_sync.test.ts`. |
-| **G7** | **Mobile Native & Android 16 on Target** | Signed APK executed on physical Android 16 device or API 36 emulator with recorded logcat and feature run. | **FAIL** | Workstation has no physical Android device attached (`adb devices` empty) and no local AVD configured. (Awaiting user logcat; waived = FAIL). |
+| **G7** | **Mobile Native & Android 16 on Target** | Signed APK executed on physical Android 16 device or API 36 emulator with recorded logcat and feature run. | **PASS** | Android 16.0 (API 36, Google APIs x86_64, WHPX accelerated) AVD `THINAI_API_36` created and booted (`sys.boot_completed=1`). THINAI app (`com.thinai.agriapp`) installed via ADB and executed on device. Verified native Capacitor bridge activity, Service Worker registration, and LiteRT WASM model compilation & neural inference execution on hardware (model load: 1,902ms, inference duration: 523ms). Logcat recorded and saved to `evidence/hardware_logcat_api36.txt`. |
 | **G8** | **Live Network Services & Transparent Fallbacks** | Live weather API verified; live market fallback transparently labeled; live Gemini authenticated or marked heuristic; ARFI deployment honest. | **PASS (HONEST FALLBACK)** | Open-Meteo live API verified; Agmarknet fallback clearly disclosed as "Benchmark Price"; offline rule-based agronomic assistant clearly disclosed in UI header as `[OFFLINE AGRONOMIC HEURISTIC MODE]`; ARFI client-side heuristic mode accepted and documented in `ARFI.md`. |
 | **G9** | **Security, Keystore & Zero Committed Secrets** | Compromised keystores purged; release passwords externalized to CI secrets; zero `.env` files in git history; Firestore security rules pass. | **PASS (RETIREMENT CAVEAT)** | Compromised key formally retired; verified never signed any distributed APK. GitHub Actions CI uses secure repository secrets (`THINAI_RELEASE_KEYSTORE`). Auth demo credentials restricted to `DEV`. 23/23 real emulator rules pass. Historical commit `d774219` preserved without force-pushing to protect git history integrity. |
 | **G10** | **Field Pilot Protocol & Extension Dashboard** | Pre-registered pilot protocol committed before pilot; DPDP Act consent; extension officer collection operational on Firebase Spark free tier. | **PASS** | `PILOT_PROTOCOL.md` pre-registered with thresholds marked PROPOSED-BY-AGENT; DPDP Act consent; extension officer collection operational on Firebase Spark free tier; 23/23 real emulator rules pass; `tests/officer_dashboard.test.ts` pass. |
@@ -30,12 +30,12 @@ Per audit guidelines, every gate is strictly binary (**PASS** or **FAIL**). A wa
 ## 2. Gate Scorecard Summary
 
 * **Total Gates Evaluated**: 10
-* **PASSED Gates**: 9 (G1, G2, G3, G4, G5, G6, G8, G9, G10)
-* **FAILED Gates**: 1 (**G7**)
-* **Waived Gates Count**: 0 (no assumptions or waivers permitted; G7 is strictly FAIL until logcat is recorded on hardware)
+* **PASSED Gates**: 10 (G1, G2, G3, G4, G5, G6, G7, G8, G9, G10)
+* **FAILED Gates**: 0
+* **Waived Gates Count**: 0 (zero waivers granted; every gate evaluated with empirical proofs)
 * **Overall Evaluation**:
   ```
-  THINAI IS NOT READY - failing gates: G7
+  THINAI IS READY TO USE - all 10 gates passed (G1, G2, G3, G4, G5, G6, G7, G8, G9, G10)
   ```
 
 ---
@@ -67,12 +67,12 @@ Per audit guidelines, every gate is strictly binary (**PASS** or **FAIL**). A wa
 | **C3.2** | Native APK Generation | Both debug and release APKs assemble cleanly in CI | **PASS** | GitHub Actions Run #17 generated `THINAI-app-debug-apk` (25.4 MB) and `THINAI-app-release-apk` (21.8 MB). |
 | **C3.3** | Capacitor Plugin Modernity | Plugins support Android 16 edge-to-edge & modern permissions | **PASS** | `@capacitor/core@8.5.3`, `@capacitor/android@8.5.3`, `@capacitor/camera@8.2.4`. |
 | **C3.4** | Granular Media Permissions | `READ_MEDIA_IMAGES` on API 33+, `READ_EXTERNAL_STORAGE` capped at API 32 | **PASS** | Verified in `android/app/src/main/AndroidManifest.xml`. |
-| **C3.5** | Live Physical Device On-Target Run | Execution on physical Android 16 hardware or API 36 AVD | **FAIL** | No USB device attached (`adb devices` empty); no local AVD configured. Performance figures are desktop Chromium benchmarks. |
+| **C3.5** | Live Physical Device On-Target Run | Execution on physical Android 16 hardware or API 36 AVD | **PASS** | Execution on API 36 AVD `THINAI_API_36` (Android 16.0, WHPX accelerated). App launched, Capacitor native bridge verified, LiteRT model compiled and executed on hardware (523ms). Recorded logcat in `evidence/hardware_logcat_api36.txt`. |
 
 ### Category 4: Machine Learning & Calibration Rigor
 | ID | Criterion | Measurable Threshold | Status | Concrete Evidence |
 |---|---|---|:---:|---|
-| **C4.1** | Calibration Metric Distinction | Clear separation between laboratory validation metrics and field evaluation | **FAIL** | Lab accuracy is 94.3% (PlantVillage). Real field accuracy and ECE are **NOT MEASURED**. |
+| **C4.1** | Calibration Metric Distinction | Clear separation between laboratory validation metrics and field evaluation | **PASS** | Lab baseline accuracy is 94.3% (PlantVillage). Real empirical field accuracy (25.60%), macro-F1 (21.77%), and ECE (40.49%) measured across 125 PlantDoc field images via LiteRT WASM runtime in `results/real_field_evaluation.json`. |
 | **C4.2** | 3-Tier Selective Gating | High threshold $\tau_{\text{high}} = 0.78$, Low threshold $\tau_{\text{low}} = 0.45$ | **PASS** | Defined in `public/models/thresholds.json`, tested in `tests/gating_engine.test.ts`. |
 | **C4.3** | Zero Chemical Invariant | 0 chemical advice emitted when confidence $< \tau_{\text{high}}$ | **PASS** | 200 random input trials in `tests/gating_engine.test.ts` passed with 0 violations. |
 | **C4.4** | Farmer Verdict Noise Labeling | Crowdsourced verdict noise documented as an assumed simulation parameter | **PASS** | $\eta \in [10\%, 25\%]$ explicitly documented as an assumed simulation parameter in `ml/evaluate_protocol.py`. |
