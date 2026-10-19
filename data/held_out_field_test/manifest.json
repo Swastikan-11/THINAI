@@ -1,0 +1,1282 @@
+[
+  {
+    "image_id": "FIELD-0001",
+    "relative_path": "Pepper,_bell___Bacterial_spot/00.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 57046,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0002",
+    "relative_path": "Pepper,_bell___Bacterial_spot/000.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 192682,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0003",
+    "relative_path": "Pepper,_bell___Bacterial_spot/01.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 65060,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0004",
+    "relative_path": "Pepper,_bell___Bacterial_spot/Bacterial-spot-pepper2.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 6508,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0005",
+    "relative_path": "Pepper,_bell___Bacterial_spot/CMVpepperLeafShock-copy-50QUALITY-1ge8umw.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 41429,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0006",
+    "relative_path": "Pepper,_bell___Bacterial_spot/H5w92.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 550998,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0007",
+    "relative_path": "Pepper,_bell___Bacterial_spot/bacterial_leaf_spot_pepper_l.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 21544,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0008",
+    "relative_path": "Pepper,_bell___Bacterial_spot/pepper-spot.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 97492,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0009",
+    "relative_path": "Pepper,_bell___Bacterial_spot/pepper_bacterial-spot_03_zoom.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___Bacterial_spot",
+    "file_size_bytes": 136692,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0010",
+    "relative_path": "Pepper,_bell___healthy/10148582-green-leaf-of-pepper.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 73702,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0011",
+    "relative_path": "Pepper,_bell___healthy/4825902504_5fa80b65b8_z.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 126854,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0012",
+    "relative_path": "Pepper,_bell___healthy/GREEN%20BELL%20PLANT%20YELLOW%20LEAF.JPG.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 108849,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0013",
+    "relative_path": "Pepper,_bell___healthy/IMG_1629.JPG_1507122477.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 14,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0014",
+    "relative_path": "Pepper,_bell___healthy/RnGnC.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 414381,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0015",
+    "relative_path": "Pepper,_bell___healthy/e33155.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 111556,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0016",
+    "relative_path": "Pepper,_bell___healthy/pepper_leaf.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 39141,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0017",
+    "relative_path": "Pepper,_bell___healthy/why-are-my-pepper-plants-yellow-yellow-pepper-plants-yellow-leaves-green-veins-pepper-plants-yellow-veins.jpg",
+    "crop": "Pepper",
+    "ground_truth_class": "Pepper,_bell___healthy",
+    "file_size_bytes": 50581,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0018",
+    "relative_path": "Corn___Cercospora_leaf_spot Gray_leaf_spot/IMG_42231.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+    "file_size_bytes": 1577792,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0019",
+    "relative_path": "Corn___Cercospora_leaf_spot Gray_leaf_spot/rsz0803Figure6.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+    "file_size_bytes": 34226,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0020",
+    "relative_path": "Corn___Cercospora_leaf_spot Gray_leaf_spot/show_picture.asp_id=aaaaaaaaaaogcqq&w2=420&h2=378&clip=center,420,378&meta=0.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+    "file_size_bytes": 14,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0021",
+    "relative_path": "Corn___Cercospora_leaf_spot Gray_leaf_spot/strom5.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+    "file_size_bytes": 107831,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0022",
+    "relative_path": "Corn___Northern_Leaf_Blight/02c.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 67199,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0023",
+    "relative_path": "Corn___Northern_Leaf_Blight/0796.20graylssymt.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 30479,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0024",
+    "relative_path": "Corn___Northern_Leaf_Blight/07c.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 83607,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0025",
+    "relative_path": "Corn___Northern_Leaf_Blight/0c.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 179797,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0026",
+    "relative_path": "Corn___Northern_Leaf_Blight/1321189.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 106355,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0027",
+    "relative_path": "Corn___Northern_Leaf_Blight/160314_web.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 32963,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0028",
+    "relative_path": "Corn___Northern_Leaf_Blight/2013Corn_GrayLeafSpot_0815_0003.JPG.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 389397,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0029",
+    "relative_path": "Corn___Northern_Leaf_Blight/2015070295153021.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 225240,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0030",
+    "relative_path": "Corn___Northern_Leaf_Blight/Common%20Diseases%20Figure%201.JPG.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 14451,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0031",
+    "relative_path": "Corn___Northern_Leaf_Blight/Corn-SCLB-2017-1.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 2256589,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0032",
+    "relative_path": "Corn___Northern_Leaf_Blight/corn-disease-update-fig-3-gray-leaf-spot.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 631528,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0033",
+    "relative_path": "Corn___Northern_Leaf_Blight/corn-gray-leaf-spot-f4.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Northern_Leaf_Blight",
+    "file_size_bytes": 652989,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0034",
+    "relative_path": "Corn___Common_rust/0796.39maizerust.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 33414,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0035",
+    "relative_path": "Corn___Common_rust/0796.40comrust.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 33671,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0036",
+    "relative_path": "Corn___Common_rust/0796.47southrust.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 38824,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0037",
+    "relative_path": "Corn___Common_rust/0796.52srusttelia.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 37960,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0038",
+    "relative_path": "Corn___Common_rust/12-19striprustJIM.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 19641,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0039",
+    "relative_path": "Corn___Common_rust/1355.50commonrust.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 23587,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0040",
+    "relative_path": "Corn___Common_rust/2256-body-1501555581-1.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 468393,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0041",
+    "relative_path": "Corn___Common_rust/393.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 35155,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0042",
+    "relative_path": "Corn___Common_rust/5496239405_d95bdb97d1_z.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 177428,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0043",
+    "relative_path": "Corn___Common_rust/80104747.jpg",
+    "crop": "Corn",
+    "ground_truth_class": "Corn___Common_rust",
+    "file_size_bytes": 278872,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0044",
+    "relative_path": "Potato___Early_blight/3023.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 131200,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0045",
+    "relative_path": "Potato___Early_blight/backus-056-potato-blight.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 1477148,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0046",
+    "relative_path": "Potato___Early_blight/early-blight-alternaria-alternata-leaf-spotting-on-potato-leaf-X91XJE.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 222008,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0047",
+    "relative_path": "Potato___Early_blight/early-blight-or-target-spot-alternaria-solani-lesions-on-a-tomato-AXK6AY.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 146352,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0048",
+    "relative_path": "Potato___Early_blight/earlyblightpotato.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 158063,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0049",
+    "relative_path": "Potato___Early_blight/potato-blight-phytophthora-infestans-close-up-of-upper-surface-of-BMMRXC.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 108060,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0050",
+    "relative_path": "Potato___Early_blight/potato-early-blight-alternaria-alternata-lesion-on-a-potato-leaf-a1w1em.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 90130,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0051",
+    "relative_path": "Potato___Early_blight/potatobd001.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Early_blight",
+    "file_size_bytes": 12143,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0052",
+    "relative_path": "Potato___Late_blight/1421_0.jpeg_itok=FMtmgePj.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 14,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0053",
+    "relative_path": "Potato___Late_blight/20090710-lateblight.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 69917,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0054",
+    "relative_path": "Potato___Late_blight/2540_600.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 29235,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0055",
+    "relative_path": "Potato___Late_blight/5816740026_d42ef24413_Phytophthora-Infestans.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 98347,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0056",
+    "relative_path": "Potato___Late_blight/B2750109-Late_blight_on_a_potato_plant-SPL.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 106256,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0057",
+    "relative_path": "Potato___Late_blight/LateBlight04.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 35773,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0058",
+    "relative_path": "Potato___Late_blight/irish-blight-symptoms-on-potato-leaves-atmf8b.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 56066,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0059",
+    "relative_path": "Potato___Late_blight/potato-late-blight.jpg",
+    "crop": "Potato",
+    "ground_truth_class": "Potato___Late_blight",
+    "file_size_bytes": 24849,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0060",
+    "relative_path": "Tomato___Early_blight/039b47d574bc4bb8a14259a1cd96a741.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 37998,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0061",
+    "relative_path": "Tomato___Early_blight/100983448.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 33832,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0062",
+    "relative_path": "Tomato___Early_blight/1234080-Early-Blight.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 480134,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0063",
+    "relative_path": "Tomato___Early_blight/Shoemaker_7068.JPG.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 50718,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0064",
+    "relative_path": "Tomato___Early_blight/bugs-and-blight-061.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 1434983,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0065",
+    "relative_path": "Tomato___Early_blight/dscn3175.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 614450,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0066",
+    "relative_path": "Tomato___Early_blight/early_blight1-150x150.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 8704,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0067",
+    "relative_path": "Tomato___Early_blight/earlyblight21_.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 690712,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0068",
+    "relative_path": "Tomato___Early_blight/tomato_early-blight_01_zoom.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Early_blight",
+    "file_size_bytes": 31316,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0069",
+    "relative_path": "Tomato___Septoria_leaf_spot/0.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 20364,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0070",
+    "relative_path": "Tomato___Septoria_leaf_spot/2STEM.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 200887,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0071",
+    "relative_path": "Tomato___Septoria_leaf_spot/2septoria-tomato.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 34536,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0072",
+    "relative_path": "Tomato___Septoria_leaf_spot/55830b60a7cf2.image.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 279542,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0073",
+    "relative_path": "Tomato___Septoria_leaf_spot/6134794031202304.jpeg.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 163932,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0074",
+    "relative_path": "Tomato___Septoria_leaf_spot/636227737977191231-septoria-leaf-spot-VT.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 49149,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0075",
+    "relative_path": "Tomato___Septoria_leaf_spot/6447731_orig.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 39540,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0076",
+    "relative_path": "Tomato___Septoria_leaf_spot/7-17-Photo3_Septoria-MARY.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 58149,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0077",
+    "relative_path": "Tomato___Septoria_leaf_spot/RARZ4.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 651323,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0078",
+    "relative_path": "Tomato___Septoria_leaf_spot/early-blight-septoria-ls-fig-3.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 1178259,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0079",
+    "relative_path": "Tomato___Septoria_leaf_spot/sept4disease-019.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Septoria_leaf_spot",
+    "file_size_bytes": 694339,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0080",
+    "relative_path": "Tomato___Bacterial_spot/%2320+Bacterial+Spot+and+Speck.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 101734,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0081",
+    "relative_path": "Tomato___Bacterial_spot/07.17.18-Common_Tomato_Diseases_Canker-258x300.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 117880,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0082",
+    "relative_path": "Tomato___Bacterial_spot/Bacterial_spots563.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 59098,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0083",
+    "relative_path": "Tomato___Bacterial_spot/Tom_Bact3.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 14838,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0084",
+    "relative_path": "Tomato___Bacterial_spot/Tom_Bact7.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 29211,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0085",
+    "relative_path": "Tomato___Bacterial_spot/Tomato%2BBacterial%2BSpot%2Bon%2BLeaves.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 45487,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0086",
+    "relative_path": "Tomato___Bacterial_spot/bact-spot-fig-1.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 205339,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0087",
+    "relative_path": "Tomato___Bacterial_spot/tomato_V8.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 14032,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0088",
+    "relative_path": "Tomato___Bacterial_spot/tomato_bacterial-speck_01_zoom.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Bacterial_spot",
+    "file_size_bytes": 127207,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0089",
+    "relative_path": "Tomato___Late_blight/110822-206-Tomato-blight.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 169278,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0090",
+    "relative_path": "Tomato___Late_blight/18c.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 22562,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0091",
+    "relative_path": "Tomato___Late_blight/636368370164094909-late-blight-15-.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 34334,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0092",
+    "relative_path": "Tomato___Late_blight/70.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 34575,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0093",
+    "relative_path": "Tomato___Late_blight/E%29Tomato-late-blight-foliar.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 17319,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0094",
+    "relative_path": "Tomato___Late_blight/IMG_5808.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 1960797,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0095",
+    "relative_path": "Tomato___Late_blight/LateBlt09_06.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 15801,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0096",
+    "relative_path": "Tomato___Late_blight/dsc_8148cs.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 805641,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0097",
+    "relative_path": "Tomato___Late_blight/image.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 93863,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0098",
+    "relative_path": "Tomato___Late_blight/late_blight_tomato_leaf_spore1x1200.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Late_blight",
+    "file_size_bytes": 317530,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0099",
+    "relative_path": "Tomato___Tomato_mosaic_virus/9511.img.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 49474,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0100",
+    "relative_path": "Tomato___Tomato_mosaic_virus/D%29AlfMov.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 15592,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0101",
+    "relative_path": "Tomato___Tomato_mosaic_virus/Tomato-Mosaic-1wdr2jx-300x225.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 5281,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0102",
+    "relative_path": "Tomato___Tomato_mosaic_virus/everystockphoto-21099455-l.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 139743,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0103",
+    "relative_path": "Tomato___Tomato_mosaic_virus/ill-tomato-of-tomato-mosaic-virus-DBE17N.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 164161,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0104",
+    "relative_path": "Tomato___Tomato_mosaic_virus/page_2.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 118205,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0105",
+    "relative_path": "Tomato___Tomato_mosaic_virus/tmv-tomato-34.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 2291117,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0106",
+    "relative_path": "Tomato___Tomato_mosaic_virus/tmv-tomato-9.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 2099909,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0107",
+    "relative_path": "Tomato___Tomato_mosaic_virus/toma_TMV.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 133789,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0108",
+    "relative_path": "Tomato___Tomato_mosaic_virus/tomato_virus_04_zoom.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_mosaic_virus",
+    "file_size_bytes": 118971,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0109",
+    "relative_path": "Tomato___Tomato_Yellow_Leaf_Curl_Virus/11-40580_5.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "file_size_bytes": 112996,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0110",
+    "relative_path": "Tomato___Tomato_Yellow_Leaf_Curl_Virus/17fc47.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "file_size_bytes": 228890,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0111",
+    "relative_path": "Tomato___Tomato_Yellow_Leaf_Curl_Virus/8226402877_9abf151b5b_b.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "file_size_bytes": 229422,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0112",
+    "relative_path": "Tomato___Tomato_Yellow_Leaf_Curl_Virus/fwa2013313115151.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "file_size_bytes": 19674,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0113",
+    "relative_path": "Tomato___Tomato_Yellow_Leaf_Curl_Virus/glyphosate.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "file_size_bytes": 46532,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0114",
+    "relative_path": "Tomato___Tomato_Yellow_Leaf_Curl_Virus/tylcv-seminar-1-638.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "file_size_bytes": 69933,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0115",
+    "relative_path": "Tomato___healthy/1684.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 34789,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0116",
+    "relative_path": "Tomato___healthy/2013-08-20-06.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 250402,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0117",
+    "relative_path": "Tomato___healthy/90e2c0.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 152951,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0118",
+    "relative_path": "Tomato___healthy/DSCN1015.JPG.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 329457,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0119",
+    "relative_path": "Tomato___healthy/IMG_1246.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 527789,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0120",
+    "relative_path": "Tomato___healthy/Tomato59.JPG.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 293562,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0121",
+    "relative_path": "Tomato___healthy/Tomato_leaf.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 1708931,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0122",
+    "relative_path": "Tomato___healthy/main-qimg-d9c2a93f60568485c989670d9bbf703b.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___healthy",
+    "file_size_bytes": 70973,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0123",
+    "relative_path": "Tomato___Leaf_Mold/49%20Leafmold%20Bottom.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Leaf_Mold",
+    "file_size_bytes": 15861,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0124",
+    "relative_path": "Tomato___Leaf_Mold/50%20Leafmold%20Top.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Leaf_Mold",
+    "file_size_bytes": 15242,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0125",
+    "relative_path": "Tomato___Leaf_Mold/BIGSD.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Leaf_Mold",
+    "file_size_bytes": 24071,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0126",
+    "relative_path": "Tomato___Leaf_Mold/black_leaf_mold_in_zina_tina.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Leaf_Mold",
+    "file_size_bytes": 65940,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0127",
+    "relative_path": "Tomato___Leaf_Mold/dscn6689.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Leaf_Mold",
+    "file_size_bytes": 168383,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  },
+  {
+    "image_id": "FIELD-0128",
+    "relative_path": "Tomato___Leaf_Mold/fungus-univ-of-minnesoeta.jpg",
+    "crop": "Tomato",
+    "ground_truth_class": "Tomato___Leaf_Mold",
+    "file_size_bytes": 110134,
+    "source_dataset": "PlantDoc (Singh et al., ACM CoDS-COMAD 2020)",
+    "license": "CC BY 4.0",
+    "geographic_origin": "Indian agrarian field photography (natural illumination, soil & foliage clutter)"
+  }
+]

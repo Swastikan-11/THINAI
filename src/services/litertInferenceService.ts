@@ -311,14 +311,11 @@ function preprocessImageToFloat32(imageData: ImageData): Float32Array {
   const float32 = new Float32Array(width * height * 3);
 
   for (let i = 0; i < width * height; i++) {
-    const r = data[i * 4];
-    const g = data[i * 4 + 1];
-    const b = data[i * 4 + 2];
-
-    // MobileNetV2 standard normalization: (pixel / 127.5) - 1.0
-    float32[i * 3] = (r / 127.5) - 1.0;
-    float32[i * 3 + 1] = (g / 127.5) - 1.0;
-    float32[i * 3 + 2] = (b / 127.5) - 1.0;
+    // Model graph contains tf.keras.applications.mobilenet_v2.preprocess_input
+    // which normalizes raw [0, 255] values internally.
+    float32[i * 3] = data[i * 4];
+    float32[i * 3 + 1] = data[i * 4 + 1];
+    float32[i * 3 + 2] = data[i * 4 + 2];
   }
 
   return float32;
@@ -366,6 +363,12 @@ export async function runNeuralDiseaseInference(
   // 2. Try Running MobileNetV2 via LiteRT.js
   const model = await getOrInitLiteRtModel();
   const thresholds = loadedThresholds || DEFAULT_THRESHOLDS;
+
+  console.info("[LiteRT] State check:", {
+    hasModel: !!model,
+    hasMetadata: !!loadedMetadata,
+    classCount: loadedMetadata?.classes?.length
+  });
 
   if (model && loadedMetadata && loadedMetadata.classes && loadedMetadata.classes.length > 0) {
     try {
@@ -604,8 +607,10 @@ export async function runNeuralDiseaseInference(
         ]
       };
     } catch (inferErr) {
-      console.warn("LiteRT inference execution error, falling back to heuristic:", inferErr);
+      console.error("[LiteRT] Inference execution error:", inferErr);
     }
+  } else {
+    console.error("[LiteRT] Cannot run neural model: model=", !!model, "loadedMetadata=", loadedMetadata);
   }
 
   // 4. Graceful Fallback to Heuristic

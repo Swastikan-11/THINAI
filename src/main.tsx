@@ -54,6 +54,28 @@
           durationMs: Math.round(end - start),
           result: res
         };
+      },
+      evaluateImageBase64: async (base64DataUrl: string, selectedCrop: string) => {
+        const { runNeuralDiseaseInference } = await import("./services/litertInferenceService");
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = async () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = 224;
+            canvas.height = 224;
+            const ctx = canvas.getContext("2d")!;
+            ctx.drawImage(img, 0, 0, 224, 224);
+            const imgData = ctx.getImageData(0, 0, 224, 224);
+            try {
+              const res = await runNeuralDiseaseInference(imgData, selectedCrop);
+              resolve(res);
+            } catch (err) {
+              reject(err);
+            }
+          };
+          img.onerror = () => resolve(null);
+          img.src = base64DataUrl;
+        });
       }
     };
   }

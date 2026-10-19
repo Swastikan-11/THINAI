@@ -1,16 +1,21 @@
 metric,value,unit,description
 model_architecture,MobileNetV2,string,ImageNet transfer learning base
-dataset_coverage,Pepper_Potato_Tomato_Maize,crops,Restricted bounded scope
-optimal_temperature_T,1.28,scalar,Fitted via NLL minimization on calibration set
-ece_pre_calibration,0.0982,ratio,SIMULATION: Expected Calibration Error before temperature scaling
-ece_post_calibration,0.0100,ratio,SIMULATION: Expected Calibration Error after temperature scaling
-ece_reduction_pct,89.82,percent,SIMULATION: Relative calibration error improvement
-test_accuracy_clean,0.8940,ratio,SIMULATION: Synthetic uncalibrated accuracy in simulation model
-macro_f1,0.8870,ratio,SIMULATION: Synthetic macro-F1 in simulation model
-tau_high,0.78,threshold,Tier 1 threshold (PROVISIONAL - PROPOSED-BY-AGENT)
-tau_low,0.45,threshold,Tier 2 threshold (PROVISIONAL - PROPOSED-BY-AGENT)
+dataset_coverage,Pepper_Potato_Tomato_Corn,crops,Restricted bounded scope
+field_eval_dataset,PlantDoc_Indian_Agrarian_Field_Conditions,string,Singh et al. ACM CoDS-COMAD 2020 (CC BY 4.0)
+field_eval_samples,125,count,Real empirical field test images evaluated via LiteRT WASM
+field_accuracy_overall,0.2560,ratio,Real empirical field test accuracy across 4 crops
+field_macro_f1,0.2177,ratio,Real empirical macro-F1 across 14 pathology classes
+field_ece_post_calibration,0.4049,ratio,Empirical post-calibration ECE on natural field photography (T=1.28)
+field_accuracy_pepper,0.5000,ratio,Empirical accuracy on held-out field Pepper (8/16)
+field_accuracy_corn,0.4400,ratio,Empirical accuracy on held-out field Corn (11/25)
+field_accuracy_tomato,0.1594,ratio,Empirical accuracy on held-out field Tomato (11/69)
+field_accuracy_potato,0.1333,ratio,Empirical accuracy on held-out field Potato (2/15)
+optimal_temperature_T,1.28,scalar,PROVISIONAL - LAB FITTED: Temperature parameter
+tau_high,0.78,threshold,PROVISIONAL - PROPOSED-BY-AGENT: Tier 1 threshold
+tau_low,0.45,threshold,PROVISIONAL - PROPOSED-BY-AGENT: Tier 2 threshold
 selective_risk_tau_high,0.0210,ratio,SIMULATION: Diagnostic error rate on Tier 1 cases (<= 2.1%)
 coverage_tau_high,0.7480,ratio,SIMULATION: Fraction of uploads meeting Tier 1 confidence
 selective_risk_tau_low,0.0640,ratio,SIMULATION: Diagnostic error rate on Tier 2 cases (<= 6.4%)
 coverage_tau_low,0.9120,ratio,SIMULATION: Fraction of uploads meeting Tier 2 confidence
 inconclusive_rate_tier3,0.0880,ratio,SIMULATION: Fraction routed to extension officer and expert queue
+
