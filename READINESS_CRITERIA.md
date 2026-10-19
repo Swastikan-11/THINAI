@@ -4,7 +4,7 @@
 **Target Environment**: Tamil Nadu Smallholder Farming Ecosystem (Cauvery Delta, Western Agro-Climatic Zone)  
 **Evaluator**: Antigravity Automated Verification Agent  
 **Audit Date**: October 18, 2026  
-**Commit SHA**: `985b4b7` (CI Run #25 + Field Eval & LiteRT WASM fixes)  
+**Commit SHA**: `9f387b1` (Android 16 API 36 hardware smoke test & Gate G7 PASS)  
 
 ---
 
