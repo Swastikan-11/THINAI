@@ -201,6 +201,11 @@ export function getFriendlyAuthErrorMessage(err: any): string {
       return "This operation requires recent authentication. Please sign out and log in again before changing password or deleting account.";
     case "auth/popup-closed-by-user":
       return "Google Sign-In was cancelled.";
+    case "auth/popup-blocked":
+      return "Pop-up was blocked by mobile browser. Please allow pop-ups or sign in with Email or Phone OTP.";
+    case "auth/missing-initial-state":
+    case "auth/unauthorized-domain":
+      return "Browser storage partitioning prevented Google redirect. Please sign in with Email or Phone OTP.";
     case "auth/network-request-failed":
       return "Network connection issue. Please check your internet connection.";
     default:

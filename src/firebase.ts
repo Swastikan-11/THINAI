@@ -7,9 +7,20 @@ import {
   persistentMultipleTabManager
 } from "firebase/firestore";
 
+const getDynamicAuthDomain = (): string => {
+  if (typeof window !== "undefined" && window.location) {
+    const host = window.location.hostname;
+    // Match serving host on web.app or firebaseapp.com to prevent cross-origin storage partitioning
+    if (host.endsWith(".web.app") || host.endsWith(".firebaseapp.com")) {
+      return host;
+    }
+  }
+  return import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "thinai-app.firebaseapp.com";
+};
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDpCyqemIV7cCNcDOSNZ_1LG7fJ8autCAc",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "thinai-app.firebaseapp.com",
+  authDomain: getDynamicAuthDomain(),
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "thinai-app",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "thinai-app.firebasestorage.app",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "941533981140",
