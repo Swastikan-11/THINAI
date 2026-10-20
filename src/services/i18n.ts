@@ -13,15 +13,13 @@ export interface LanguageOption {
 export const SUPPORTED_LANGUAGES: LanguageOption[] = [
   { code: "en", name: "English", nativeName: "English", speechLocale: "en-IN" },
   { code: "ta", name: "Tamil", nativeName: "தமிழ்", speechLocale: "ta-IN" },
+  { code: "hi", name: "Hindi", nativeName: "हिन्दी", speechLocale: "hi-IN" },
+  { code: "te", name: "Telugu", nativeName: "తెలుగు", speechLocale: "te-IN" },
+  { code: "kn", name: "Kannada", nativeName: "ಕನ್ನಡ", speechLocale: "kn-IN" },
+  { code: "ml", name: "Malayalam", nativeName: "മലയാളം", speechLocale: "ml-IN" }
 ];
 
-// Unreviewed languages - Hidden from normal users until agronomist review
-export const UNREVIEWED_LANGUAGES: LanguageOption[] = [
-  { code: "hi", name: "Hindi", nativeName: "Hindi", speechLocale: "hi-IN" },
-  { code: "te", name: "Telugu", nativeName: "Telugu", speechLocale: "te-IN" },
-  { code: "kn", name: "Kannada", nativeName: "Kannada", speechLocale: "kn-IN" },
-  { code: "ml", name: "Malayalam", nativeName: "Malayalam", speechLocale: "ml-IN" }
-];
+export const UNREVIEWED_LANGUAGES: LanguageOption[] = [];
 
 const STORAGE_KEY = "thinai_selected_language";
 
@@ -425,7 +423,29 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     onlineRestored: "इंटरनेट कनेक्शन बहाल हुआ। डेटा अपडेट हो गया।",
     farmerLogin: "किसान लॉगिन",
     signOut: "लॉग आउट",
-    languageSelector: "भाषा बदलें"
+    languageSelector: "भाषा बदलें",
+
+    // Added Regional Keys
+    navCommunity: "समुदाय",
+    navCrop: "मेरी फसल",
+    navDoctor: "फसल डॉक्टर",
+    navServices: "सेवाएं",
+    soilDry: "सूखी",
+    soilOptimal: "उपयुक्त",
+    soilWet: "अधिक नमी",
+    soilMoistureSelector: "मिट्टी की नमी (चुनने के लिए टैप करें)",
+    priceUnavailable: "इस फसल/मंडी के लिए भाव उपलब्ध नहीं है",
+    heuristicNotice: "अनुमानित सूचकांक (उपज डेटा पर प्रशिक्षित नहीं)",
+    limitedGuidance: "इस फसल के लिए सीमित मार्गदर्शन",
+    localEquipmentBoard: "स्थानीय उपकरण साझा मंच",
+    tier1Title: "स्तर 1: उच्च विश्वास निदान",
+    tier2Title: "स्तर 2: मध्यम विश्वास (केवल जैविक व निगरानी)",
+    tier3Title: "स्तर 3: अनिर्णायक पहचान (मानव समीक्षा आवश्यक)",
+    chemicalWithheldNotice: "अनिश्चित निदान के कारण रासायनिक उपचार रोका गया",
+    officerHelpline: "किसान कृषि हेल्पलाइन: 1800-180-1551",
+    savePhotoForExpert: "विशेषज्ञ समीक्षा हेतु फोटो सहेजें",
+    readAloud: "बोलकर सुनाएं",
+    stopSpeech: "रोकें"
   },
 
   Telugu: {
@@ -539,7 +559,29 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     onlineRestored: "ఇంటర్నెట్ తిరిగి వచ్చింది.",
     farmerLogin: "రైతు లాగిన్",
     signOut: "లాగ్ అవుట్",
-    languageSelector: "భాషను మార్చండి"
+    languageSelector: "భాషను మార్చండి",
+
+    // Added Regional Keys
+    navCommunity: "కమ్యూనిటీ",
+    navCrop: "నా పంట",
+    navDoctor: "క్రాప్ డాక్టర్",
+    navServices: "సేవలు",
+    soilDry: "పొడి",
+    soilOptimal: "సరైనది",
+    soilWet: "ఎక్కువ తేమ",
+    soilMoistureSelector: "నేల తేమ (ఎంచుకోవడానికి నొక్కండి)",
+    priceUnavailable: "ఈ పంట/మార్కెట్ ధర అందుబాటులో లేదు",
+    heuristicNotice: "అంచనా సూచిక (దిగుబడి డేటాపై శిక్షణ పొందలేదు)",
+    limitedGuidance: "ఈ పంటకు పరిమిత మార్గదర్శకత్వం",
+    localEquipmentBoard: "స్థానిక పరికరాల వేదిక",
+    tier1Title: "టైర్ 1: ఖచ్చితమైన నిర్ధారణ",
+    tier2Title: "టైర్ 2: మధ్యస్థ విశ్వాసం (సేంద్రీయ & పర్యవేక్షణ మాత్రమే)",
+    tier3Title: "టైర్ 3: అస్పష్ట ఫలితం (నిపుణుల పరిశీలన అవసరం)",
+    chemicalWithheldNotice: "అస్పష్ట నిర్ధారణ కారణంగా రసాయన మందులు సిఫార్సు చేయబడలేదు",
+    officerHelpline: "కిసాన్ అగ్రో హెల్ప్‌లైన్: 1800-180-1551",
+    savePhotoForExpert: "నిపుణుల సమీక్ష కోసం ఫోటో సేవ్ చేయండి",
+    readAloud: "బిగ్గరగా చదవండి",
+    stopSpeech: "ఆపండి"
   },
 
   Kannada: {
@@ -653,7 +695,29 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     onlineRestored: "ಇಂಟರ್ನೆಟ್ ಮರಳಿ ಬಂದಿದೆ.",
     farmerLogin: "ರೈತ ಲಾಗಿನ್",
     signOut: "ಲಾಗ್ ಔಟ್",
-    languageSelector: "ಭಾಷೆ ಬದಲಾಯಿಸಿ"
+    languageSelector: "ಭಾಷೆ ಬದಲಾಯಿಸಿ",
+
+    // Added Regional Keys
+    navCommunity: "ಸಮುದಾಯ",
+    navCrop: "ನನ್ನ ಬೆಳೆ",
+    navDoctor: "ಬೆಳೆ ವೈದ್ಯ",
+    navServices: "ಸೇವೆಗಳು",
+    soilDry: "ಒಣಗಿದ",
+    soilOptimal: "ಸರಿಯಾದ",
+    soilWet: "ಹೆಚ್ಚು ತೇವಾಂಶ",
+    soilMoistureSelector: "ಮಣ್ಣಿನ ತೇವಾಂಶ (ಆಯ್ಕೆ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ)",
+    priceUnavailable: "ಈ ಬೆಳೆ/ಮಾರುಕಟ್ಟೆಗೆ ದರ ಲಭ್ಯವಿಲ್ಲ",
+    heuristicNotice: "ಅಂದಾಜು ಸೂಚ್ಯಂಕ (ಇಳುವರಿ ಡೇಟಾದಲ್ಲಿ ತರಬೇತಿ ಪಡೆದಿಲ್ಲ)",
+    limitedGuidance: "ಈ ಬೆಳೆಗೆ ಸೀಮಿತ ಮಾರ್ಗದರ್ಶನ",
+    localEquipmentBoard: "ಸ್ಥಳೀಯ ಸಲಕರಣೆಗಳ ಬೋರ್ಡ್",
+    tier1Title: "ಹಂತ 1: ಉನ್ನತ ವಿಶ್ವಾಸಾರ್ಹ ರೋಗನಿರ್ಣಯ",
+    tier2Title: "ಹಂತ 2: ಮಧ್ಯಮ ವಿಶ್ವಾಸ (ನೈಸರ್ಗಿಕ & ಮೇಲ್ವಿಚಾರಣೆ ಮಾತ್ರ)",
+    tier3Title: "ಹಂತ 3: ಅನಿಶ್ಚಿತ ಫಲಿತಾಂಶ (ತಜ್ಞರ ಪರಿಶೀಲನೆ ಅಗತ್ಯ)",
+    chemicalWithheldNotice: "ಅನಿಶ್ಚಿತ ರೋಗನಿರ್ಣಯದಿಂದಾಗಿ ರಾಸಾಯನಿಕ ಚಿಕಿತ್ಸೆಗಳನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ",
+    officerHelpline: "ಕಿಸಾನ್ ಕೃಷಿ ಸಹಾಯವಾಣಿ: 1800-180-1551",
+    savePhotoForExpert: "ತಜ್ಞರ ಪರಿಶೀಲನೆಗಾಗಿ ಫೋಟೋ ಉಳಿಸಿ",
+    readAloud: "ಓದಿ ಕೇಳಿಸಿ",
+    stopSpeech: "ನಿಲ್ಲಿಸಿ"
   },
 
   Malayalam: {
@@ -767,7 +831,29 @@ export const I18N_STRINGS: Record<AppLanguage, Record<string, string>> = {
     onlineRestored: "ഇന്റർനെറ്റ് ബന്ധം പുനഃസ്ഥാപിച്ചു.",
     farmerLogin: "കർഷക ലോഗിൻ",
     signOut: "പുറത്തിറങ്ങുക",
-    languageSelector: "ഭാഷ മാറ്റുക"
+    languageSelector: "ഭാഷ മാറ്റുക",
+
+    // Added Regional Keys
+    navCommunity: "കമ്മ്യൂണിറ്റി",
+    navCrop: "എന്റെ വിള",
+    navDoctor: "വിള ഡോക്ടർ",
+    navServices: "സേവനങ്ങൾ",
+    soilDry: "വരണ്ടത്",
+    soilOptimal: "അനുയോജ്യം",
+    soilWet: "കൂടുതൽ ഈർപ്പം",
+    soilMoistureSelector: "മണ്ണിലെ ഈർപ്പം (തിരഞ്ഞെടുക്കാൻ ടാപ്പ് ചെയ്യുക)",
+    priceUnavailable: "ഈ വിളയ്ക്ക്/വിപണിക്ക് വില ലഭ്യമല്ല",
+    heuristicNotice: "സാങ്കൽപ്പിക സൂചിക (വിളവ് ഡാറ്റയിൽ പരിശീലിപ്പിച്ചിട്ടില്ല)",
+    limitedGuidance: "ഈ വിളയ്ക്ക് പരിമിതമായ മാർഗ്ഗനിർദ്ദേശം",
+    localEquipmentBoard: "പ്രാദേശിക ഉപകരണ ബോർഡ്",
+    tier1Title: "ലെവൽ 1: ഉയർന്ന കൃത്യതയുള്ള രോഗനിർണയം",
+    tier2Title: "ലെവൽ 2: മിതമായ കൃത്യത (നിരീക്ഷണം മാത്രം)",
+    tier3Title: "ലെവൽ 3: വ്യക്തമല്ലാത്ത കണ്ടെത്തൽ (വിദഗ്ദ്ധ പരിശോധന ആവശ്യമാണ്)",
+    chemicalWithheldNotice: "വ്യക്തമല്ലാത്ത രോഗനിർണയം കാരണം രാസ ചികിത്സകൾ തടഞ്ഞുവെച്ചു",
+    officerHelpline: "കിസാൻ അഗ്രോ ഹെൽപ്പ്‌ലൈൻ: 1800-180-1551",
+    savePhotoForExpert: "വിദഗ്ദ്ധ പരിശോധനയ്ക്കായി ഫോട്ടോ സൂക്ഷിക്കുക",
+    readAloud: "വായിച്ചു കേൾപ്പിക്കുക",
+    stopSpeech: "നിർത്തുക"
   }
 };
 

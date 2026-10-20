@@ -53,4 +53,14 @@ describe("i18n English <-> Tamil Key Parity & Completeness (Phase G)", () => {
     expect(t("navDoctor", "InvalidLang" as any)).toBe("Crop Doctor");
     expect(t("non_existent_key" as any, "English")).toBe("non_existent_key");
   });
+
+  it("All 6 regional languages (Hindi, Telugu, Kannada, Malayalam) have 100% key parity with English", () => {
+    const regionalLangs = ["Hindi", "Telugu", "Kannada", "Malayalam"] as const;
+    for (const lang of regionalLangs) {
+      const langDict = I18N_STRINGS[lang];
+      expect(langDict, `${lang} dictionary should exist`).toBeDefined();
+      const missingKeys = enKeys.filter(k => !langDict[k] || langDict[k].trim() === "");
+      expect(missingKeys, `${lang} has missing/empty keys`).toEqual([]);
+    }
+  });
 });
