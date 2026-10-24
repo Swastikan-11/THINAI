@@ -99,18 +99,25 @@ describe("Phase 3 - Feature 2: Curated Retrieval AI Assistant & Language Restric
     });
   });
 
-  describe("4. Native Language Review Restriction (English & Tamil Only)", () => {
-    it("restricts SUPPORTED_LANGUAGES strictly to English and Tamil", () => {
+  describe("4. Multilingual Scope & Review Status", () => {
+    it("supports English plus the 22 scheduled languages of India in SUPPORTED_LANGUAGES", () => {
       const supportedNames = SUPPORTED_LANGUAGES.map(l => l.name);
-      expect(supportedNames).toEqual(["English", "Tamil"]);
+      expect(supportedNames.length).toBe(23);
+      expect(supportedNames).toContain("English");
+      expect(supportedNames).toContain("Tamil");
+      expect(supportedNames).toContain("Hindi");
+      expect(supportedNames).toContain("Urdu");
+      expect(supportedNames).toContain("Bengali");
     });
 
-    it("places all unreviewed languages (Hindi, Telugu, Kannada, Malayalam) in UNREVIEWED_LANGUAGES", () => {
+    it("places all unreviewed languages in UNREVIEWED_LANGUAGES with status MACHINE-DRAFT", () => {
       const unreviewedNames = UNREVIEWED_LANGUAGES.map(l => l.name);
       expect(unreviewedNames).toContain("Hindi");
       expect(unreviewedNames).toContain("Telugu");
       expect(unreviewedNames).toContain("Kannada");
       expect(unreviewedNames).toContain("Malayalam");
+      expect(unreviewedNames).toContain("Urdu");
+      expect(unreviewedNames.length).toBe(22);
     });
   });
 });

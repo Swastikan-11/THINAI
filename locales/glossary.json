@@ -1,0 +1,165 @@
+{
+  "sources": [
+    {
+      "organization": "ICAR (Indian Council of Agricultural Research)",
+      "url": "https://icar.org.in"
+    },
+    {
+      "organization": "TNAU (Tamil Nadu Agricultural University) Agritech Portal",
+      "url": "https://agritech.tnau.ac.in"
+    },
+    {
+      "organization": "Commission for Agricultural Costs and Prices (CACP)",
+      "url": "https://cacp.dacnet.nic.in"
+    }
+  ],
+  "crops": {
+    "paddy": {
+      "en": "Paddy (Rice)",
+      "ta": "நெல்",
+      "hi": "धान / चावल",
+      "bn": "ধান",
+      "te": "వరి",
+      "mr": "भात / धान",
+      "ur": "دھان / چاول"
+    },
+    "tomato": {
+      "en": "Tomato",
+      "ta": "தக்காளி",
+      "hi": "टमाटर",
+      "bn": "টমেটো",
+      "te": "టమోటా",
+      "mr": "टोमॅटो",
+      "ur": "ٹماٹر"
+    },
+    "potato": {
+      "en": "Potato",
+      "ta": "உருளைக்கிழங்கு",
+      "hi": "आलू",
+      "bn": "আলু",
+      "te": "బంగాళాదుంప",
+      "mr": "बटाटा",
+      "ur": "آلو"
+    },
+    "chilli": {
+      "en": "Chilli",
+      "ta": "மிளகாய்",
+      "hi": "मिर्च",
+      "bn": "মরিচ",
+      "te": "మిరపకాయ",
+      "mr": "मिरची",
+      "ur": "مرچ"
+    },
+    "maize": {
+      "en": "Maize (Corn)",
+      "ta": "மக்காச்சோளம்",
+      "hi": "मक्का",
+      "bn": "ভুট্টা",
+      "te": "మొక్కజొన్న",
+      "mr": "मका",
+      "ur": "مکئی"
+    },
+    "cotton": {
+      "en": "Cotton",
+      "ta": "பருத்தி",
+      "hi": "कपास",
+      "bn": "তুলা",
+      "te": "ప్రత్తి",
+      "mr": "कापूस",
+      "ur": "کپاس"
+    },
+    "sugarcane": {
+      "en": "Sugarcane",
+      "ta": "கரும்பு",
+      "hi": "गन्ना",
+      "bn": "আখ",
+      "te": "చెరకు",
+      "mr": "ऊस",
+      "ur": "گنا"
+    },
+    "groundnut": {
+      "en": "Groundnut",
+      "ta": "நிலக்கடலை",
+      "hi": "मूंगफली",
+      "bn": "চীনাবাদাম",
+      "te": "వేరుశెనగ",
+      "mr": "भुईमूग",
+      "ur": "مونگ پھلی"
+    },
+    "banana": {
+      "en": "Banana",
+      "ta": "வாழை",
+      "hi": "केला",
+      "bn": "কলা",
+      "te": "అరటి",
+      "mr": "केळी",
+      "ur": "کیلا"
+    },
+    "mango": {
+      "en": "Mango",
+      "ta": "மாங்காய்",
+      "hi": "आम",
+      "bn": "আম",
+      "te": "మామిడి",
+      "mr": "आंबा",
+      "ur": "آم"
+    },
+    "coconut": {
+      "en": "Coconut",
+      "ta": "தென்னை",
+      "hi": "नारियल",
+      "bn": "নারকেল",
+      "te": "కొబ్బరి",
+      "mr": "नारळ",
+      "ur": "ناریل"
+    },
+    "ragi": {
+      "en": "Ragi",
+      "ta": "கேழ்வரகு",
+      "hi": "रागी / मड़ुआ",
+      "bn": "রাগি",
+      "te": "రాగులు",
+      "mr": "नाचणी",
+      "ur": "راگی"
+    },
+    "onion": {
+      "en": "Onion",
+      "ta": "வெங்காயம்",
+      "hi": "प्याज",
+      "bn": "পেঁয়াজ",
+      "te": "ఉల్లిపాయ",
+      "mr": "कांदा",
+      "ur": "پیاز"
+    }
+  },
+  "diseases": {
+    "blast": {
+      "en": "Blast",
+      "ta": "குலை நோய்",
+      "hi": "झोंका रोग (ब्लास्ट)",
+      "bn": "ব্লাস্ট",
+      "ur": "جھلساؤ (بلاسٹ)"
+    },
+    "bacterial_leaf_blight": {
+      "en": "Bacterial Leaf Blight",
+      "ta": "பாக்டீரியா இலைக்கருகல் நோய்",
+      "hi": "जीवाणु पत्ती झुलसा",
+      "bn": "ব্যাকটেরিয়াল পাতার ব্লাইট",
+      "ur": "بیکٹیریل پتہ جھلسن"
+    },
+    "early_blight": {
+      "en": "Early Blight",
+      "ta": "முன்பருவக் கருகல் நோய்",
+      "hi": "अगेती झुलसा",
+      "bn": "আর্লি ব্লাইট",
+      "ur": "ابتدائی جھلسن"
+    },
+    "late_blight": {
+      "en": "Late Blight",
+      "ta": "பின்பருவக் கருகல் நோய்",
+      "hi": "पछेती झुलसा",
+      "bn": "লেট ব্লাইট",
+      "ur": "پچھیتی جھلسن"
+    }
+  }
+}

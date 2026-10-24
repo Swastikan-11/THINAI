@@ -1,0 +1,53 @@
+/* THINAI Multilingual Typography System (SIL Open Font License 1.1)
+   Provides complete font coverage for English and the 22 Scheduled Languages of India.
+   Prevents tofu boxes (□) across mobile, desktop, and offline PWA runtime environments. */
+
+/* Root Font Stack: prioritizes native regional fonts, falling back to system Indic & Arabic engines */
+:root {
+  --font-indic-sans: system-ui, -apple-system, BlinkMacSystemFont,
+    /* Tamil */
+    "Noto Sans Tamil", "Latha", "Mukta Malar",
+    /* Devanagari (Hindi, Marathi, Nepali, Sanskrit, Bodo, Dogri, Konkani, Maithili) */
+    "Noto Sans Devanagari", "Mangal", "Mukta",
+    /* Bengali & Assamese */
+    "Noto Sans Bengali", "Vrinda", "Shonar Bangla",
+    /* Telugu */
+    "Noto Sans Telugu", "Gautami", "Vani",
+    /* Kannada */
+    "Noto Sans Kannada", "Tunga", "Kedage",
+    /* Malayalam */
+    "Noto Sans Malayalam", "Kartika", "Manjari",
+    /* Gujarati */
+    "Noto Sans Gujarati", "Shruti",
+    /* Gurmukhi (Punjabi) */
+    "Noto Sans Gurmukhi", "Raavi",
+    /* Odia */
+    "Noto Sans Odia", "Kalinga",
+    /* Perso-Arabic (Urdu, Kashmiri, Sindhi) */
+    "Noto Nastaliq Urdu", "Noto Sans Arabic", "Jameel Noori Nastaleeq", "Urdu Typesetting",
+    /* Ol Chiki (Santali) */
+    "Noto Sans Ol Chiki",
+    /* Meetei Mayek (Manipuri) */
+    "Noto Sans Meetei Mayek",
+    /* Standard Fallback */
+    sans-serif;
+}
+
+body {
+  font-family: var(--font-indic-sans);
+}
+
+/* RTL Layout Rules for Urdu, Kashmiri, Sindhi */
+[dir="rtl"] {
+  text-align: right;
+  direction: rtl;
+}
+
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Ensure proper flip for flex items when in RTL */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}

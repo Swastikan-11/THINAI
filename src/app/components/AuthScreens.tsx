@@ -20,6 +20,7 @@ import { apiClient } from "../../services/apiClient";
 import { UserState } from "../App";
 import { t as tAuth } from "../translations";
 import { AppLanguage, SUPPORTED_LANGUAGES } from "../../services/i18n";
+import { LanguageDropdown } from "./LanguageDropdown";
 
 const P = "#2E7D32";
 const PD = "#1B5E20";
@@ -288,23 +289,11 @@ export function LoginScreen({
             </div>
           </div>
           {onLanguageChange && (
-            <div className="relative flex items-center bg-white/20 hover:bg-white/30 rounded-full border border-white/30 px-2.5 py-1 shadow-xs transition-all">
-              <Globe className="w-3.5 h-3.5 text-white mr-1.5 shrink-0 pointer-events-none" />
-              <select
-                value={language}
-                onChange={(e) => onLanguageChange(e.target.value as AppLanguage)}
-                className="bg-transparent text-white text-xs font-bold focus:outline-none cursor-pointer appearance-none pr-4"
-                style={{ background: "transparent" }}
-                aria-label="Select Regional Language"
-              >
-                {SUPPORTED_LANGUAGES.map((langOpt) => (
-                  <option key={langOpt.code} value={langOpt.name} className="text-gray-900 bg-white font-medium">
-                    {langOpt.nativeName} ({langOpt.name})
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3 h-3 text-white/90 absolute right-1.5 pointer-events-none" />
-            </div>
+            <LanguageDropdown
+              currentLanguage={language}
+              onLanguageChange={onLanguageChange}
+              variant="header"
+            />
           )}
         </div>
         <p className="text-xs text-white/90">{tAuth("loginSubtitle", language)}</p>
@@ -631,23 +620,11 @@ export function RegisterScreen({
         <div className="flex items-center justify-between mb-1">
           <h1 className="font-black text-2xl tracking-wide">{tAuth("createAccount", language)}</h1>
           {onLanguageChange && (
-            <div className="relative flex items-center bg-white/20 hover:bg-white/30 rounded-full border border-white/30 px-2.5 py-1 shadow-xs transition-all">
-              <Globe className="w-3.5 h-3.5 text-white mr-1.5 shrink-0 pointer-events-none" />
-              <select
-                value={language}
-                onChange={(e) => onLanguageChange(e.target.value as AppLanguage)}
-                className="bg-transparent text-white text-xs font-bold focus:outline-none cursor-pointer appearance-none pr-4"
-                style={{ background: "transparent" }}
-                aria-label="Select Regional Language"
-              >
-                {SUPPORTED_LANGUAGES.map((langOpt) => (
-                  <option key={langOpt.code} value={langOpt.name} className="text-gray-900 bg-white font-medium">
-                    {langOpt.nativeName} ({langOpt.name})
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3 h-3 text-white/90 absolute right-1.5 pointer-events-none" />
-            </div>
+            <LanguageDropdown
+              currentLanguage={language}
+              onLanguageChange={onLanguageChange}
+              variant="header"
+            />
           )}
         </div>
         <p className="text-xs text-white/80">{tAuth("joinFarmers", language)}</p>

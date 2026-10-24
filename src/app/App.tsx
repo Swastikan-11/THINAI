@@ -74,7 +74,9 @@ import {
   AppLanguage,
   SUPPORTED_LANGUAGES,
   getPersistedLanguage,
-  persistLanguage
+  persistLanguage,
+  getLanguageOption,
+  applyLanguageDirection
 } from "../services/i18n";
 import { onAuthStateChange, logoutUser, deleteCurrentUserAccount, updateUserPassword } from "../services/authService";
 import { db, LocalField } from "../services/db";
@@ -100,6 +102,8 @@ import { CommunityScreen } from "./components/CommunityScreen";
 import { FieldAccuracyScreen } from "./components/FieldAccuracyScreen";
 import { OfficerDashboardScreen } from "./components/OfficerDashboardScreen";
 import { FarmRecordsScreen } from "./components/FarmRecordsScreen";
+import { LanguageDropdown } from "./components/LanguageDropdown";
+import { TranslationErrorReportModal } from "./components/TranslationErrorReportModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
@@ -357,36 +361,80 @@ function PBtn({
 function LanguageModal({
   currentLang,
   onSelect,
-  onClose
+  onClose,
+  onOpenReportModal
 }: {
   currentLang: AppLanguage;
   onSelect: (l: AppLanguage) => void;
   onClose: () => void;
+  onOpenReportModal?: () => void;
 }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const filtered = SUPPORTED_LANGUAGES.filter(opt =>
+    opt.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    opt.nativeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    opt.script.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    opt.code.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 backdrop-blur-xs">
-      <div className="w-full max-w-sm rounded-3xl p-5 bg-white shadow-2xl flex flex-col gap-3">
-        <div className="flex justify-between items-center mb-1">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
+      <div className="w-full max-w-sm rounded-3xl p-5 bg-white shadow-2xl flex flex-col gap-3 max-h-[85vh]">
+        <div className="flex justify-between items-center pb-1 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <Globe size={18} color={P} />
-            <h3 className="font-bold text-base text-gray-800">Select Language / மொழியை மாற்றவும்</h3>
+            <h3 id="lang-modal-title" className="font-bold text-base text-gray-800">Select Advisory Language</h3>
           </div>
-          <button onClick={onClose} className="p-1 rounded-full bg-gray-100"><X size={16} /></button>
+          <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors">
+            <X size={16} />
+          </button>
         </div>
-        <p className="text-xs text-gray-500">Choose your preferred agricultural advisory language:</p>
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          {SUPPORTED_LANGUAGES.map(opt => (
+
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Search language / மொழியைத் தேட..."
+            className="w-full pl-9 pr-3 py-2 text-xs border border-gray-200 rounded-xl focus:border-emerald-500 focus:outline-hidden"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[48vh] pr-1">
+          {filtered.map(opt => (
             <button
               key={opt.code}
               onClick={() => { onSelect(opt.name); onClose(); }}
-              className={`p-3 rounded-2xl border text-left flex flex-col gap-0.5 transition-all active:scale-95 ${
-                currentLang === opt.name ? "border-green-600 bg-green-50 shadow-xs" : "border-gray-200 bg-white"
-              }`}>
-              <span className="font-bold text-sm text-gray-900">{opt.nativeName}</span>
-              <span className="text-[10px] text-gray-500">{opt.name}</span>
+              className={`p-2.5 rounded-xl border text-left flex items-center justify-between transition-all active:scale-98 ${
+                currentLang === opt.name ? "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-500" : "border-gray-200 bg-white hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex flex-col">
+                <span className="font-semibold text-xs text-gray-900">{opt.nativeName}</span>
+                <span className="text-[10px] text-gray-500">{opt.name} · {opt.script}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {opt.rtl && <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold uppercase">RTL</span>}
+                {currentLang === opt.name && <Check size={16} className="text-emerald-600 shrink-0" />}
+              </div>
             </button>
           ))}
+          {filtered.length === 0 && (
+            <div className="text-center py-6 text-xs text-gray-400">No matching language found</div>
+          )}
         </div>
+
+        {onOpenReportModal && (
+          <button
+            type="button"
+            onClick={() => { onClose(); onOpenReportModal(); }}
+            className="mt-1 pt-2.5 border-t border-gray-100 text-[11px] text-emerald-700 hover:text-emerald-800 font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <AlertCircle size={13} />
+            <span>Report a translation issue</span>
+          </button>
+        )}
       </div>
     </div>
   );
@@ -574,15 +622,14 @@ function HomeScreen({
           <div className="flex gap-2 items-center">
             {/* 1-Tap Instant Language Toggle: [ EN | தமிழ் ] (Plantix/Uzhavan Pattern) */}
             <button
-              onClick={onToggleLanguage || onOpenLangModal}
-              className="min-h-[44px] px-3.5 py-1.5 rounded-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
-              title="Instant Language Switch (English / தமிழ்)"
+              onClick={onOpenLangModal}
+              className="min-h-[44px] px-3 py-1.5 rounded-full flex items-center justify-center gap-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
+              title="Select advisory language"
               aria-label="EN | தமிழ் - Toggle language"
             >
               <Globe size={14} className="text-white shrink-0" />
-              <span className={lang === "English" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>EN</span>
-              <span className="text-white/40">|</span>
-              <span className={lang === "Tamil" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>தமிழ்</span>
+              <span className="text-white font-medium">{getLanguageOption(lang).nativeName.split(' ')[0]}</span>
+              <ChevronDown size={12} className="text-white/70 shrink-0" />
             </button>
             <button
               onClick={() => setShowNotifications(true)}
@@ -1869,16 +1916,21 @@ function AIScreen({
       return;
     }
 
-    const localeMap: Record<AppLanguage, SpeechLocale> = {
-      English: "en-IN",
-      Tamil: "ta-IN",
-      Hindi: "hi-IN",
-      Telugu: "te-IN",
-      Kannada: "kn-IN",
-      Malayalam: "ml-IN"
-    };
+    const langOpt = getLanguageOption(lang);
+    if (!langOpt.speechSupported) {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: `ai-voice-unsupported-${Date.now()}`,
+          from: "ai",
+          text: `Voice input is NOT AVAILABLE for ${lang}. Please type your query.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        }
+      ]);
+      return;
+    }
 
-    const targetLocale = localeMap[lang] || "en-IN";
+    const targetLocale = (langOpt.speechLocale as SpeechLocale) || "en-IN";
     const recognizer = createSpeechRecognizer(
       targetLocale,
       (text, isFinal) => {
@@ -1903,15 +1955,11 @@ function AIScreen({
   };
 
   const handleSpeak = (text: string) => {
-    const localeMap: Record<AppLanguage, SpeechLocale> = {
-      English: "en-IN",
-      Tamil: "ta-IN",
-      Hindi: "hi-IN",
-      Telugu: "te-IN",
-      Kannada: "kn-IN",
-      Malayalam: "ml-IN"
-    };
-    speakText(text, localeMap[lang] || "en-IN");
+    const langOpt = getLanguageOption(lang);
+    if (!langOpt.speechSupported) {
+      return;
+    }
+    speakText(text, (langOpt.speechLocale as SpeechLocale) || "en-IN");
   };
 
   const suggestedQuestions = SUGGESTED_QUESTIONS_BY_LANG[lang] || SUGGESTED_QUESTIONS_BY_LANG.English;
@@ -2321,6 +2369,7 @@ function EditProfileScreen({
               <option key={l.code} value={l.name}>{l.nativeName} ({l.name})</option>
             ))}
           </select>
+          <p className="text-[10px] text-gray-500 mt-1">Chemical remedy safety warnings apply to unreviewed languages.</p>
         </div>
 
         <PBtn onClick={save}>
@@ -2558,12 +2607,20 @@ export default function App() {
   const urlScreen = queryParams?.get("screen") as Screen | null;
   const [screen, setScreen] = useState<Screen>(urlScreen || "splash");
   const [user, setUser] = useState<UserState>(() => {
+    const persistedLang = getPersistedLanguage();
     try {
       const saved = localStorage.getItem("thinai_farmer_profile");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...parsed, language: persistedLang || parsed.language || "English" };
+      }
     } catch {}
-    return { ...INITIAL_USER, language: getPersistedLanguage() };
+    return { ...INITIAL_USER, language: persistedLang };
   });
+
+  useEffect(() => {
+    applyLanguageDirection(user.language);
+  }, [user.language]);
 
   useEffect(() => {
     (window as any).setThinaiScreen = (s: Screen) => setScreen(s);
@@ -2574,6 +2631,7 @@ export default function App() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [feedbackTarget, setFeedbackTarget] = useState<Recommendation | null>(null);
   const [showLangModal, setShowLangModal] = useState(false);
+  const [showTransReportModal, setShowTransReportModal] = useState(false);
   const [showPendingSyncModal, setShowPendingSyncModal] = useState(false);
   const [weather, setWeather] = useState<WeatherData>({
     isAvailable: true,
@@ -2807,6 +2865,10 @@ export default function App() {
     updateUser(updated);
     showToast(`Language set to ${lang}`, "success");
   };
+
+  useEffect(() => {
+    (window as any).setThinaiLanguage = (l: AppLanguage) => handleLanguageChange(l);
+  }, [user]);
 
   const showToast = useCallback((message: string, type: ToastType = "success") => {
     setToast({ message, type });
@@ -3268,6 +3330,17 @@ export default function App() {
           currentLang={user.language}
           onSelect={handleLanguageChange}
           onClose={() => setShowLangModal(false)}
+          onOpenReportModal={() => setShowTransReportModal(true)}
+        />
+      )}
+
+      {showTransReportModal && (
+        <TranslationErrorReportModal
+          isOpen={showTransReportModal}
+          onClose={() => setShowTransReportModal(false)}
+          screenKey={screen}
+          currentLanguage={user.language}
+          showToast={showToast}
         />
       )}
 

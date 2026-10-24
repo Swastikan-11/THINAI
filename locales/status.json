@@ -1,0 +1,117 @@
+{
+  "en": {
+    "status": "REVIEWED",
+    "reviewer": "THINAI Core Development & Agronomy Team",
+    "reviewDate": "2026-10-24"
+  },
+  "as": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "bn": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "brx": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "doi": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "gu": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "hi": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "kn": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "ks": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "kok": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "mai": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "ml": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "mni": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "mr": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "ne": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "or": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "pa": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "sa": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "sat": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "sd": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "ta": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "te": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  },
+  "ur": {
+    "status": "MACHINE-DRAFT",
+    "reviewer": null,
+    "reviewDate": null
+  }
+}
