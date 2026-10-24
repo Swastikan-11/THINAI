@@ -1,0 +1,14 @@
+{
+  "gate": "G10",
+  "name": "Field Pilot Protocol & Extension Dashboard",
+  "sha": "bef9ab50f625a2378270029cb968bd26eb6d8484",
+  "command": "npx vitest run tests/officer_dashboard.test.ts",
+  "timestamp": "2026-10-24T14:23:10Z",
+  "metrics": {
+    "pilot_protocol_registered": true,
+    "dpdp_act_unbundled_consent": true,
+    "officer_rbac_security_rules_enforced": true,
+    "officer_dashboard_tests_passed": 4
+  },
+  "result": "PASS"
+}

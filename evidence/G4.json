@@ -1,0 +1,19 @@
+{
+  "gate": "G4",
+  "name": "Field ML Performance & Calibration",
+  "sha": "bef9ab50f625a2378270029cb968bd26eb6d8484",
+  "command": "npx playwright test e2e/field_evaluation.spec.ts",
+  "timestamp": "2026-10-24T14:17:17Z",
+  "metrics": {
+    "dataset": "PlantDoc (Singh et al. 2020) Indian Field Photography",
+    "total_field_samples": 125,
+    "empirical_accuracy": 0.256,
+    "wilson_ci_95": "[18.66%, 34.02%]",
+    "macro_f1": 0.2177,
+    "expected_calibration_error_ece": 0.4049,
+    "temperature_optimal": 1.28,
+    "pilot_threshold_status": "NOT SET BY OWNER",
+    "tier1_chemical_remedies_status": "DISABLED_CULTURAL_ONLY"
+  },
+  "result": "FAIL"
+}

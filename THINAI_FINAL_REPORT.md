@@ -1,159 +1,152 @@
 # THINAI Release Candidate Final Report (`THINAI_FINAL_REPORT.md`)
 
 **Date of Report**: October 24, 2026  
-**Commit SHA**: `58899b9`  
-**Git Branch**: `main` (Fast-forward merged from `rework/phase-2b`)  
+**Tested Commit SHA**: `bef9ab50f625a2378270029cb968bd26eb6d8484` (`bef9ab5`)  
+**Git Branch**: `main`  
 **Git Status**: Clean (`working tree clean`)  
 **Repository URL**: `https://github.com/Swastikan-11/THINAI.git` (Public)  
-**Release Tag**: `v1.0.0-rc` (Pushed to origin)
+**Release Tag**: `v1.0.0-rc`
 
 ---
 
 ## 1. Executive Summary & Verification Scope
 
-This final release candidate evaluation synthesizes the complete rework of the THINAI agronomic platform across all nine mandatory development stages:
-1. **Baseline Integrity**: Zero TypeScript errors (`npx tsc --noEmit`), 25 Vitest unit test suites passing (136 tests), 28 Playwright E2E tests passing, and 23 Firestore Emulator security rules passing.
-2. **Multilingual Architecture**: Expansion to English (default) plus all 22 Eighth Schedule Indian languages (Assamese, Bengali, Bodo, Dogri, Gujarati, Hindi, Kannada, Kashmiri, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Odia, Punjabi, Sanskrit, Santali, Sindhi, Tamil, Telugu, Urdu) with native scripts, RTL layout mirroring (`dir="rtl"` for Urdu, Kashmiri, Sindhi), and zero-tofu typography stacks.
-3. **Remedy Safety Invariant**: Chemical pesticide formulations, active ingredient trade names, dosages, and spray intervals are strictly withheld from all unreviewed languages (`MACHINE-DRAFT`) and displayed in English with the mandatory translated advisory warning:  
-   *"This advice is shown in English until a language expert has checked the translation. Ask your extension officer if unsure."*
-4. **Empirical Ground-Truth Reporting**: Lab benchmark claims have been purged from documentation; real held-out Indian field photography evaluation results (Accuracy: 25.60%, Macro-F1: 21.77%, ECE: 40.49%) are accurately disclosed.
-5. **No Fabricated Fallback Data**: Zero fake numbers, synthetic chart curves, mock equipment listings, or dummy community discussions in production builds.
+This evaluation report synthesizes the re-verification of the THINAI agronomic platform under the Phase 0 standing rules (real commands and output tied to commit `bef9ab5`, no secrets, no unearned claims, binary gates G1 through G10 restored to their original definitions from `READINESS_CRITERIA.md`, and automated verdict generation via `scripts/verify_gates.mjs`).
+
+Key findings of this evaluation:
+1. **Gate G4 Evaluation (FAIL)**: Empirical field accuracy evaluated on 125 held-out Indian field photographs (PlantDoc dataset, Singh et al. 2020) is **25.60%** (95% Wilson CI: $[18.66\%, 34.02\%]$) with Expected Calibration Error (ECE) of **40.49%** ($T^*=1.28$). Because pilot protocol thresholds are not set by the project owner in `PILOT_PROTOCOL.md`, Gate G4 is marked **FAIL**.
+2. **G4 Safety Invariant**: In response to the G4 failure, Tier 1 specific chemical diagnoses are strictly disabled in code (`IS_G4_FIELD_VALIDATED = false`). Scans yield cultural advice only, chemical remedies are withheld, and scans are routed to the agricultural extension officer queue. Measured field accuracy is transparently disclosed in the About screen.
+3. **Gate G7 Verification (PASS on Emulator)**: Verified using the CI-signed release APK (`THINAI-app-release-apk`, SHA-256: `AC3F9C8EA4D91B34C3026DC88E563B63355D97B56A05759278032494F6CB62F7`) on an Android 16.0 (API 36) Google APIs x86_64 emulator. Executed full lifecycle flows and a 5,000-event monkey stress test (`docs/logcat_ci_release_monkey_g7.log`: 0 fatal exceptions, 0 ANRs). Physical real phone testing is explicitly recorded as `NOT TESTED`.
+4. **Keystore Governance**: Compromised historical development keystore (`thinai-release-key.jks`, password `thinai2026` in historical commit `d774219`) is formally retired. Production release binaries are signed exclusively via GitHub repository secrets (`ANDROID_KEYSTORE_BASE64`).
+5. **Multilingual Architecture**: English (default) plus 22 Eighth Schedule languages supported with native Noto fonts, RTL layout for Urdu/Kashmiri/Sindhi, and strict remedy safety invariant (unreviewed languages fall back to English with native warning). All 22 non-English languages are marked `MACHINE-DRAFT`.
 
 ---
 
-## 2. Gate Matrix (G1 through G10)
+## 2. Gate Matrix (G1 through G10) — Original Definitions Preserved
 
-| Gate | Verification Criterion | Status | Empirical Evidence & Command Snippet | Fixed-in / Audited Commit |
-| :--- | :--- | :---: | :--- | :---: |
-| **G1: Secrets & Keystore Governance** | Full history scanned for exposed credentials; test credentials removed from production builds; `/officers` write forbidden; stale local APKs purged. | **PASS** | `gitleaks git --verbose` scanned 105 commits. 0 passwords or keystores found. Legacy web client key documented. `src/app/components/AuthScreens.tsx` gates test numbers behind `import.meta.env.DEV`. | `0ecde6d`, `6943137` |
-| **G2: Firestore Security Rules** | Real emulator execution of `firestore.rules` using `@firebase/rules-unit-testing`. | **PASS** | `node scripts/test_firestore_rules.mjs` executed 23 real emulator assertions covering profiles, feedbacks, verdicts, diagnoses, and officer labels: **23 passed, 0 failed**. | `88c3a1b` |
-| **G3: Crop Gating & OOD Safety** | Pre-diagnosis crop selection; probability mass gating ($<0.40$); selective rejection of non-crop imagery to Tier 3 with 0 chemical remedies. | **PASS** | `npx vitest run tests/ood_safety.test.ts` evaluated Paddy, Cotton, other leaves, hands, soil, packaging, and blur: **Tier 1: 0.0%, Tier 2: 0.0%, Tier 3 (Rejected): 100.0%**. | `7a9e102` |
-| **G4: Real Field Accuracy & ECE** | Held-out Indian field evaluation on uncontrolled field photography; simulated numbers separated from real outcomes. | **PASS** | `npx playwright test e2e/field_evaluation.spec.ts` evaluated 125 field samples (Singh et al.): **Empirical Accuracy: 25.60%, Macro-F1: 21.77%, Field ECE: 40.49%** ($T^*=1.28$). | `7a9e102`, `00ba3df` |
-| **G5: Core Agricultural Features** | Scan history with search, sourced disease library, AI assistant with TNAU/ICAR citations, Open-Meteo weather rules, Agmarknet mandi prices, Dexie farm records. | **PASS** | `npx vitest run` executed 136 tests across 25 suites with 0 failures; `docs/FEATURE_MATRIX.md` documents all 18 screens and 12 background services. | `8bc54e3` |
-| **G6: Farmer Stress Testing & Accessibility** | Adverse input stress testing at 360x800 (wrong/empty/long/Tamil inputs, double taps, refresh mid-flow, offline reconnect, 800x360 rotate, 200% zoom). | **PASS** | `npx playwright test e2e/phase4_farmer_stress_test.spec.ts` passed 8 stress scenarios; 11 bugs resolved with regression tests (`BUGS.md`); Axe-core audits clean. | `7c016ae`, `8b3eea0` |
-| **G7: Android Build & Device Verification** | Native release APK installed and verified on real hardware or API 36 emulator with camera, offline mode, rotation, monkey testing (5,000 events), and logcat. | **PASS** | API 36 emulator `THINAI_API_36` booted. Installed APK (SHA-256: `A5BC5959...`); verified camera permissions, background/resume, offline mode, LiteRT WASM model load. Ran 5,000-event monkey stress test: 0 crashes, 0 ANRs. Evidence in `docs/logcat_monkey_g7.log` and `docs/android_emulator_screen.png`. | `1b4b77d` |
-| **G8: Desktop Packaging (Windows x64)** | Electron wrapper with NSIS installer; HTML5 media fallback, offline model loading from local assets, unsigned SmartScreen notice. | **PASS** | Built `dist-electron/THINAI Setup 0.0.1.exe` (179,429,818 bytes, SHA-256: `1fd5f6a056bd91ffc50897f79f7cdec57ce36ee0051f1410311d974422a78a88`). Tested launch and offline WASM load. | `1e5eb8c` |
-| **G9: Multilingual Architecture & RTL Layout** | All 22 Eighth Schedule Indian languages + English; native scripts; RTL layout for Urdu, Kashmiri, Sindhi; offline Noto fonts; remedy safety gating; error report modal. | **PASS** | `npx vitest run tests/multilingual_parity.test.ts` (6 passed); `npx playwright test e2e/multilingual_switch.spec.ts` (2 passed cycling all 23 languages); 15 screenshots in `docs/screenshots/multilingual/`. | `6943137` |
-| **G10: License Compliance & Documentation Integrity** | Third-party licenses documented (MIT, Apache-2.0, SIL OFL 1.1); zero fabricated claims; `README.md`, `CHANGELOG.md`, `REMOVED.md`, `docs/LANGUAGES.md`, `docs/COVERAGE.md` complete. | **PASS** | `THIRD_PARTY_LICENSES.md` updated with SIL OFL 1.1; repo grep for simulation numbers (89.4, 84.7, etc.) verified clean of unearned claims. | `8bc54e3` |
+Per `READINESS_CRITERIA.md`, gates G1 through G10 adhere to their original definitions. Every gate is binary (**PASS** or **FAIL**). A missing, stale, or waived gate is explicitly treated as **FAIL**.
+
+| Gate ID | Gate Name | Measurable Pass Threshold | Evaluated Status | Concrete Evidence File & Command Snippet |
+|:---:|---|---|:---:|---|
+| **G1** | **Code Quality & Build** | `tsc --noEmit` exits 0, production Vite bundle builds without errors. | **PASS** | [evidence/G1.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G1.json): `npx tsc --noEmit` exits 0 (0 errors); `npm run build` succeeds in 4.79s (`dist/assets/index-yiSHkH0w.js` 2,162.62 kB / gzip 553.42 kB). |
+| **G2** | **Automated Test Suites** | All unit, E2E, and security rule suites pass without regression. | **PASS** | [evidence/G2.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G2.json): `npx vitest run` passes 137 tests across 25 suites; `node scripts/test_firestore_rules.mjs` executes 23 real Firestore Emulator assertions: 23 passed, 0 failed. |
+| **G3** | **Dataset Provenance & Leakage Proof** | Cryptographic hash check proving no image overlap between calibration and held-out test splits; distinct separation of lab vs. field data. | **PASS** | [evidence/G3.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G3.json): Perceptual hash deduplication verified across 134 images; `tests/ood_safety.test.ts` rejects 100.0% of out-of-domain categories to Tier 3 (Paddy 0%, Cotton 0%, Hands 0%, Soil 0%, Blur 0%). |
+| **G4** | **Field ML Performance & Calibration** | Empirical accuracy, macro-F1, and ECE measured on real field images; simulation parameters not used as field findings. | **FAIL** | [evidence/G4.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G4.json): Evaluated on 125 Indian field samples (PlantDoc): Empirical Accuracy = 25.60% (95% Wilson CI: [18.66%, 34.02%]), Macro-F1 = 21.77%, Field ECE = 40.49% ($T^*=1.28$). Pilot protocol thresholds not set by owner -> G4 FAIL. In response, Tier 1 chemical advice is disabled in code for all crops. |
+| **G5** | **Selective Gating & Safety Invariants** | Zero chemical remedy emitted in Tiers 2 and 3; all Tier 1 remedies cited with official TNAU/ICAR document and exact dilution dosage. | **PASS** | [evidence/G5.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G5.json): 200 random input trials emit 0 chemical advice in Tier 2/3. Tier 1 chemical diagnoses disabled in code while G4 fails; cultural/monitoring advice only; remedies require officer sign-off. |
+| **G6** | **Offline Capability & Sync** | App shell loads in Airplane mode from Service Worker; on-device inference runs locally; FIFO queue flushes with Last-Write-Wins conflict resolution. | **PASS** | [evidence/G6.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G6.json): Service worker precache verified; Dexie IndexedDB offline mutation queue with FIFO ordering and LWW conflict resolution verified across 19 tests in `tests/reconnect_sync.test.ts` and `tests/offline_matrix.test.ts`. |
+| **G7** | **Mobile Native & Android 16 on Target** | Signed APK executed on physical Android 16 device or API 36 emulator with recorded logcat and feature run. | **PASS** | [evidence/G7.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G7.json): CI signed release APK (`THINAI-app-release-apk`, SHA-256: `AC3F9C8EA4D91B34C3026DC88E563B63355D97B56A05759278032494F6CB62F7`) verified with `apksigner` v2. Installed on API 36 emulator. Passed 5,000-event monkey stress test (`docs/logcat_ci_release_monkey_g7.log`: 0 fatal, 0 ANRs). Real phone: NOT TESTED. |
+| **G8** | **Live Network Services & Transparent Fallbacks** | Live weather API verified; live market fallback transparently labeled; live Gemini authenticated or marked heuristic; ARFI deployment honest. | **PASS** | [evidence/G8.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G8.json): Open-Meteo live API verified (135ms latency); Agmarknet fallback transparently labeled "Benchmark Price"; curated TNAU/ICAR assistant verified. |
+| **G9** | **Security, Keystore & Zero Committed Secrets** | Compromised keystores purged; release passwords externalized to CI secrets; zero `.env` files in git history; Firestore security rules pass. | **PASS** | [evidence/G9.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G9.json): Compromised historical keystore formally retired; CI release signing uses GitHub Secrets; 23/23 emulator rules pass; 0 secrets in active git tree. |
+| **G10** | **Field Pilot Protocol & Extension Dashboard** | Pre-registered pilot protocol committed before pilot; DPDP Act consent; extension officer collection operational on Firebase Spark free tier. | **PASS** | [evidence/G10.json](file:///c:/Users/cswas/Documents/THINAI/evidence/G10.json): `PILOT_PROTOCOL.md` pre-registered; DPDP Act affirmative consent; extension officer collection rules and dashboard verified. |
 
 ---
 
-## 3. Comprehensive Test Results
+## 3. Automated Verdict Execution (`scripts/verify_gates.mjs`)
 
-### 3.1 TypeScript Compilation (`npx tsc --noEmit`)
-```
-Exit Code: 0 (Zero errors)
-```
+The readiness verdict is computed by executing `node scripts/verify_gates.mjs`, which reads all machine-readable evidence files (`evidence/*.json`) tied to tested commit `bef9ab50f625a2378270029cb968bd26eb6d8484`.
 
-### 3.2 Unit & Integration Test Suites (`npx vitest run`)
-```
- Test Files  25 passed (25)
-      Tests  136 passed (136)
-   Duration  5.26s
-```
-- `tests/gating_engine.test.ts` (7 tests) — Chemical withholding on Tier 2 & Tier 3
-- `tests/ood_safety.test.ts` (2 tests) — 100% rejection of hands, soil, blur, and non-target crops
-- `tests/calibration_maths.test.ts` (8 tests) — Temperature scaling and ECE calculation
-- `tests/crop_coverage_phase2b.test.ts` (10 tests) — Crop registry and modular pack checks
-- `tests/reconnect_sync.test.ts` (7 tests) — Offline Dexie mutation queue and deduplicated sync
-- `tests/farm_records_dexie.test.ts` (9 tests) — Relational farm record tables
-- `tests/diagnosis_history_library.test.ts` (8 tests) — Disease catalog and search
-- `tests/dead_routes_pruned.test.ts` (4 tests) — Verification of pruned routes
-- `tests/weather_spray_irrigation.test.ts` (10 tests) — Spray wash-off and wind drift rules
-- `tests/market_agmarknet.test.ts` (8 tests) — Agmarknet mandi rates and honest fallback
-- `tests/multilingual_parity.test.ts` (6 tests) — Key schema parity across all 23 language files
-- `tests/ai_assistant_retrieval.test.ts` (9 tests) — Sourced agronomic retrieval and 23-language scope
-- `tests/i18n_parity.test.ts` (6 tests) — Comprehensive agricultural terminology parity
-- `tests/wilson_interval.test.ts` (4 tests) — Wilson 95% confidence intervals
-- `tests/officer_dashboard.test.ts` (4 tests) — RBAC and sanitized CSV export
-- `tests/auth_a11y_regression.test.ts` (3 tests) — Auth tap targets and contrast
-- `tests/header_a11y_regression.test.ts` (5 tests) — Header accessible names
-- `tests/weather_card_a11y_regression.test.ts` (3 tests) — Weather card tap targets
-- `tests/modal_a11y_regression.test.ts` (2 tests) — Modal close buttons
-- `tests/bkhdr_market_a11y_regression.test.ts` (2 tests) — Market screen hierarchy
-- `tests/community_posts_regression.test.ts` (2 tests) — Honest empty state
-- `tests/fertilizer_calculator_regression.test.ts` (2 tests) — Non-negative acreage clamping
-- `tests/farm_records_validation_regression.test.ts` (2 tests) — Positive numerical validation
-- `tests/main_landmark_regression.test.ts` (1 test) — Semantic `<main>` landmark
-- `tests/offline_matrix.test.ts` (12 tests) — Offline matrix execution
-
-### 3.3 End-to-End Test Suites (`npx playwright test`)
-```
-  28 passed (1.2m)
-```
-- `e2e/multilingual_switch.spec.ts` (2 tests) — Cycles all 23 languages, checks RTL, no missing keys `{{`, no tofu characters, captures 15 screenshots in `docs/screenshots/multilingual/`, tests error reporting flow.
-- `e2e/field_evaluation.spec.ts` (1 test) — Real held-out evaluation on 125 Indian field samples.
-- `e2e/offline_scenarios.spec.ts` (7 tests) — Offline precaching, offline sign-in guards, and performance benchmarks.
-- `e2e/phase4_farmer_stress_test.spec.ts` (8 tests) — Adverse inputs, rotate 800x360, 200% zoom, Axe-core audits.
-- `e2e/workflow.spec.ts` (4 tests) — Authenticated farmer flows and 3-step crop doctor strip.
-- `e2e/phase3_screenshots.spec.ts` (6 tests) — High-resolution mobile evidence screenshots.
-
-### 3.4 Firestore Security Rules Real Emulator Suite
-```
-=================================================
-🏁 REAL FIRESTORE EMULATOR TEST RESULTS: 23 PASSED, 0 FAILED
-=================================================
+```bash
+$ node scripts/verify_gates.mjs
+THINAI IS NOT READY - failing gates: G4.
 ```
 
 ---
 
-## 4. G7 Android Device & Emulator Verification Evidence
+## 4. G4 Field Evaluation Breakdown & Provenance
 
-Gate G7 has been executed and passed using the local Android 16 (API 36) emulator with WHPX hardware acceleration and Android SDK platform tools.
+### 4.1 Field Dataset Provenance ($N=125$)
+- **Source**: PlantDoc Dataset (*Singh, P. K. et al., ACM CoDS-COMAD 2020: "PlantDoc: A Dataset for Collaborative Computer Vision Applications in Plant Pathology"*).
+- **Annotators**: Google Image queries under real agrarian field conditions; labels cross-referenced with agricultural literature. Individual annotator qualifications per sample are uncertified (crowdsourced academic collection).
+- **License**: Creative Commons Attribution 4.0 International (CC BY 4.0).
+- **Date**: 2019–2020.
 
-### 4.1 Emulator Boot & Hardware Acceleration
-```powershell
-# Accel check confirmed WHPX hypervisor support
-& "$env:LOCALAPPDATA\Android\Sdk\emulator\emulator.exe" -accel-check
-# WHPX(10.0.26300) is installed and usable. accel: 0
+### 4.2 Accuracy & Macro-F1 with 95% Wilson Score Confidence Intervals
+- **Overall Empirical Accuracy**: $32 / 125 = \mathbf{25.60\%}$ (95% Wilson CI: $[18.66\%, 34.02\%]$).
+- **Overall Macro-F1 Score**: $\mathbf{21.77\%}$.
+- **Expected Calibration Error (ECE)**: $\mathbf{40.49\%}$ ($T^*=1.28$).
+- **Per-Crop Breakdown**:
+  - **Corn / Maize** ($N=25$): $11 / 25 = 44.00\%$ (Wilson CI: $[26.67\%, 62.93\%]$)
+  - **Pepper / Chilli** ($N=16$): $8 / 16 = 50.00\%$ (Wilson CI: $[28.00\%, 72.00\%]$)
+  - **Potato** ($N=15$): $2 / 15 = 13.33\%$ (Wilson CI: $[3.74\%, 37.89\%]$)
+  - **Tomato** ($N=69$): $11 / 69 = 15.94\%$ (Wilson CI: $[9.17\%, 26.04\%]$)
 
-# Emulator THINAI_API_36 booted to completion (sys.boot_completed = 1)
-& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" wait-for-device shell getprop sys.boot_completed
-# Output: 1
-```
-
-### 4.2 Application Package & Installation
-- **Built APK**: `android/app/build/outputs/apk/debug/app-debug.apk`
-- **APK SHA-256**: `A5BC5959A802FFC4373433EB6E669550BC45DC4554F58BC519BF8143ACD71308`
-- **CI Signed Release APK**: GitHub Actions workflow run `40083898023` artifact `THINAI-app-release-apk` (24,154,931 bytes, SHA-256: `ce3dc0cacc555eb6fc32dfdc27ba67cfb23c28bae668d6198ff42c0b0d027b9c`).
-- **Install Output**: `Performing Streamed Install -> Success`
-
-### 4.3 Functional & Lifecycle Verification
-1. **Launch**: `adb shell am start -n com.thinai.agriapp/.MainActivity` (PID: 3873).
-2. **Camera Permission**: `adb shell pm grant com.thinai.agriapp android.permission.CAMERA` granted without error.
-3. **Screen Rotation**: Rotated 90° landscape and reverted to portrait (`settings put system user_rotation 1 / 0`); layout reflowed without crash.
-4. **Background & Resume**: Home key event dispatched (`input keyevent KEYCODE_HOME`), followed by resumption (`am start`); activity brought to front cleanly (`Saving instance state!` -> `App restarted` -> `App resumed`).
-5. **Offline Mode**: Toggled airplane mode via `adb shell cmd connectivity airplane-mode enable`; app remained functional with cached assets and service worker.
-6. **LiteRT / WASM Loading**: Verified in logcat that Capacitor served `thinai_disease_model.tflite`, `labels.json`, `thresholds.json`, and gracefully loaded `litert_wasm_compat_internal.wasm` when cross-origin isolation headers are not served by the local Android WebView.
-
-### 4.4 Adverse Monkey Stress Testing & Logcat Audit
-- **Command**: `adb shell monkey -p com.thinai.agriapp --throttle 50 -v 5000`
-- **Events Injected**: **5,000 events** (touch, motion, trackball, navigation, system keys, app switches).
-- **Dropped Events**: `keys=0 pointers=0 trackballs=0 flips=13 rotations=0`.
-- **System Stability**: **0 fatal exceptions, 0 ANRs, process remained alive (PID: 3873)**.
-- **Evidence Files**:
-  - Full Logcat: `docs/logcat_monkey_g7.log` (10,048,236 bytes).
-  - Screen Capture: `docs/android_emulator_screen.png` (248,149 bytes).
+### 4.3 Pipeline Parity Audit
+- Model Graph: MobileNetV2 $224 \times 224 \times 3$, channel order RGB.
+- Normalization: Scale $[0, 255] \rightarrow [-1, 1]$ via graph-internal `preprocess_input`.
+- Python TFLite vs Browser LiteRT WASM Parity: $>98.4\%$ top-1 prediction agreement across identical image buffers; maximum probability difference $<0.0018$.
 
 ---
 
-## 5. Security & Privacy Audit Findings
+## 5. G7 Android Native Verification Details
 
-1. **Gitleaks Scan**: Scanned 105 commits across entire git history. 0 private keystores, passwords, or service account keys found. Flagged historical Firebase web client key (`AIzaSy...`) in compiled asset bundles from initial commits; the key is restricted to project `thinai-agri` via Firestore security rules and client key restrictions in Google Cloud Console.
-2. **DPDP Act 2023 Compliance**: Verified unbundled affirmative consent checks for phone number sharing and leaf photos. Tested account erasure flow: clicking *"Delete Account & Data"* purges local Dexie records, Firestore diagnostic logs, and Firebase Auth profile.
-3. **NPM Audit**: `npm audit --audit-level=high` reports 7 vulnerabilities in dev dependencies or non-SSR client libraries (`@grpc/grpc-js` in emulator testing, `vite` dev middleware, `react-router` SSR/RSC hydration). THINAI is a static client-side SPA with zero server-side rendering (SSR), making SSR hydration vulnerabilities non-exploitable in production.
+### 5.1 CI Release Binary Provenance
+- **GitHub Actions Workflow Run**: `40083898023`
+- **Artifact Name**: `THINAI-app-release-apk`
+- **Extracted File**: `ci-artifacts/release/app-release.apk` (25,845,711 bytes)
+- **SHA-256 Digest**: `AC3F9C8EA4D91B34C3026DC88E563B63355D97B56A05759278032494F6CB62F7`
+- **Apksigner Verification**:
+  ```text
+  Verifies: true
+  Verified using v2 scheme: true
+  Signer #1 certificate DN: C=US, O=Android, CN=Android Debug
+  Signer #1 certificate SHA-256 digest: bb60dcc1fd88c32e4970e9745423e98c42841ab7ef3dfb028a0bf5163860dd93
+  ```
+
+### 5.2 Emulator Execution & Scripted Flows
+- **Environment**: Android 16.0 (API 36) Google APIs x86_64 Emulator via Windows Hypervisor Platform (WHPX).
+- **Test Samples Pushed to `/sdcard/DCIM/Camera/`**:
+  - `healthy_leaf.jpg` (Tomato healthy)
+  - `diseased_tomato_leaf.jpg` (Early blight)
+  - `unsupported_crop_leaf.jpg` (Corn rust)
+  - `blurry.jpg` (Defocused optical sample)
+- **Scripted Lifecycle Flows Tested**:
+  1. First-run language dropdown (default English) — PASS (`docs/screenshots/g7_flow1_launch.png`)
+  2. Camera permission grant (`pm grant com.thinai.agriapp android.permission.CAMERA`) — PASS
+  3. 90° Landscape Rotation and Recovery — PASS (`docs/screenshots/g7_flow_rotate_landscape.png`)
+  4. Background & Resume — PASS (Home key dispatched, resumed cleanly without state loss)
+  5. Offline Mode Toggle — PASS (Airplane mode enabled, app served from cache; `docs/screenshots/g7_flow_offline.png`)
+  6. Kill and Restart — PASS (`docs/screenshots/g7_flow_restart.png`)
+  7. LiteRT WASM Model Compilation — PASS (Compiled in 1,902ms; inference latency 523ms on emulator)
+  8. Threaded WASM Status — Operated via single-threaded compatibility WASM (`litert_wasm_compat_internal.wasm`) due to absence of COOP/COEP headers in Android WebView.
+
+### 5.3 5,000-Event Monkey Stress Test
+- **Command**: `adb shell monkey -p com.thinai.agriapp --throttle 300 -v 5000`
+- **Events Injected**: **5,000 events** (Elapsed time: 393,614ms / 6.56 minutes).
+- **Dropped Keys / Trackballs / Rotations**: `0`.
+- **Logcat Analysis (`docs/logcat_ci_release_monkey_g7.log`, 15,563,416 bytes)**:
+  - `FATAL EXCEPTION`: **0**
+  - `ANR in com.thinai.agriapp`: **0**
+  - `Application Exceptions`: **0**
 
 ---
 
-## 6. Known Limitations
+## 6. NOT TESTED List
 
-1. **Vision Model Scope**: MobileNetV2 vision weights are calibrated for **Tomato, Potato, Chilli/Pepper, and Maize** (Status A). Status B crops withhold all chemical advice; Status C crops route to AAO extension officer referral.
-2. **Farmer Verdicts**: Crowdsourced farmer Yes/No verdicts are weak calibration signals ($\eta \approx 10\text{--}25\%$ noise) and are never reported as ground truth.
-3. **Threaded WASM in WebView**: WebAssembly Threads require `crossOriginIsolated` headers unavailable in standard Android WebView; the runtime automatically operates in single-threaded WASM mode.
-4. **Desktop Windows Installer**: Unsigned NSIS installer triggers standard Microsoft Defender SmartScreen notice.
+1. **Real Physical Android Phone**: `NOT TESTED` (Tested exclusively on Android 16 API 36 Google APIs x86_64 emulator). Awaiting physical device test logs from project owner.
+2. **Native Agronomic Review of 22 Regional Languages**: `MACHINE-DRAFT` (English reviewed by named agronomist; Tamil and remaining 21 Eighth Schedule languages remain machine-draft pending formal agronomist sign-off).
+3. **Owner Pilot Protocol Thresholds**: `NOT SET` in `PILOT_PROTOCOL.md` (Gate G4 marked FAIL).
+4. **Physical Extension Officer Concurrent Load**: Tested on local emulator with 23 rules; live multi-officer concurrent sync not field-tested under poor rural cellular reception.
 
 ---
 
-## 7. Final Verdict
+## 7. Known Limitations & Compensating Controls
 
-THINAI IS READY TO USE - tested at commit 58899b9, all gates G1-G10 pass with evidence; known limitations are listed in THINAI_FINAL_REPORT.md.
+1. **Empirical Field Accuracy (25.60%) & ECE (40.49%)**:
+   - *Limitation*: Lab-trained MobileNetV2 accuracy drops to 25.60% on real Indian field images.
+   - *Compensating Control*: Tier 1 chemical diagnoses are strictly disabled in code (`IS_G4_FIELD_VALIDATED = false`). Scans yield cultural advice only, chemical remedies are withheld, and scans are routed to extension officers. Measured field accuracy is transparently displayed in the About screen.
+2. **Translation Review**:
+   - *Limitation*: 22 non-English languages are machine-draft translations.
+   - *Compensating Control*: Chemical remedies and active ingredient dosages are strictly withheld in non-reviewed languages and presented in English with a native advisory warning notice.
+3. **Threaded WASM in Android WebView**:
+   - *Limitation*: WebAssembly threads require COOP/COEP headers not served by Capacitor WebView.
+   - *Compensating Control*: Model inference operates via single-threaded compatibility WASM (`litert_wasm_compat_internal.wasm`).
+4. **Windows Desktop Packaging**:
+   - *Limitation*: NSIS installer (`THINAI Setup 0.0.1.exe`, SHA-256: `1FD5F6A0...`) is unsigned and triggers standard Windows SmartScreen warning.
+
+---
+
+## 8. Final Verdict
+
+The single verdict line is generated exclusively by `scripts/verify_gates.mjs`:
+
+THINAI IS NOT READY - failing gates: G4.

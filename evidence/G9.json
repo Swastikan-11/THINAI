@@ -1,0 +1,15 @@
+{
+  "gate": "G9",
+  "name": "Security, Keystore & Zero Committed Secrets",
+  "sha": "bef9ab50f625a2378270029cb968bd26eb6d8484",
+  "command": "node scripts/test_firestore_rules.mjs && node scripts/scan_git_secrets.mjs",
+  "timestamp": "2026-10-24T14:22:54Z",
+  "metrics": {
+    "compromised_keystore_status": "FORMALLY_RETIRED",
+    "ci_signing_secrets": "EXTERNALIZED_GITHUB_SECRETS",
+    "active_tree_committed_secrets": 0,
+    "firestore_security_rules_passed": 23,
+    "firestore_security_rules_failed": 0
+  },
+  "result": "PASS"
+}

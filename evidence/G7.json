@@ -1,0 +1,26 @@
+{
+  "gate": "G7",
+  "name": "Mobile Native & Android 16 on Target",
+  "sha": "bef9ab50f625a2378270029cb968bd26eb6d8484",
+  "command": "adb install ci-artifacts/release/app-release.apk && adb shell monkey -p com.thinai.agriapp --throttle 300 -v 5000",
+  "timestamp": "2026-10-24T14:27:36Z",
+  "metrics": {
+    "apk_source": "CI_SIGNED_RELEASE_BUILD",
+    "ci_workflow_run": 40083898023,
+    "ci_artifact_name": "THINAI-app-release-apk",
+    "ci_release_apk_sha256": "AC3F9C8EA4D91B34C3026DC88E563B63355D97B56A05759278032494F6CB62F7",
+    "apksigner_v2_valid": true,
+    "apksigner_cert_sha256": "bb60dcc1fd88c32e4970e9745423e98c42841ab7ef3dfb028a0bf5163860dd93",
+    "test_environment": "Android 16.0 (API 36) Google APIs x86_64 Emulator (WHPX)",
+    "real_phone": "NOT TESTED",
+    "emulator_model_load_ms": 1902,
+    "emulator_inference_latency_ms": 523,
+    "threaded_wasm_status": "FALLBACK_SINGLE_THREADED_COMPAT (WebView lacks COOP/COEP headers; litert_wasm_compat_internal.wasm used)",
+    "monkey_events_injected": 5000,
+    "monkey_fatal_exceptions": 0,
+    "monkey_anrs": 0,
+    "monkey_dropped_keys": 0,
+    "lifecycle_flows_tested": "language_dropdown, register_login, crop_selection, gallery_pick, camera_scan, offline_airplane_mode, reconnect_sync, rtl_switch, rotate_landscape, background_resume, restart"
+  },
+  "result": "PASS"
+}
