@@ -56,9 +56,9 @@ import {
   evaluateIrrigationAdvice
 } from "../services/weatherService";
 import {
-  getMarketIntelligence,
-  COMMODITY_MARKETS,
-  MarketCommodity,
+  fetchLiveAgmarknetPrice,
+  AgmarknetPriceResult,
+  COMMODITY_KEYS,
   getDashboardMarketPrice
 } from "../services/marketService";
 import { ARFI_CONFIG } from "../config/arfiConfig";
@@ -2259,11 +2259,48 @@ function EditProfileScreen({
 // ─── AUTH SCREENS IMPORTED FROM AuthScreens.tsx (REAL FIREBASE & ONBOARDING) ──
 
 
-// ─── MARKET SCREEN (PRIORITY 4 & 7: LIVE VS STATIC REFERENCE) ────────────────
+// ─── MARKET SCREEN (PRIORITY 4: REAL AGMARKNET API & HONEST PRICE STATES) ───
 function MarketScreen({ navigate, user }: { navigate: (s: Screen) => void; user: UserState }) {
   const [selectedCrop, setSelectedCrop] = useState<string>("paddy");
-  const commodity = COMMODITY_MARKETS[selectedCrop] || COMMODITY_MARKETS.paddy;
+  const [priceData, setPriceData] = useState<AgmarknetPriceResult | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const lang = user.language;
+
+  const loadPrice = useCallback(async (cropKey: string) => {
+    setIsLoading(true);
+    try {
+      const res = await fetchLiveAgmarknetPrice(cropKey, user.district || "Coimbatore");
+      setPriceData(res);
+    } catch {
+      setPriceData({
+        isAvailable: false,
+        status: "PRICE_UNAVAILABLE",
+        commodity: cropKey,
+        district: user.district || "Coimbatore",
+        state: "Tamil Nadu",
+        source: "data.gov.in Agmarknet Registry",
+        lastUpdatedTime: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        unavailableReason: "Network request failed. No cached price found."
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user.district]);
+
+  useEffect(() => {
+    loadPrice(selectedCrop);
+  }, [selectedCrop, loadPrice]);
+
+  // Official statutory MSP benchmarks published by CACP / Government of India Gazette 2024-25
+  const statutoryMSP: Record<string, { price?: number; note: string }> = {
+    paddy: { price: 2300, note: "Paddy (Common) GoI Kharif Gazette 2024-25" },
+    cotton: { price: 7121, note: "Cotton (Medium Staple) GoI Kharif Gazette 2024-25" },
+    maize: { price: 2225, note: "Maize GoI Kharif Gazette 2024-25" },
+    tomato: { note: "Perishable horticulture crop: No statutory MSP fixed under CACP mandate" },
+    chilli: { note: "Spices/horticulture crop: Market Intervention Scheme (MIS) upon State notification" }
+  };
+
+  const currentMsp = statutoryMSP[selectedCrop];
 
   return (
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
@@ -2277,102 +2314,163 @@ function MarketScreen({ navigate, user }: { navigate: (s: Screen) => void; user:
         <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-start gap-2">
           <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
           <p>
-            <strong>Transparent Market Data:</strong> Daily auction rates below represent verified local APMC yard trading values, clearly separated from statutory Government MSP benchmarks.
+            <strong>Official data.gov.in Agmarknet Feed:</strong> Live auction rates are queried directly from the Government of India Open Data API (Resource: <code>9ef84268...</code>). Zero synthetic or simulated prices.
           </p>
         </div>
 
-        {/* Crop Selector */}
-        <div className="flex gap-2">
-          {Object.keys(COMMODITY_MARKETS).map(k => (
+        {/* Commodity Selector */}
+        <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {COMMODITY_KEYS.map(c => (
             <button
-              key={k}
-              onClick={() => setSelectedCrop(k)}
-              className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${
-                selectedCrop === k ? "bg-blue-700 text-white border-blue-700 shadow-xs" : "bg-white text-gray-700 border-gray-200"
+              key={c.id}
+              onClick={() => setSelectedCrop(c.id)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+                selectedCrop === c.id ? "bg-blue-700 text-white border-blue-700 shadow-xs" : "bg-white text-gray-700 border-gray-200"
               }`}>
-              {COMMODITY_MARKETS[k].cropName.split(" ")[0]}
+              {lang === "Tamil" ? c.labelTa : c.labelEn.split(" ")[0]}
             </button>
           ))}
         </div>
 
-        {/* 1. LIVE APMC PRICE CARD */}
-        <Card>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-              Local APMC Yard Price
-            </span>
-            <DataBadge status={commodity.status as DataStatus} detail={commodity.nearbyMandi.split(" ")[0]} />
-          </div>
+        {/* Refresh & District Row */}
+        <div className="flex items-center justify-between text-xs text-gray-600 px-1">
+          <span className="flex items-center gap-1">
+            <MapPin size={12} className="text-blue-600" />
+            Mandi District: <strong className="text-gray-900">{user.district || "Coimbatore"}</strong>
+          </span>
+          <button
+            onClick={() => loadPrice(selectedCrop)}
+            disabled={isLoading}
+            className="flex items-center gap-1 text-blue-700 hover:text-blue-900 font-semibold text-xs py-1 px-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors">
+            <RefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
+            {lang === "Tamil" ? "புதுப்பி" : "Refresh"}
+          </button>
+        </div>
 
-          <div className="flex justify-between items-start">
+        {/* 1. AGMARKNET PRICE STATUS */}
+        {isLoading ? (
+          <Card>
+            <div className="py-8 flex flex-col items-center justify-center text-center gap-2">
+              <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
+              <p className="text-xs text-gray-500">Querying data.gov.in Agmarknet API...</p>
+            </div>
+          </Card>
+        ) : priceData?.status === "PRICE_UNAVAILABLE" ? (
+          <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-300 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 flex items-center gap-1">
+                <AlertCircle size={11} />
+                PRICE UNAVAILABLE
+              </span>
+              <span className="text-[10px] text-amber-800 font-medium">{priceData.lastUpdatedTime}</span>
+            </div>
+
             <div>
-              <span className="text-xs text-gray-500">{commodity.cropName}</span>
-              <h2 className="text-2xl font-black text-gray-900 mt-0.5">₹{commodity.currentPrice} <span className="text-xs font-normal text-gray-400">/ quintal</span></h2>
-              <div className="text-[11px] text-zinc-500 mt-0.5 flex items-center gap-1">
-                <MapPin size={11} className="text-blue-600" />
-                <span>{commodity.nearbyMandi} ({commodity.mandiDistanceKm} km)</span>
+              <h3 className="text-base font-bold text-gray-900">
+                {lang === "Tamil" ? "நேரடி சந்தை விலை கிடைக்கவில்லை" : "Live Mandi Price Unavailable"}
+              </h3>
+              <p className="text-xs text-gray-700 mt-1 leading-relaxed">
+                {priceData.unavailableReason}
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/70 border border-amber-200 text-[11px] text-gray-600 space-y-1">
+              <div className="flex justify-between">
+                <span>Commodity:</span>
+                <span className="font-semibold text-gray-800">{priceData.commodity}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>District / APMC Yard:</span>
+                <span className="font-semibold text-gray-800">{priceData.district}, Tamil Nadu</span>
+              </div>
+              <div className="flex justify-between">
+                <span>API Endpoint:</span>
+                <span className="font-mono text-[10px] text-gray-500">data.gov.in/resource/9ef84268</span>
               </div>
             </div>
-            <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-green-100 text-green-800">
-              +{commodity.weeklyChangePercent}% (7d)
-            </span>
+
+            <p className="text-[10px] text-amber-900 italic">
+              Note: THINAI strictly displays real government mandi arrival records. If no trading arrivals occurred today or the API key is unconfigured, we display this honest state rather than fabricated rates.
+            </p>
           </div>
+        ) : priceData?.isAvailable ? (
+          <Card>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                {priceData.status === "CACHED" ? "Cached APMC Yard Arrival" : "Live APMC Yard Arrival"}
+              </span>
+              <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                priceData.status === "CACHED" ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
+              }`}>
+                {priceData.status === "CACHED" ? "OFFLINE CACHE" : "LIVE AGMARKNET"}
+              </span>
+            </div>
 
-          <p className="text-xs text-gray-600 mt-2.5 bg-zinc-50 p-2.5 rounded-lg border border-zinc-100">
-            {commodity.marketInsight}
-          </p>
+            <div className="flex justify-between items-start">
+              <div>
+                <span className="text-xs text-gray-500">{priceData.commodity} {priceData.variety ? `(${priceData.variety})` : ""}</span>
+                <h2 className="text-3xl font-black text-gray-900 mt-0.5">
+                  ₹{priceData.modalPricePerQuintal?.toLocaleString("en-IN") || "—"}{" "}
+                  <span className="text-xs font-normal text-gray-400">/ quintal</span>
+                </h2>
+                <div className="text-[11px] text-zinc-500 mt-0.5 flex items-center gap-1">
+                  <MapPin size={11} className="text-blue-600" />
+                  <span>{priceData.market || `${priceData.district} APMC Yard`}</span>
+                </div>
+              </div>
+            </div>
 
-          {/* Chart */}
-          <div className="h-36 mt-3">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={commodity.sevenDayHistory}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis dataKey="day" tick={{ fontSize: 10 }} />
-                <YAxis domain={['auto', 'auto']} tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="price" stroke="#1976D2" strokeWidth={2.5} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+            {/* Min / Max Range */}
+            {(priceData.minPricePerQuintal !== undefined && priceData.maxPricePerQuintal !== undefined) && (
+              <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-zinc-100">
+                <div className="p-2 rounded-lg bg-zinc-50 text-center">
+                  <span className="text-[10px] text-gray-500 block">Minimum Reported</span>
+                  <strong className="text-xs text-gray-800 font-mono">₹{priceData.minPricePerQuintal} / qtl</strong>
+                </div>
+                <div className="p-2 rounded-lg bg-zinc-50 text-center">
+                  <span className="text-[10px] text-gray-500 block">Maximum Reported</span>
+                  <strong className="text-xs text-gray-800 font-mono">₹{priceData.maxPricePerQuintal} / qtl</strong>
+                </div>
+              </div>
+            )}
 
-          <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-2 border-t border-zinc-100 mt-2">
-            <span>Source: {commodity.source}</span>
-            <span>Date: {commodity.lastVerifiedDate}</span>
-          </div>
-        </Card>
+            <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-2 border-t border-zinc-100 mt-2">
+              <span>Arrival Date: {priceData.arrivalDate || "Today"}</span>
+              <span>Updated: {priceData.lastUpdatedTime}</span>
+            </div>
+            <div className="text-[9px] text-zinc-400 mt-1">
+              Source: {priceData.source}
+            </div>
+          </Card>
+        ) : null}
 
-        {/* 2. STATIC REFERENCE PRICE (MSP BENCHMARK) */}
+        {/* 2. STATUTORY MSP BENCHMARK CARD */}
         <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
               <Landmark size={13} className="text-amber-700" />
               Statutory MSP Benchmark
             </span>
-            <DataBadge status="STATIC REFERENCE" detail="CACP / GoI Gazette" />
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+              CACP / GoI Gazette
+            </span>
           </div>
 
-          <div className="flex justify-between items-baseline pt-1">
-            <span className="text-xs font-semibold text-zinc-700">Official Minimum Support Price:</span>
-            <span className="text-base font-extrabold text-amber-950 font-mono">₹{commodity.mspPrice} / quintal</span>
-          </div>
-
-          <div className="text-[11px] text-zinc-600 flex items-center justify-between pt-1">
-            <span>Trading Differential:</span>
-            <strong className="text-emerald-700 font-bold">+₹{commodity.currentPrice - commodity.mspPrice} above MSP</strong>
-          </div>
-        </div>
-
-        {/* 3. Sell / Hold Recommendation */}
-        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200">
-          <span className="text-[10px] font-bold text-emerald-800 uppercase block mb-1">
-            {t("sellHoldSignal", lang)}:
-          </span>
-          <p className="text-xs font-black text-emerald-950">
-            {t("holdRecommendation", lang)}
-          </p>
-          <p className="text-[11px] text-emerald-800 mt-1">
-            Regional procurement arrivals are stabilizing. Favorable pricing window expected over next 7-10 days.
-          </p>
+          {currentMsp?.price ? (
+            <>
+              <div className="flex justify-between items-baseline pt-1">
+                <span className="text-xs font-semibold text-zinc-700">Official Minimum Support Price:</span>
+                <span className="text-base font-extrabold text-amber-950 font-mono">₹{currentMsp.price.toLocaleString("en-IN")} / quintal</span>
+              </div>
+              <div className="text-[11px] text-zinc-600">
+                {currentMsp.note}
+              </div>
+            </>
+          ) : (
+            <div className="text-xs text-zinc-700 pt-1">
+              {currentMsp?.note || "Horticultural crop: Price governed by mandi supply-demand without statutory procurement guarantee."}
+            </div>
+          )}
         </div>
       </div>
     </div>

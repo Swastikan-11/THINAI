@@ -102,4 +102,10 @@ test.describe("Phase 3 Screenshots at 360x800", () => {
 
     await page.screenshot({ path: "docs/screenshots/feature3_weather_rules.png", fullPage: false });
   });
+
+  test("Feature 4: Capture Market Screen with data.gov.in Agmarknet & Honest Price State at 360x800", async ({ page }) => {
+    await page.goto("/?screen=market");
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: "docs/screenshots/feature4_market_prices.png", fullPage: false });
+  });
 });
