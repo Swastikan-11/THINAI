@@ -52,7 +52,7 @@ print(f"Loaded thresholds: TAU_HIGH={TAU_HIGH}, TAU_LOW={TAU_LOW}, T={TEMPERATUR
 np.random.seed(42)
 N_SAMPLES = 1000
 
-# True accuracy on field set without gating is 89.4%
+# Simulation parameter: Assumed baseline accuracy without gating in synthetic model: 89.4%
 true_correct = np.random.binomial(1, 0.894, size=N_SAMPLES)
 
 # Calibrated confidence distribution:

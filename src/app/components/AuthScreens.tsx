@@ -369,7 +369,8 @@ export function LoginScreen({
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-gray-400 hover:text-gray-600 ml-1">
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="text-gray-600 hover:text-gray-800 ml-1 min-w-[44px] min-h-[44px] flex items-center justify-center">
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
@@ -490,7 +491,7 @@ export function LoginScreen({
         {/* Divider */}
         <div className="flex items-center gap-3 my-1">
           <div className="flex-1 h-px bg-gray-200"></div>
-          <span className="text-[11px] font-medium text-gray-400 uppercase">{tAuth("orContinueWith", language)}</span>
+          <span className="text-[11px] font-semibold text-gray-700 uppercase">{tAuth("orContinueWith", language)}</span>
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
@@ -533,11 +534,11 @@ export function LoginScreen({
         )}
 
         {/* Footer Link */}
-        <p className="text-xs text-center text-gray-500 mt-2">
-          {tAuth("noAccount", language)}
+        <p className="text-xs text-center text-gray-700 mt-2">
+          {tAuth("noAccount", language)}{" "}
           <button
             onClick={onNavigateRegister}
-            className="font-bold text-green-800 underline">
+            className="font-bold text-green-800 underline min-h-[44px] inline-flex items-center">
             {tAuth("register", language)}
           </button>
         </p>
@@ -734,11 +735,11 @@ export function RegisterScreen({
           )}
         </form>
 
-        <p className="text-xs text-center text-gray-500 mt-2">
-          {tAuth("alreadyAccount", language)}
+        <p className="text-xs text-center text-gray-700 mt-2">
+          {tAuth("alreadyAccount", language)}{" "}
           <button
             onClick={onNavigateLogin}
-            className="font-bold text-green-800 underline">
+            className="font-bold text-green-800 underline min-h-[44px] inline-flex items-center">
             {tAuth("signInLink", language)}
           </button>
         </p>

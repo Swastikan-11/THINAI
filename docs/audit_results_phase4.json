@@ -1,0 +1,43 @@
+[
+  {
+    "screen": "login",
+    "language": "English",
+    "violationsCount": 0,
+    "violations": [],
+    "smallTapTargets": []
+  },
+  {
+    "screen": "home",
+    "language": "Tamil",
+    "violationsCount": 0,
+    "violations": [],
+    "smallTapTargets": [
+      "BUTTON: \"Main Plot - North3.5 AcPaddy (\" (268x32px)",
+      "BUTTON: \"w-7 h-7 rounded-lg bg-emerald-\" (28x28px)",
+      "BUTTON: \"🌾 நெல்\" (78x36px)",
+      "BUTTON: \"🍅 தக்காளி\" (104x36px)",
+      "BUTTON: \"🌽 மக்காச்சோளம்\" (151x36px)",
+      "BUTTON: \"🌱 பருத்தி\" (95x36px)",
+      "BUTTON: \"🥔 உருளை\" (101x36px)",
+      "BUTTON: \"🌶️ மிளகாய்\" (106x36px)",
+      "BUTTON: \"🍌 வாழை\" (94x36px)",
+      "BUTTON: \"p-1.5 rounded-lg bg-white/10 h\" (26x26px)",
+      "BUTTON: \"Live GPS\" (58x36px)",
+      "BUTTON: \"p-1 rounded-full text-gray-500\" (20x20px)",
+      "BUTTON: \"🏜️வறண்டது\" (87x30px)",
+      "BUTTON: \"🌱சரியானது\" (89x31px)",
+      "BUTTON: \"🌊ஈரப்பதம்\" (87x30px)",
+      "BUTTON: \"இந்த நடவடிக்கை ஏன்?\" (288x16px)",
+      "BUTTON: \"View Alternative Action\" (288x17px)",
+      "BUTTON: \"6 Sub-Scores\" (143x38px)",
+      "BUTTON: \"What-If Lab\" (143x38px)"
+    ]
+  },
+  {
+    "screen": "market",
+    "language": "English",
+    "violationsCount": 0,
+    "violations": [],
+    "smallTapTargets": []
+  }
+]

@@ -57,8 +57,9 @@ export function SyncStatusBar({ onOpenPendingSync }: SyncStatusProps) {
       {/* Persistent Small Bilingual App Bar Badge */}
       <button
         onClick={handleToggleOffline}
+        aria-label={`${isOffline ? "Offline • ஆஃப்லைன்" : "Online • இணைப்பில்"} - Click to toggle mode`}
         title={isOffline ? "Offline Mode (Click to Toggle) • ஆஃப்லைன் பயன்முறை" : "Online Mode (Click to Toggle) • ஆன்லைன் பயன்முறை"}
-        className={`px-2.5 py-1 rounded-full border text-[11px] font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer ${getBadgeStyle()}`}
+        className={`min-h-[44px] px-3 py-1.5 rounded-full border text-[11px] font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer ${getBadgeStyle()}`}
       >
         {isOffline ? (
           <>

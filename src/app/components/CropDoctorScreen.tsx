@@ -19,14 +19,20 @@ import {
   VolumeX,
   PhoneCall,
   Save,
-  Activity
+  Activity,
+  Search,
+  Trash2,
+  Calendar,
+  Filter,
+  ExternalLink,
+  ChevronRight
 } from "lucide-react";
 import { Camera, CameraResultType, CameraSource, CameraDirection } from "@capacitor/camera";
 import { DataBadge, DataStatus } from "./DataBadge";
 import { db } from "../../services/db";
 import { syncManager } from "../../services/syncService";
 import { DecisionEngineResult } from "../../services/decisionEngine";
-import { detectCropDisease, DiseaseDetectionResult } from "../../services/diseaseDetectionService";
+import { detectCropDisease, DiseaseDetectionResult, getDiseaseScanHistory } from "../../services/diseaseDetectionService";
 import { recordDiagnosisConfirmation } from "../../services/firestoreSync";
 import { computePhotoHash, recordFarmerVerdict } from "../../services/verdictService";
 
@@ -61,6 +67,71 @@ export function CropDoctorScreen({
   const [selectedActualClass, setSelectedActualClass] = useState("");
   const [selectedCrop, setSelectedCrop] = useState<string>("Tomato");
   const [currentVerdict, setCurrentVerdict] = useState<"YES" | "NO" | "NOT_SURE" | null>(null);
+
+  // ─── Scan History State ────────────────────────────────────────────────────
+  const [activeSubTab, setActiveSubTab] = useState<"diagnosis" | "history">("diagnosis");
+  const [historyScans, setHistoryScans] = useState<any[]>([]);
+  const [historySearch, setHistorySearch] = useState<string>("");
+  const [historyTierFilter, setHistoryTierFilter] = useState<string>("all");
+  const [selectedHistoryScan, setSelectedHistoryScan] = useState<any | null>(null);
+
+  const loadScanHistory = async () => {
+    try {
+      const dexieScans = await db.scans.orderBy("scannedAt").reverse().toArray();
+      if (dexieScans && dexieScans.length > 0) {
+        setHistoryScans(dexieScans);
+      } else {
+        const fallback = getDiseaseScanHistory();
+        setHistoryScans(fallback.map((s, idx) => ({
+          id: `local-${idx}-${s.timestamp}`,
+          cropName: s.crop,
+          diseaseName: s.diseaseName,
+          scientificName: s.scientificName,
+          confidence: s.confidence,
+          severity: s.severity || "Moderate",
+          isReliable: s.isReliable,
+          immediateAction: s.immediateAction,
+          preventionAdvice: (s.preventiveMeasures || []).join("; "),
+          scannedAt: s.timestamp || new Date().toISOString(),
+          tier: s.confidence >= 78 ? "TIER_1_CONFIDENT" : (s.confidence >= 45 ? "TIER_2_MODERATE" : "TIER_3_INCONCLUSIVE")
+        })));
+      }
+    } catch (err) {
+      console.warn("Could not load from Dexie, fallback to localStorage:", err);
+      const fallback = getDiseaseScanHistory();
+      setHistoryScans(fallback.map((s, idx) => ({
+        id: `local-${idx}-${s.timestamp}`,
+        cropName: s.crop,
+        diseaseName: s.diseaseName,
+        scientificName: s.scientificName,
+        confidence: s.confidence,
+        severity: s.severity || "Moderate",
+        isReliable: s.isReliable,
+        immediateAction: s.immediateAction,
+        preventionAdvice: (s.preventiveMeasures || []).join("; "),
+        scannedAt: s.timestamp || new Date().toISOString(),
+        tier: s.confidence >= 78 ? "TIER_1_CONFIDENT" : (s.confidence >= 45 ? "TIER_2_MODERATE" : "TIER_3_INCONCLUSIVE")
+      })));
+    }
+  };
+
+  React.useEffect(() => {
+    loadScanHistory();
+  }, []);
+
+  const handleDeleteHistoryScan = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await db.scans.delete(id);
+      await loadScanHistory();
+      if (selectedHistoryScan?.id === id) {
+        setSelectedHistoryScan(null);
+      }
+      if (showToast) showToast("Scan removed from history.", "info");
+    } catch (err) {
+      console.error("Failed to delete scan:", err);
+    }
+  };
 
   // Stop speech when component unmounts
   React.useEffect(() => {
@@ -470,6 +541,42 @@ export function CropDoctorScreen({
         </div>
       </div>
 
+      {/* ─── MODE SWITCHER: LIVE DIAGNOSIS VS SCAN HISTORY ─── */}
+      <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 text-xs font-bold">
+        <button
+          type="button"
+          onClick={() => setActiveSubTab("diagnosis")}
+          className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
+            activeSubTab === "diagnosis"
+              ? "bg-white text-emerald-900 shadow-xs border border-zinc-200"
+              : "text-zinc-600 hover:text-zinc-900"
+          }`}
+        >
+          <CameraIcon className="w-4 h-4" />
+          <span>{language === "Tamil" ? "நேரடி நோயறிதல்" : "Live Diagnosis"}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setActiveSubTab("history");
+            loadScanHistory();
+          }}
+          className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
+            activeSubTab === "history"
+              ? "bg-white text-emerald-900 shadow-xs border border-zinc-200"
+              : "text-zinc-600 hover:text-zinc-900"
+          }`}
+        >
+          <Activity className="w-4 h-4" />
+          <span>{language === "Tamil" ? "ஸ்கேன் வரலாறு" : "Scan History"}</span>
+          {historyScans.length > 0 && (
+            <span className="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold">
+              {historyScans.length}
+            </span>
+          )}
+        </button>
+      </div>
+
       {/* Error Message Alert */}
       {errorMessage && (
         <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-900 flex items-start gap-2">
@@ -481,6 +588,8 @@ export function CropDoctorScreen({
         </div>
       )}
 
+      {activeSubTab === "diagnosis" ? (
+        <>
       {/* ─── 3-STEP STRIP: TAKE PICTURE -> DIAGNOSIS -> REMEDY (PLANTIX/UZHAVAN PATTERN) ─── */}
       <div className="bg-white rounded-2xl border border-zinc-200 p-3.5 shadow-xs">
         <div className="flex items-center justify-between text-center">
@@ -759,8 +868,8 @@ export function CropDoctorScreen({
                 </strong>
                 <p className="text-[11px] text-emerald-900/80 leading-relaxed mt-0.5">
                   {language === "Tamil" 
-                    ? "கணக்கிடப்பட்ட துல்லியம் >= 78% (இடர் <= 2.1%). குறிப்பிட்ட நோய் அடையாளம் காணப்பட்டு அங்கீகரிக்கப்பட்ட இயற்கை மற்றும் ரசாயன சிகிச்சைகள் வழங்கப்பட்டுள்ளன." 
-                    : "Calibrated confidence >= 78% (Selective risk <= 2.1%). High-certainty diagnosis with verified remedies enabled."}
+                    ? "கணக்கிடப்பட்ட துல்லியம் >= 78% (இடர் <= 2.1%). குறிப்பிட்ட நோய் அடையாளம் காணப்பட்டு ஆய்வுக்குட்பட்ட சிகிச்சைகள் வழங்கப்பட்டுள்ளன." 
+                    : "Calibrated confidence >= 78% (Selective risk <= 2.1%). High-certainty diagnosis with pilot-gated remedies enabled."}
                 </p>
               </div>
             </div>
@@ -918,13 +1027,37 @@ export function CropDoctorScreen({
               {diagnosis.immediateAction}
             </p>
 
-            {/* TIER 1: SPECIFIC CHEMICAL REMEDY ALLOWED */}
+            {/* TIER 1: SPECIFIC CHEMICAL REMEDY ALLOWED WITH PILOT SAFEGUARDS */}
             {diagnosis.tier === "TIER_1_CONFIDENT" && diagnosis.chemicalTreatment && diagnosis.chemicalTreatment.length > 0 && (
-              <div className="pt-1.5 text-[11px] text-zinc-700 bg-white p-2.5 rounded-lg border border-emerald-200">
-                <strong className="text-emerald-900 block font-bold mb-0.5">
-                  {language === "Tamil" ? "பரிந்துரைக்கப்பட்ட ரசாயன அளவு (அங்கீகரிக்கப்பட்டது):" : "Verified Chemical Dosage (Tier 1 Confirmed):"}
-                </strong>
-                <span>{diagnosis.chemicalTreatment.join("; ")}</span>
+              <div className="pt-1.5 text-[11px] text-zinc-700 bg-white p-2.5 rounded-lg border border-emerald-200 space-y-2">
+                <div>
+                  <strong className="text-emerald-900 block font-bold mb-0.5">
+                    {language === "Tamil" ? "பரிந்துரைக்கப்பட்ட ரசாயன அளவு (ஆய்வில் உள்ளது - உறுதிப்படுத்தப்படவில்லை):" : "Prescribed Chemical Formulation (UNVERIFIED - Awaiting Agronomist Sign-Off):"}
+                  </strong>
+                  <span>{diagnosis.chemicalTreatment.join("; ")}</span>
+                </div>
+
+                <div className="bg-amber-50 border border-amber-200 rounded p-2 text-[10px] text-amber-900 space-y-1">
+                  <div className="font-semibold flex items-center justify-between">
+                    <span>{language === "Tamil" ? "ஆய்வு நிலை: UNVERIFIED" : "Status: UNVERIFIED (Pending Agronomist Sign-Off)"}</span>
+                    <span className="text-amber-700 italic">{diagnosis.reviewerName ? `Signed: ${diagnosis.reviewerName}` : "(Awaiting agronomist signature)"}</span>
+                  </div>
+                  {diagnosis.productLabelClaim && (
+                    <div>
+                      <span className="font-semibold">Label Claim: </span>
+                      <span>{diagnosis.productLabelClaim}</span>
+                    </div>
+                  )}
+                  {diagnosis.sourceDocument && (
+                    <div>
+                      <span className="font-semibold">Source Document: </span>
+                      <a href={diagnosis.sourceDocument.url} target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">
+                        {diagnosis.sourceDocument.title}
+                      </a>
+                      <span className="text-gray-500"> ({diagnosis.sourceDocument.section})</span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -1135,6 +1268,257 @@ export function CropDoctorScreen({
               <RotateCcw className="w-3.5 h-3.5" /> Scan Another Leaf
             </button>
           </div>
+        </div>
+      )}
+        </>
+      ) : (
+        /* ─── SCAN HISTORY VIEW ─── */
+        <div className="space-y-4">
+          {/* Search & Filter Header */}
+          <div className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-extrabold text-sm text-zinc-900">
+                  {language === "Tamil" ? "சேமிக்கப்பட்ட ஸ்கேன் வரலாறு" : "Saved Field Scan History"}
+                </h3>
+                <p className="text-[11px] text-zinc-500">
+                  {language === "Tamil" ? "ஆஃப்லைன் டெக்ஸி தரவுத்தளத்திலிருந்து" : "Local Dexie IndexedDB Offline Archive"}
+                </p>
+              </div>
+              <DataBadge status="OFFLINE" detail="IndexedDB Storage" size="sm" />
+            </div>
+
+            {/* History Search Box */}
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-2.5 text-zinc-400" />
+              <input
+                type="text"
+                value={historySearch}
+                onChange={(e) => setHistorySearch(e.target.value)}
+                placeholder={language === "Tamil" ? "பயிர், நோய் அல்லது தீவிரம் கொண்டு தேடுங்கள்..." : "Search by crop, disease, or severity..."}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-zinc-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+              />
+              {historySearch && (
+                <button
+                  type="button"
+                  onClick={() => setHistorySearch("")}
+                  className="absolute right-2.5 top-2.5 text-xs text-zinc-400 hover:text-zinc-600 font-bold"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Tier Filters */}
+            <div className="flex items-center gap-1.5 overflow-x-auto text-xs pb-1" style={{ scrollbarWidth: "none" }}>
+              {[
+                { id: "all", labelEn: "All Scans", labelTa: "அனைத்தும்" },
+                { id: "TIER_1_CONFIDENT", labelEn: "Tier 1: Confident", labelTa: "நிலை 1 (உறுதி)" },
+                { id: "TIER_2_MODERATE", labelEn: "Tier 2: Review", labelTa: "நிலை 2 (மறுஆய்வு)" },
+                { id: "TIER_3_INCONCLUSIVE", labelEn: "Tier 3: Inconclusive", labelTa: "நிலை 3 (முடிவற்றது)" }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setHistoryTierFilter(f.id)}
+                  className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-colors border ${
+                    historyTierFilter === f.id
+                      ? "bg-emerald-700 text-white border-emerald-800 shadow-xs"
+                      : "bg-zinc-50 text-zinc-700 border-zinc-200 hover:bg-zinc-100"
+                  }`}
+                >
+                  {language === "Tamil" ? f.labelTa : f.labelEn}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* History List */}
+          {(() => {
+            const filteredScans = historyScans.filter(scan => {
+              const q = historySearch.toLowerCase();
+              const matchSearch =
+                (scan.cropName || "").toLowerCase().includes(q) ||
+                (scan.diseaseName || "").toLowerCase().includes(q) ||
+                (scan.severity || "").toLowerCase().includes(q);
+              
+              const scanTier = scan.tier || (
+                scan.confidence >= 78 ? "TIER_1_CONFIDENT" :
+                (scan.confidence >= 45 ? "TIER_2_MODERATE" : "TIER_3_INCONCLUSIVE")
+              );
+              const matchTier = historyTierFilter === "all" || scanTier === historyTierFilter;
+              return matchSearch && matchTier;
+            });
+
+            if (filteredScans.length === 0) {
+              return (
+                <div className="bg-white rounded-2xl border border-zinc-200 p-8 text-center space-y-2">
+                  <div className="w-12 h-12 rounded-full bg-zinc-100 text-zinc-400 flex items-center justify-center mx-auto">
+                    <Activity className="w-6 h-6" />
+                  </div>
+                  <h4 className="font-bold text-sm text-zinc-800">
+                    {historySearch ? (language === "Tamil" ? "பொருத்தமான ஸ்கேன் எதுவும் இல்லை" : "No matching scans found") : (language === "Tamil" ? "ஸ்கேன் வரலாறு காலியாக உள்ளது" : "No scan history recorded yet")}
+                  </h4>
+                  <p className="text-xs text-zinc-500 max-w-xs mx-auto">
+                    {language === "Tamil" ? "நேரடி நோயறிதல் தாவலில் உங்கள் முதல் இலை புகைப்படத்தை ஸ்கேன் செய்யுங்கள்." : "Capture your first leaf diagnostic scan in the Live Diagnosis tab to begin logging field observations."}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSubTab("diagnosis")}
+                    className="mt-2 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs"
+                  >
+                    {language === "Tamil" ? "ஸ்கேன் செய்ய தொடங்குங்கள்" : "Go to Live Diagnosis"}
+                  </button>
+                </div>
+              );
+            }
+
+            return (
+              <div className="space-y-2.5">
+                {filteredScans.map(scan => {
+                  const scanTier = scan.tier || (
+                    scan.confidence >= 78 ? "TIER_1_CONFIDENT" :
+                    (scan.confidence >= 45 ? "TIER_2_MODERATE" : "TIER_3_INCONCLUSIVE")
+                  );
+                  return (
+                    <div
+                      key={scan.id}
+                      onClick={() => setSelectedHistoryScan(scan)}
+                      className="bg-white rounded-xl border border-zinc-200 p-3.5 shadow-xs hover:border-emerald-500 transition-all cursor-pointer space-y-2"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
+                              {scan.cropName}
+                            </span>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                              scanTier === "TIER_1_CONFIDENT"
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                                : scanTier === "TIER_2_MODERATE"
+                                  ? "bg-amber-50 text-amber-800 border-amber-200"
+                                  : "bg-rose-50 text-rose-800 border-rose-200"
+                            }`}>
+                              {scanTier === "TIER_1_CONFIDENT" ? "Tier 1: Confident" : (scanTier === "TIER_2_MODERATE" ? "Tier 2: Review" : "Tier 3: Inconclusive")}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-sm text-zinc-900">{scan.diseaseName}</h4>
+                          {scan.scientificName && (
+                            <p className="text-[11px] text-zinc-500 italic">{scan.scientificName}</p>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            {Math.round(scan.confidence)}%
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => handleDeleteHistoryScan(scan.id, e)}
+                            className="text-zinc-400 hover:text-rose-600 p-1"
+                            title="Delete scan"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-zinc-500 pt-1 border-t border-zinc-100">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-zinc-400" />
+                          {new Date(scan.scannedAt).toLocaleDateString()} {new Date(scan.scannedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                        <span className="text-emerald-700 font-bold flex items-center gap-0.5">
+                          {language === "Tamil" ? "விவரம்" : "Details"} <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
+
+          {/* History Scan Detail Modal */}
+          {selectedHistoryScan && (
+            <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-5 shadow-2xl space-y-4 text-xs">
+                <div className="flex items-start justify-between border-b border-zinc-100 pb-3">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      {selectedHistoryScan.cropName}
+                    </span>
+                    <h3 className="font-extrabold text-base text-zinc-900 mt-1">{selectedHistoryScan.diseaseName}</h3>
+                    {selectedHistoryScan.scientificName && (
+                      <p className="text-zinc-500 italic">{selectedHistoryScan.scientificName}</p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedHistoryScan(null)}
+                    className="text-zinc-400 hover:text-zinc-700 text-lg font-bold px-2 py-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="bg-zinc-50 p-2.5 rounded-lg border border-zinc-200">
+                    <span className="text-zinc-500 block">Calibrated Confidence:</span>
+                    <strong className="text-sm font-black text-emerald-800">{Math.round(selectedHistoryScan.confidence)}%</strong>
+                  </div>
+                  <div className="bg-zinc-50 p-2.5 rounded-lg border border-zinc-200">
+                    <span className="text-zinc-500 block">Severity:</span>
+                    <strong className="text-sm font-black text-zinc-900">{selectedHistoryScan.severity}</strong>
+                  </div>
+                </div>
+
+                {selectedHistoryScan.immediateAction && (
+                  <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl space-y-1">
+                    <strong className="text-amber-950 font-bold block flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-700" />
+                      Immediate Action
+                    </strong>
+                    <p className="text-amber-900 leading-relaxed">{selectedHistoryScan.immediateAction}</p>
+                  </div>
+                )}
+
+                {selectedHistoryScan.preventionAdvice && (
+                  <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl space-y-1">
+                    <strong className="text-emerald-950 font-bold block flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                      Preventive Agronomic Measures
+                    </strong>
+                    <p className="text-emerald-900 leading-relaxed">{selectedHistoryScan.preventionAdvice}</p>
+                  </div>
+                )}
+
+                {/* Verified Source & UNVERIFIED Status Disclaimer */}
+                <div className="bg-zinc-50 border border-zinc-200 p-2.5 rounded-xl space-y-1 text-[10px] text-zinc-600">
+                  <div className="flex items-center justify-between">
+                    <span>Remedy Review Status:</span>
+                    <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-bold">
+                      UNVERIFIED
+                    </span>
+                  </div>
+                  <p className="italic text-zinc-500">
+                    All treatments marked UNVERIFIED pending formal review by designated agronomist. (Source: TNAU/ICAR agronomic compendium).
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-zinc-100 text-[10px] text-zinc-500">
+                  <span>Scanned on {new Date(selectedHistoryScan.scannedAt).toLocaleString()}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedHistoryScan(null)}
+                    className="px-4 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-900 text-white font-semibold text-xs"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

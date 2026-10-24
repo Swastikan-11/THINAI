@@ -10,7 +10,8 @@ import {
   Trees, Wifi, WifiOff, Bot, Phone, ChevronDown, BarChart2,
   Microscope, RefreshCw, X, CheckCircle, AlertCircle, Edit3,
   Trash2, MapPin, Landmark, Clock, Plus, ThumbsUp, ThumbsDown, BookOpen, Layers,
-  Compass, Share2, Sparkles, Filter, CheckSquare, ShieldAlert, Sliders, Wrench
+  Compass, Share2, Sparkles, Filter, CheckSquare, ShieldAlert, Sliders, Wrench,
+  FileSpreadsheet
 } from "lucide-react";
 import {
   AreaChart, Area, LineChart, Line, BarChart, Bar,
@@ -52,12 +53,13 @@ import {
   fetchFarmWeather,
   getCurrentLocationCoordinates,
   WeatherData,
-  evaluateSpraySafety
+  evaluateSpraySafety,
+  evaluateIrrigationAdvice
 } from "../services/weatherService";
 import {
-  getMarketIntelligence,
-  COMMODITY_MARKETS,
-  MarketCommodity,
+  fetchLiveAgmarknetPrice,
+  AgmarknetPriceResult,
+  COMMODITY_KEYS,
   getDashboardMarketPrice
 } from "../services/marketService";
 import { ARFI_CONFIG } from "../config/arfiConfig";
@@ -97,15 +99,14 @@ import { CropDoctorScreen } from "./components/CropDoctorScreen";
 import { CommunityScreen } from "./components/CommunityScreen";
 import { FieldAccuracyScreen } from "./components/FieldAccuracyScreen";
 import { OfficerDashboardScreen } from "./components/OfficerDashboardScreen";
+import { FarmRecordsScreen } from "./components/FarmRecordsScreen";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
   | "splash" | "onboarding" | "login" | "register"
-  | "home" | "community" | "mycrop" | "doctor" | "disease" | "weather"
+  | "home" | "community" | "mycrop" | "doctor" | "disease"
   | "market" | "schemes" | "services" | "library" | "calculator" | "fieldAccuracy" | "officerDashboard"
-  | "ai" | "voice" | "reports" | "notifications"
-  | "profile" | "editprofile" | "settings" | "help"
-  | "whatif";
+  | "ai" | "profile" | "editprofile" | "whatif" | "records";
 
 type ToastType = "success" | "error" | "info" | "warning";
 
@@ -204,7 +205,8 @@ function BkHdr({
     <div className="flex items-center justify-between px-4 py-3 select-none">
       <div className="flex items-center gap-3">
         <button onClick={() => navigate(dest)}
-          className="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
+          aria-label="Back"
+          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all active:scale-90 cursor-pointer"
           style={{ background: light ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.06)" }}>
           <ArrowLeft size={18} color={light ? "#fff" : TX} />
         </button>
@@ -229,7 +231,7 @@ function BNav({
   const getTab = (s: Screen) => {
     if (["home", "whatif", "mycrop", "doctor", "disease"].includes(s)) return "home";
     if (s === "community") return "community";
-    if (["services", "schemes", "calculator", "library", "market", "weather"].includes(s)) return "services";
+    if (["services", "schemes", "calculator", "library", "market", "weather", "records"].includes(s)) return "services";
     return "profile";
   };
 
@@ -542,6 +544,7 @@ function HomeScreen({
   const [showAlternative, setShowAlternative] = useState(false);
   const [whyExpanded, setWhyExpanded] = useState(true);
   const [showARFIDrawer, setShowARFIDrawer] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [diagnosisConfirmed, setDiagnosisConfirmed] = useState(false);
 
   const sprayAdvisory = evaluateSpraySafety(weather);
@@ -572,19 +575,21 @@ function HomeScreen({
             {/* 1-Tap Instant Language Toggle: [ EN | தமிழ் ] (Plantix/Uzhavan Pattern) */}
             <button
               onClick={onToggleLanguage || onOpenLangModal}
-              className="min-h-[42px] px-3.5 py-1.5 rounded-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
+              className="min-h-[44px] px-3.5 py-1.5 rounded-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
               title="Instant Language Switch (English / தமிழ்)"
-              aria-label="Toggle language between English and Tamil"
+              aria-label="EN | தமிழ் - Toggle language"
             >
               <Globe size={14} className="text-white shrink-0" />
               <span className={lang === "English" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>EN</span>
               <span className="text-white/40">|</span>
               <span className={lang === "Tamil" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>தமிழ்</span>
             </button>
-            <button onClick={() => navigate("notifications")}
-              className="w-10 h-10 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
-              <Bell size={16} color="#fff" />
-              <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: ACC }} />
+            <button
+              onClick={() => setShowNotifications(true)}
+              aria-label={lang === "Tamil" ? "அறிவிப்புகள்" : "Notifications"}
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
+              <Bell size={18} color="#fff" />
+              <div className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ background: ACC }} />
             </button>
           </div>
         </div>
@@ -592,6 +597,7 @@ function HomeScreen({
         <div className="flex justify-between items-start mt-1">
           <div>
             <div className="flex items-center gap-1.5">
+              <h1 className="sr-only">THINAI Agriculture Operating System</h1>
               <span className="text-xs font-medium text-white/80">{lang === "Tamil" ? "வணக்கம்," : "Welcome,"}</span>
             </div>
             <h2 className="font-black text-2xl text-white mt-0.5">{user.name || (lang === "Tamil" ? "விவசாயி" : "Farmer")} 👋</h2>
@@ -690,7 +696,7 @@ function HomeScreen({
                 <CloudRain size={16} />
               </div>
               <div>
-                <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-700">
                   {lang === "Tamil" ? "வானிலை & மருந்து தெளிப்பு வழிகாட்டல் (Open-Meteo ~11 கிமீ கிரிட்)" : "Weather & Spray Advisory (Open-Meteo ~11 km grid)"}
                 </div>
                 <div className="text-xs font-bold text-gray-900">
@@ -712,20 +718,20 @@ function HomeScreen({
 
           <div className="grid grid-cols-4 gap-2 my-2 py-2 border-y border-black/5 text-center text-xs">
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "மழை வாய்ப்பு" : "Rain Prob"}</div>
-              <div className="font-bold text-gray-800">{weather.rainProbability}%</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "மழை வாய்ப்பு" : "Rain Prob"}</div>
+              <div className="font-bold text-gray-900">{weather.rainProbability}%</div>
             </div>
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "மழை அளவு" : "Rain 48h"}</div>
-              <div className="font-bold text-gray-800">{weather.rainfallMmExpected} mm</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "மழை அளவு" : "Rain 48h"}</div>
+              <div className="font-bold text-gray-900">{weather.rainfallMmExpected} mm</div>
             </div>
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "காற்று வேகம்" : "Wind"}</div>
-              <div className="font-bold text-gray-800">{weather.windSpeed} km/h</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "காற்று வேகம்" : "Wind"}</div>
+              <div className="font-bold text-gray-900">{weather.windSpeed} km/h</div>
             </div>
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "ஈரப்பதம்" : "Humidity"}</div>
-              <div className="font-bold text-gray-800">{weather.humidity}%</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "ஈரப்பதம்" : "Humidity"}</div>
+              <div className="font-bold text-gray-900">{weather.humidity}%</div>
             </div>
           </div>
 
@@ -735,9 +741,10 @@ function HomeScreen({
             </span>
             <button 
               onClick={onRefreshWeather}
-              className="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5 shrink-0 ml-2 cursor-pointer"
+              aria-label={`${weather.lastUpdatedLabel || "Live"} - Refresh live weather forecast`}
+              className="min-h-[44px] px-2 py-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 shrink-0 ml-2 cursor-pointer"
             >
-              <RefreshCw size={10} />
+              <RefreshCw size={12} />
               <span>{weather.lastUpdatedLabel || "Live"}</span>
             </button>
           </div>
@@ -942,13 +949,21 @@ function HomeScreen({
             <span className="text-[10px] text-zinc-500 font-mono">Decision & Field Tools</span>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center text-xs">
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 text-center text-xs">
             <button
-              onClick={() => navigate("mycrop")}
+              onClick={() => navigate("records")}
               className="p-2 rounded-xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200 transition-all flex flex-col items-center gap-1 active:scale-95"
             >
-              <Sprout className="w-5 h-5 text-emerald-700" />
-              <span className="font-bold text-[11px] text-emerald-950">My Crop</span>
+              <FileSpreadsheet className="w-5 h-5 text-emerald-700" />
+              <span className="font-bold text-[11px] text-emerald-950">Records</span>
+            </button>
+
+            <button
+              onClick={() => navigate("mycrop")}
+              className="p-2 rounded-xl bg-teal-50/70 hover:bg-teal-100/80 border border-teal-200 transition-all flex flex-col items-center gap-1 active:scale-95"
+            >
+              <Sprout className="w-5 h-5 text-teal-700" />
+              <span className="font-bold text-[11px] text-teal-950">My Crop</span>
             </button>
 
             <button
@@ -1102,12 +1117,29 @@ function HomeScreen({
               </button>
             </div>
           </div>
-          {/* Spray-Safety Weather Advisory (Phase 3.2 - Rule-Based) */}
+          {/* Offline Cache Age Banner */}
+          {(weather.status === "CACHED" || weather.isOfflineCached) && (
+            <div className="mt-2.5 p-2 rounded-xl bg-amber-50 border border-amber-300 text-[11px] text-amber-950 flex items-center justify-between">
+              <div className="flex items-center gap-1.5 font-bold">
+                <WifiOff className="w-3.5 h-3.5 text-amber-700" />
+                <span>
+                  {lang === "Tamil"
+                    ? `ஆஃப்லைன் முந்தைய முன்னறிவிப்பு (வயது: ${weather.cacheAgeText || weather.lastUpdatedLabel})`
+                    : `Offline Cached Forecast (Age: ${weather.cacheAgeText || weather.lastUpdatedLabel})`}
+                </span>
+              </div>
+              <span className="text-[10px] font-mono font-bold bg-amber-200/80 px-1.5 py-0.5 rounded">
+                Dexie Cache
+              </span>
+            </div>
+          )}
+
+          {/* Spray-Safety Weather Advisory (Rule-Based with Explicit Rule Shown) */}
           {(() => {
             const sprayAdvisory = evaluateSpraySafety(weather);
             const isTa = lang === "Tamil";
             return (
-              <div className={`mt-3 p-2.5 rounded-xl border text-xs flex flex-col gap-1 transition-all ${
+              <div className={`mt-2.5 p-2.5 rounded-xl border text-xs flex flex-col gap-1 transition-all ${
                 sprayAdvisory.badgeColor === "emerald"
                   ? "bg-emerald-50/90 border-emerald-200 text-emerald-950"
                   : sprayAdvisory.badgeColor === "amber"
@@ -1122,16 +1154,60 @@ function HomeScreen({
                     <span>{isTa ? sprayAdvisory.statusTextTamil : sprayAdvisory.statusText}</span>
                   </div>
                   <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-white/80 border border-current font-bold">
-                    Rule-Based Advisory
+                    Spray Rule
                   </span>
                 </div>
                 <p className="text-[11px] opacity-90 leading-tight">
                   {isTa ? sprayAdvisory.reasonTamil : sprayAdvisory.reason}
                 </p>
+                <div className="mt-0.5 p-1.5 rounded-lg bg-black/5 text-[10px] font-mono border border-black/10">
+                  <strong className="block text-zinc-800">{isTa ? "பயன்படுத்தப்பட்ட விதி:" : "Rule Applied:"}</strong>
+                  <span>{isTa ? sprayAdvisory.ruleUsedTamil : sprayAdvisory.ruleUsed}</span>
+                </div>
                 <div className="flex items-center gap-3 text-[10px] opacity-75 font-mono pt-0.5">
                   <span>Wind: {sprayAdvisory.windSpeed} km/h</span>
                   <span>Rain Prob: {sprayAdvisory.rainProbability}%</span>
                   <span>Temp: {sprayAdvisory.temperature}°C</span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Irrigation Weather Advisory (Rule-Based with Explicit Rule Shown) */}
+          {(() => {
+            const irrigationAdvisory = evaluateIrrigationAdvice(weather, user.soilMoistureStatus || "optimal");
+            const isTa = lang === "Tamil";
+            return (
+              <div className={`mt-2.5 p-2.5 rounded-xl border text-xs flex flex-col gap-1 transition-all ${
+                irrigationAdvisory.badgeColor === "emerald"
+                  ? "bg-emerald-50/90 border-emerald-200 text-emerald-950"
+                  : irrigationAdvisory.badgeColor === "blue"
+                  ? "bg-blue-50/90 border-blue-200 text-blue-950"
+                  : irrigationAdvisory.badgeColor === "amber"
+                  ? "bg-amber-50/90 border-amber-200 text-amber-950"
+                  : "bg-rose-50/90 border-rose-200 text-rose-950"
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 font-bold">
+                    <span className="text-sm">
+                      {irrigationAdvisory.action === "IRRIGATE_NOW" ? "💧" : "🛑"}
+                    </span>
+                    <span>{isTa ? irrigationAdvisory.titleTamil : irrigationAdvisory.title}</span>
+                  </div>
+                  <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-white/80 border border-current font-bold">
+                    Irrigation Rule
+                  </span>
+                </div>
+                <p className="text-[11px] opacity-90 leading-tight">
+                  {isTa ? irrigationAdvisory.reasonTamil : irrigationAdvisory.reason}
+                </p>
+                <div className="mt-0.5 p-1.5 rounded-lg bg-black/5 text-[10px] font-mono border border-black/10">
+                  <strong className="block text-zinc-800">{isTa ? "பயன்படுத்தப்பட்ட விதி:" : "Rule Applied:"}</strong>
+                  <span>{isTa ? irrigationAdvisory.ruleUsedTamil : irrigationAdvisory.ruleUsed}</span>
+                </div>
+                <div className="flex items-center gap-3 text-[10px] opacity-75 font-mono pt-0.5">
+                  <span>Rain 48h: {irrigationAdvisory.rainExpectedMm} mm</span>
+                  <span>Soil: {user.soilMoistureStatus || "optimal"}</span>
                 </div>
               </div>
             );
@@ -1384,6 +1460,64 @@ function HomeScreen({
             <span className="text-[10px] text-blue-800">Mandi Price Benchmarks</span>
           </button>
         </div>
+
+{/* Agronomic Notifications Modal (Phase 3 Feature 6) */}
+        {showNotifications && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl w-full max-w-sm p-4 space-y-3 shadow-xl">
+              <div className="flex items-center justify-between border-b pb-2">
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-emerald-700" />
+                  <h3 className="text-sm font-bold text-gray-900">
+                    {lang === "Tamil" ? "பண்ணை அறிவிப்புகள்" : "Farm Advisories & Alerts"}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowNotifications(false)}
+                  aria-label="Close notifications modal"
+                  className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center">
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="space-y-2 max-h-80 overflow-y-auto text-xs">
+                {/* Spray Alert */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-gray-800">
+                      {lang === "Tamil" ? "தெளிப்பு பாதுகாப்பு ஆலோசனை" : "Spray Safety Advisory"}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      sprayAdvisory.isSafe ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                    }`}>
+                      {sprayAdvisory.isSafe ? "SAFE TO SPRAY" : "AVOID SPRAYING"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-600">{lang === "Tamil" ? sprayAdvisory.reasonTamil : sprayAdvisory.reason}</p>
+                </div>
+
+                {/* Weather Alert */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-gray-800">
+                      {lang === "Tamil" ? "வானிலை முன்னறிவிப்பு" : "Weather Condition"}
+                    </span>
+                    <span className="text-[10px] text-gray-500">{weather.locationName || user.district || "Farm"}</span>
+                  </div>
+                  <p className="text-[11px] text-gray-600">
+                    {weather.temperature}°C, {weather.humidity}% humidity, {weather.condition}. Wind: {weather.windSpeed} km/h.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowNotifications(false)}
+                className="w-full py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs">
+                {lang === "Tamil" ? "சரி" : "Dismiss"}
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
@@ -1848,13 +1982,15 @@ function AIScreen({
       <div className="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
         <button
           onClick={handleVoiceToggle}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+          aria-label={isListening ? "Stop voice listening" : "Start voice listening"}
+          className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all ${
             isListening ? "bg-red-500 text-white animate-pulse" : "bg-gray-100 text-gray-700"
           }`}>
           {isListening ? <MicOff size={18} /> : <Mic size={18} />}
         </button>
         <input
           type="text"
+          aria-label={t("askAnything", lang)}
           placeholder={t("askAnything", lang)}
           value={input}
           onChange={e => setInput(e.target.value)}
@@ -1863,8 +1999,9 @@ function AIScreen({
         />
         <button
           onClick={() => handleSend()}
-          className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center active:scale-95 shadow-xs">
-          <Send size={16} />
+          aria-label="Send query"
+          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-green-700 text-white flex items-center justify-center active:scale-95 shadow-xs">
+          <Send size={18} />
         </button>
       </div>
     </div>
@@ -2197,11 +2334,48 @@ function EditProfileScreen({
 // ─── AUTH SCREENS IMPORTED FROM AuthScreens.tsx (REAL FIREBASE & ONBOARDING) ──
 
 
-// ─── MARKET SCREEN (PRIORITY 4 & 7: LIVE VS STATIC REFERENCE) ────────────────
+// ─── MARKET SCREEN (PRIORITY 4: REAL AGMARKNET API & HONEST PRICE STATES) ───
 function MarketScreen({ navigate, user }: { navigate: (s: Screen) => void; user: UserState }) {
   const [selectedCrop, setSelectedCrop] = useState<string>("paddy");
-  const commodity = COMMODITY_MARKETS[selectedCrop] || COMMODITY_MARKETS.paddy;
+  const [priceData, setPriceData] = useState<AgmarknetPriceResult | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const lang = user.language;
+
+  const loadPrice = useCallback(async (cropKey: string) => {
+    setIsLoading(true);
+    try {
+      const res = await fetchLiveAgmarknetPrice(cropKey, user.district || "Coimbatore");
+      setPriceData(res);
+    } catch {
+      setPriceData({
+        isAvailable: false,
+        status: "PRICE_UNAVAILABLE",
+        commodity: cropKey,
+        district: user.district || "Coimbatore",
+        state: "Tamil Nadu",
+        source: "data.gov.in Agmarknet Registry",
+        lastUpdatedTime: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        unavailableReason: "Network request failed. No cached price found."
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user.district]);
+
+  useEffect(() => {
+    loadPrice(selectedCrop);
+  }, [selectedCrop, loadPrice]);
+
+  // Official statutory MSP benchmarks published by CACP / Government of India Gazette 2024-25
+  const statutoryMSP: Record<string, { price?: number; note: string }> = {
+    paddy: { price: 2300, note: "Paddy (Common) GoI Kharif Gazette 2024-25" },
+    cotton: { price: 7121, note: "Cotton (Medium Staple) GoI Kharif Gazette 2024-25" },
+    maize: { price: 2225, note: "Maize GoI Kharif Gazette 2024-25" },
+    tomato: { note: "Perishable horticulture crop: No statutory MSP fixed under CACP mandate" },
+    chilli: { note: "Spices/horticulture crop: Market Intervention Scheme (MIS) upon State notification" }
+  };
+
+  const currentMsp = statutoryMSP[selectedCrop];
 
   return (
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
@@ -2215,102 +2389,163 @@ function MarketScreen({ navigate, user }: { navigate: (s: Screen) => void; user:
         <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-start gap-2">
           <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
           <p>
-            <strong>Transparent Market Data:</strong> Daily auction rates below represent verified local APMC yard trading values, clearly separated from statutory Government MSP benchmarks.
+            <strong>Official data.gov.in Agmarknet Feed:</strong> Live auction rates are queried directly from the Government of India Open Data API (Resource: <code>9ef84268...</code>). Zero synthetic or simulated prices.
           </p>
         </div>
 
-        {/* Crop Selector */}
-        <div className="flex gap-2">
-          {Object.keys(COMMODITY_MARKETS).map(k => (
+        {/* Commodity Selector */}
+        <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {COMMODITY_KEYS.map(c => (
             <button
-              key={k}
-              onClick={() => setSelectedCrop(k)}
-              className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${
-                selectedCrop === k ? "bg-blue-700 text-white border-blue-700 shadow-xs" : "bg-white text-gray-700 border-gray-200"
+              key={c.id}
+              onClick={() => setSelectedCrop(c.id)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+                selectedCrop === c.id ? "bg-blue-700 text-white border-blue-700 shadow-xs" : "bg-white text-gray-700 border-gray-200"
               }`}>
-              {COMMODITY_MARKETS[k].cropName.split(" ")[0]}
+              {lang === "Tamil" ? c.labelTa : c.labelEn.split(" ")[0]}
             </button>
           ))}
         </div>
 
-        {/* 1. LIVE APMC PRICE CARD */}
-        <Card>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-              Local APMC Yard Price
-            </span>
-            <DataBadge status={commodity.status as DataStatus} detail={commodity.nearbyMandi.split(" ")[0]} />
-          </div>
+        {/* Refresh & District Row */}
+        <div className="flex items-center justify-between text-xs text-gray-600 px-1">
+          <span className="flex items-center gap-1">
+            <MapPin size={12} className="text-blue-600" />
+            Mandi District: <strong className="text-gray-900">{user.district || "Coimbatore"}</strong>
+          </span>
+          <button
+            onClick={() => loadPrice(selectedCrop)}
+            disabled={isLoading}
+            className="flex items-center gap-1 text-blue-700 hover:text-blue-900 font-semibold text-xs py-1 px-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors">
+            <RefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
+            {lang === "Tamil" ? "புதுப்பி" : "Refresh"}
+          </button>
+        </div>
 
-          <div className="flex justify-between items-start">
+        {/* 1. AGMARKNET PRICE STATUS */}
+        {isLoading ? (
+          <Card>
+            <div className="py-8 flex flex-col items-center justify-center text-center gap-2">
+              <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
+              <p className="text-xs text-gray-500">Querying data.gov.in Agmarknet API...</p>
+            </div>
+          </Card>
+        ) : priceData?.status === "PRICE_UNAVAILABLE" ? (
+          <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-300 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 flex items-center gap-1">
+                <AlertCircle size={11} />
+                PRICE UNAVAILABLE
+              </span>
+              <span className="text-[10px] text-amber-800 font-medium">{priceData.lastUpdatedTime}</span>
+            </div>
+
             <div>
-              <span className="text-xs text-gray-500">{commodity.cropName}</span>
-              <h2 className="text-2xl font-black text-gray-900 mt-0.5">₹{commodity.currentPrice} <span className="text-xs font-normal text-gray-400">/ quintal</span></h2>
-              <div className="text-[11px] text-zinc-500 mt-0.5 flex items-center gap-1">
-                <MapPin size={11} className="text-blue-600" />
-                <span>{commodity.nearbyMandi} ({commodity.mandiDistanceKm} km)</span>
+              <h2 className="text-base font-bold text-gray-900">
+                {lang === "Tamil" ? "நேரடி சந்தை விலை கிடைக்கவில்லை" : "Live Mandi Price Unavailable"}
+              </h2>
+              <p className="text-xs text-gray-700 mt-1 leading-relaxed">
+                {priceData.unavailableReason}
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/70 border border-amber-200 text-[11px] text-gray-600 space-y-1">
+              <div className="flex justify-between">
+                <span>Commodity:</span>
+                <span className="font-semibold text-gray-800">{priceData.commodity}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>District / APMC Yard:</span>
+                <span className="font-semibold text-gray-800">{priceData.district}, Tamil Nadu</span>
+              </div>
+              <div className="flex justify-between">
+                <span>API Endpoint:</span>
+                <span className="font-mono text-[10px] text-gray-500">data.gov.in/resource/9ef84268</span>
               </div>
             </div>
-            <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-green-100 text-green-800">
-              +{commodity.weeklyChangePercent}% (7d)
-            </span>
+
+            <p className="text-[10px] text-amber-900 italic">
+              Note: THINAI strictly displays real government mandi arrival records. If no trading arrivals occurred today or the API key is unconfigured, we display this honest state rather than fabricated rates.
+            </p>
           </div>
+        ) : priceData?.isAvailable ? (
+          <Card>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                {priceData.status === "CACHED" ? "Cached APMC Yard Arrival" : "Live APMC Yard Arrival"}
+              </span>
+              <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                priceData.status === "CACHED" ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
+              }`}>
+                {priceData.status === "CACHED" ? "OFFLINE CACHE" : "LIVE AGMARKNET"}
+              </span>
+            </div>
 
-          <p className="text-xs text-gray-600 mt-2.5 bg-zinc-50 p-2.5 rounded-lg border border-zinc-100">
-            {commodity.marketInsight}
-          </p>
+            <div className="flex justify-between items-start">
+              <div>
+                <span className="text-xs text-gray-500">{priceData.commodity} {priceData.variety ? `(${priceData.variety})` : ""}</span>
+                <h2 className="text-3xl font-black text-gray-900 mt-0.5">
+                  ₹{priceData.modalPricePerQuintal?.toLocaleString("en-IN") || "—"}{" "}
+                  <span className="text-xs font-normal text-gray-400">/ quintal</span>
+                </h2>
+                <div className="text-[11px] text-zinc-500 mt-0.5 flex items-center gap-1">
+                  <MapPin size={11} className="text-blue-600" />
+                  <span>{priceData.market || `${priceData.district} APMC Yard`}</span>
+                </div>
+              </div>
+            </div>
 
-          {/* Chart */}
-          <div className="h-36 mt-3">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={commodity.sevenDayHistory}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis dataKey="day" tick={{ fontSize: 10 }} />
-                <YAxis domain={['auto', 'auto']} tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="price" stroke="#1976D2" strokeWidth={2.5} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+            {/* Min / Max Range */}
+            {(priceData.minPricePerQuintal !== undefined && priceData.maxPricePerQuintal !== undefined) && (
+              <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-zinc-100">
+                <div className="p-2 rounded-lg bg-zinc-50 text-center">
+                  <span className="text-[10px] text-gray-500 block">Minimum Reported</span>
+                  <strong className="text-xs text-gray-800 font-mono">₹{priceData.minPricePerQuintal} / qtl</strong>
+                </div>
+                <div className="p-2 rounded-lg bg-zinc-50 text-center">
+                  <span className="text-[10px] text-gray-500 block">Maximum Reported</span>
+                  <strong className="text-xs text-gray-800 font-mono">₹{priceData.maxPricePerQuintal} / qtl</strong>
+                </div>
+              </div>
+            )}
 
-          <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-2 border-t border-zinc-100 mt-2">
-            <span>Source: {commodity.source}</span>
-            <span>Date: {commodity.lastVerifiedDate}</span>
-          </div>
-        </Card>
+            <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-2 border-t border-zinc-100 mt-2">
+              <span>Arrival Date: {priceData.arrivalDate || "Today"}</span>
+              <span>Updated: {priceData.lastUpdatedTime}</span>
+            </div>
+            <div className="text-[9px] text-zinc-400 mt-1">
+              Source: {priceData.source}
+            </div>
+          </Card>
+        ) : null}
 
-        {/* 2. STATIC REFERENCE PRICE (MSP BENCHMARK) */}
+        {/* 2. STATUTORY MSP BENCHMARK CARD */}
         <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
               <Landmark size={13} className="text-amber-700" />
               Statutory MSP Benchmark
             </span>
-            <DataBadge status="STATIC REFERENCE" detail="CACP / GoI Gazette" />
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+              CACP / GoI Gazette
+            </span>
           </div>
 
-          <div className="flex justify-between items-baseline pt-1">
-            <span className="text-xs font-semibold text-zinc-700">Official Minimum Support Price:</span>
-            <span className="text-base font-extrabold text-amber-950 font-mono">₹{commodity.mspPrice} / quintal</span>
-          </div>
-
-          <div className="text-[11px] text-zinc-600 flex items-center justify-between pt-1">
-            <span>Trading Differential:</span>
-            <strong className="text-emerald-700 font-bold">+₹{commodity.currentPrice - commodity.mspPrice} above MSP</strong>
-          </div>
-        </div>
-
-        {/* 3. Sell / Hold Recommendation */}
-        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200">
-          <span className="text-[10px] font-bold text-emerald-800 uppercase block mb-1">
-            {t("sellHoldSignal", lang)}:
-          </span>
-          <p className="text-xs font-black text-emerald-950">
-            {t("holdRecommendation", lang)}
-          </p>
-          <p className="text-[11px] text-emerald-800 mt-1">
-            Regional procurement arrivals are stabilizing. Favorable pricing window expected over next 7-10 days.
-          </p>
+          {currentMsp?.price ? (
+            <>
+              <div className="flex justify-between items-baseline pt-1">
+                <span className="text-xs font-semibold text-zinc-700">Official Minimum Support Price:</span>
+                <span className="text-base font-extrabold text-amber-950 font-mono">₹{currentMsp.price.toLocaleString("en-IN")} / quintal</span>
+              </div>
+              <div className="text-[11px] text-zinc-600">
+                {currentMsp.note}
+              </div>
+            </>
+          ) : (
+            <div className="text-xs text-zinc-700 pt-1">
+              {currentMsp?.note || "Horticultural crop: Price governed by mandi supply-demand without statutory procurement guarantee."}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -2723,6 +2958,7 @@ export default function App() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            role="status" aria-live="polite"
             className={`fixed top-4 left-4 right-4 z-50 p-3 rounded-2xl text-xs font-bold text-white shadow-lg text-center ${
               toast.type === "error" ? "bg-red-600" : toast.type === "warning" ? "bg-amber-600" : "bg-green-700"
             }`}>
@@ -2735,7 +2971,7 @@ export default function App() {
       {screen !== "splash" && <OfflineActiveBanner onOpenPendingSync={() => setShowPendingSyncModal(true)} />}
 
       {/* Screen Router */}
-      <div className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden" role="main">
         {screen === "splash" && (
           <div className="h-full flex flex-col items-center justify-center p-6 text-center select-none"
             style={{ background: `linear-gradient(160deg, ${PD} 0%, ${P} 100%)` }}>
@@ -2875,14 +3111,31 @@ export default function App() {
           </div>
         )}
 
+        {screen === "records" && (
+          <div className="flex flex-col h-full select-none" style={{ background: BG }}>
+            <div className="flex-1 overflow-hidden">
+              <FarmRecordsScreen
+                userId={firebaseUser?.uid || "local-user"}
+                farmerName={user.name}
+                language={user.language}
+                primaryCrop={user.primaryCrop}
+                cropVariety={user.cropVariety}
+                farmSize={user.farmSize}
+                soilType={user.soilType}
+                onBack={() => setScreen("home")}
+              />
+            </div>
+          </div>
+        )}
+
         {screen === "library" && (
           <div className="flex flex-col h-full select-none" style={{ background: BG }}>
             <div style={{ background: "linear-gradient(160deg, #004D40, #00796B)", borderRadius: "0 0 24px 24px" }}>
               <SBar light />
-              <BkHdr title="Crop Health Library" navigate={setScreen} light />
+              <BkHdr title={user.language === "Tamil" ? "பயிர் நலன் & நோய் களஞ்சியம்" : "Crop Health Library"} navigate={setScreen} light />
             </div>
             <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: "none" }}>
-              <CropHealthLibrary />
+              <CropHealthLibrary language={user.language} onBack={() => setScreen("doctor")} />
             </div>
           </div>
         )}
@@ -2994,10 +3247,10 @@ export default function App() {
             showToast={showToast}
           />
         )}
-      </div>
+      </main>
 
       {/* Persistent Bottom Navigation */}
-      {["home", "community", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile"].includes(screen) && (
+      {["home", "community", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile", "records"].includes(screen) && (
         <BNav screen={screen} navigate={setScreen} lang={user.language} />
       )}
 

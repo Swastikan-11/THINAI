@@ -67,10 +67,13 @@ export function FertilizerCalculatorScreen({
 
   const standard = CROP_NUTRIENT_STANDARDS[crop] || CROP_NUTRIENT_STANDARDS.paddy;
 
+  // Safe positive acreage clamp to prevent negative bags or invalid negative costs
+  const safeArea = Math.max(0.1, isNaN(area) || area <= 0 ? 0.1 : area);
+
   // Total nutrients needed for the farm plot (kg)
-  const totalN_needed = Math.round(standard.recommendedN * area * soilMultiplier);
-  const totalP_needed = Math.round(standard.recommendedP * area * soilMultiplier);
-  const totalK_needed = Math.round(standard.recommendedK * area * soilMultiplier);
+  const totalN_needed = Math.round(standard.recommendedN * safeArea * soilMultiplier);
+  const totalP_needed = Math.round(standard.recommendedP * safeArea * soilMultiplier);
+  const totalK_needed = Math.round(standard.recommendedK * safeArea * soilMultiplier);
 
   // Fertilizer Quantities Calculation:
   // 1. DAP provides all P2O5 (46% P, 18% N)
@@ -140,10 +143,13 @@ export function FertilizerCalculatorScreen({
             <input
               type="number"
               step="0.5"
-              min="0.25"
-              max="50"
+              min="0.1"
+              max="500"
               value={area}
-              onChange={(e) => setArea(parseFloat(e.target.value) || 1)}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                setArea(isNaN(val) ? 0.1 : Math.max(0.1, val));
+              }}
               className="w-full p-2 rounded-lg border border-zinc-300 bg-white font-medium text-zinc-900"
             />
           </div>

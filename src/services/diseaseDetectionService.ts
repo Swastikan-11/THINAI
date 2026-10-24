@@ -39,6 +39,15 @@ export interface DiseaseDetectionResult {
   calibratedConfidence?: number;
   rawConfidence?: number;
   temperatureApplied?: number;
+  sourceDocument?: {
+    title: string;
+    url: string;
+    section: string;
+  };
+  productLabelClaim?: string;
+  reviewerName?: string;
+  reviewerDate?: string;
+  verificationStatus?: string;
 }
 
 const STORAGE_KEY = "thinai_disease_history";
@@ -405,7 +414,12 @@ export async function detectCropDisease(
       tier: neuralResult.tier || (isTier1 ? "TIER_1_CONFIDENT" : "TIER_2_MODERATE"),
       calibratedConfidence: neuralResult.calibratedConfidence,
       rawConfidence: neuralResult.rawConfidence,
-      temperatureApplied: neuralResult.temperatureApplied
+      temperatureApplied: neuralResult.temperatureApplied,
+      sourceDocument: neuralResult.sourceDocument,
+      productLabelClaim: neuralResult.productLabelClaim,
+      reviewerName: neuralResult.reviewerName,
+      reviewerDate: neuralResult.reviewerDate,
+      verificationStatus: neuralResult.verificationStatus
     };
     saveDiseaseScanToHistory(modelResult);
     return modelResult;

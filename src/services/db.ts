@@ -165,10 +165,58 @@ export interface FarmerVerdictRecord {
   synced: boolean;
 }
 
+export interface LocalPlot {
+  id: string;
+  userId: string;
+  farmId: string;
+  name: string;
+  areaAcres: number;
+  soilType: string;
+  currentCrop: string;
+  cropVariety?: string;
+  sowingDate?: string; // YYYY-MM-DD
+  cropStage?: string;
+  expectedHarvestDate?: string;
+  status: "ACTIVE" | "FALLOW" | "HARVESTED";
+  createdAt: string;
+  updatedAt: string;
+  synced: boolean;
+}
+
+export interface LocalSprayLog {
+  id: string;
+  userId: string;
+  plotId: string;
+  plotName: string;
+  date: string; // YYYY-MM-DD
+  sprayType: "PESTICIDE" | "FUNGICIDE" | "FERTILIZER" | "BIO_INPUT";
+  productName: string;
+  dosage: string;
+  targetPestDisease?: string;
+  operator?: string;
+  weatherNotes?: string;
+  notes?: string;
+  createdAt: string;
+  synced: boolean;
+}
+
+export interface LocalFarmExpense {
+  id: string;
+  userId: string;
+  plotId?: string;
+  plotName?: string;
+  date: string; // YYYY-MM-DD
+  category: "SEEDS" | "FERTILIZER" | "PESTICIDE" | "LABOR" | "MACHINERY" | "IRRIGATION" | "OTHER";
+  amountRs: number;
+  description: string;
+  createdAt: string;
+  synced: boolean;
+}
+
 export interface SyncQueueItem {
   id?: number;
   userId: string;
-  entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation" | "post" | "verdict";
+  entity: "profile" | "farm" | "field" | "soil" | "feedback" | "scan" | "recommendation" | "post" | "verdict" | "plot" | "spray_log" | "expense";
   action: "create" | "update" | "delete";
   clientId: string;
   payload: any;
@@ -181,6 +229,9 @@ export class ThinaiDatabase extends Dexie {
   profiles!: Table<LocalProfile, string>;
   farms!: Table<LocalFarm, string>;
   fields!: Table<LocalField, string>;
+  plots!: Table<LocalPlot, string>;
+  sprayLogs!: Table<LocalSprayLog, string>;
+  farmExpenses!: Table<LocalFarmExpense, string>;
   soilObservations!: Table<SoilObservation, string>;
   feedbacks!: Table<LocalFeedback, string>;
   scans!: Table<LocalScan, string>;
@@ -208,6 +259,11 @@ export class ThinaiDatabase extends Dexie {
       cachedARFI: "id, userId, fieldId, evaluatedAt",
       cachedSchemes: "id, category",
       syncQueue: "++id, userId, entity, clientId, timestamp, status"
+    });
+    this.version(4).stores({
+      plots: "id, userId, farmId, currentCrop, sowingDate, updatedAt",
+      sprayLogs: "id, userId, plotId, date, sprayType, createdAt",
+      farmExpenses: "id, userId, plotId, date, category, createdAt"
     });
   }
 }

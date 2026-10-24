@@ -43,36 +43,7 @@ export interface EquipmentListing {
   isSample?: boolean;
 }
 
-const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [
-  {
-    id: "sample-p2p-1",
-    equipmentName: "Mahindra 575 DI (45 HP) + Rotavator",
-    model: "45 HP with Paddy Cage Wheels",
-    ownerName: "Sample Owner / மாதிரி உரிமையாளர்",
-    phone: "Contact via App",
-    village: "Thondamuthur",
-    district: "Coimbatore",
-    ratePerDay: "₹600 / hour (Driver included)",
-    availableDates: "Demo Reference Only",
-    icon: "🚜",
-    consentPhoneShare: false,
-    isSample: true
-  },
-  {
-    id: "sample-p2p-2",
-    equipmentName: "VST Shakti 130 DI Power Tiller",
-    model: "13 HP Multi-Speed Wet Tiller",
-    ownerName: "Sample Owner / மாதிரி உரிமையாளர்",
-    phone: "Contact via App",
-    village: "Kinathukadavu",
-    district: "Coimbatore",
-    ratePerDay: "₹350 / hour",
-    availableDates: "Demo Reference Only",
-    icon: "⚙️",
-    consentPhoneShare: false,
-    isSample: true
-  }
-];
+const DEFAULT_P2P_EQUIPMENT: EquipmentListing[] = [];
 
 
 export function FarmServicesScreen({
@@ -549,73 +520,82 @@ export function FarmServicesScreen({
               </div>
 
               {/* Equipment Listings Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {allEquipmentListings.map((item) => (
-                  <div key={item.id} className="bg-white rounded-xl border border-zinc-200 p-4 shadow-xs flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-start justify-between gap-2 mb-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{item.icon}</span>
-                          <div>
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <h4 className="font-bold text-sm text-zinc-900 leading-snug">{item.equipmentName}</h4>
-                              {item.isSample && (
-                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                                  SAMPLE / மாதிரி
-                                </span>
-                              )}
+              {allEquipmentListings.length === 0 ? (
+                <div className="p-8 rounded-2xl bg-white border border-dashed border-zinc-300 text-center space-y-2">
+                  <Wrench className="w-8 h-8 text-zinc-400 mx-auto" />
+                  <h4 className="text-xs font-bold text-zinc-800">
+                    {language === "Tamil" ? "பதிவு செய்யப்பட்ட கருவிகள் எதுவும் இல்லை" : "No Peer Equipment Registered in This Block"}
+                  </h4>
+                  <p className="text-[11px] text-zinc-500 max-w-sm mx-auto leading-relaxed">
+                    {language === "Tamil"
+                      ? "உங்கள் டிராக்டர் அல்லது கருவிகளை சக விவசாயிகளுடன் பகிர்ந்துகொள்ள மேலே உள்ள '+ கருவியை பதிவு செய்க' பொத்தானை அழுத்தவும்."
+                      : "Share your tractor or implements with fellow farmers by tapping '+ Post Equipment' above, or view Government Custom Hiring Centres (CHC) above."}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {allEquipmentListings.map((item) => (
+                    <div key={item.id} className="bg-white rounded-xl border border-zinc-200 p-4 shadow-xs flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{item.icon}</span>
+                            <div>
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <h4 className="font-bold text-sm text-zinc-900 leading-snug">{item.equipmentName}</h4>
+                              </div>
+                              <span className="text-[11px] text-zinc-500 font-medium">Model: {item.model}</span>
                             </div>
-                            <span className="text-[11px] text-zinc-500 font-medium">Model: {item.model}</span>
+                          </div>
+                          <span className="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded whitespace-nowrap">
+                            {item.ratePerDay}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5 text-xs text-zinc-600 my-2.5">
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                            <span>{item.village}, {item.district}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-zinc-500 text-[11px]">
+                            <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                            <span>Available: {item.availableDates}</span>
                           </div>
                         </div>
-                        <span className="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded whitespace-nowrap">
-                          {item.ratePerDay}
-                        </span>
                       </div>
 
-                      <div className="space-y-1.5 text-xs text-zinc-600 my-2.5">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                          <span>{item.village}, {item.district}</span>
+                      <div>
+                        <div className="bg-zinc-50 rounded-lg p-2.5 border border-zinc-200 text-xs flex items-center justify-between mt-2">
+                          <div>
+                            <span className="text-[10px] text-zinc-500 block">
+                              {language === "Tamil" ? "உரிமையாளர்" : "Farmer Owner"}
+                            </span>
+                            <strong className="text-zinc-800">{item.ownerName}</strong>
+                          </div>
+                          {auth.currentUser && item.phone && item.phone !== "Contact via App" ? (
+                            <a
+                              href={`tel:${item.phone}`}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs active:scale-95 transition-transform"
+                            >
+                              <Phone className="w-3.5 h-3.5" />
+                              <span>{language === "Tamil" ? "அழைக்க" : "Call Farmer"}</span>
+                            </a>
+                          ) : (
+                            <span className="text-[10px] font-semibold text-zinc-500 bg-zinc-200/80 px-2 py-1 rounded-md">
+                              {language === "Tamil" ? "உள்நுழைந்து அழைக்கவும்" : "Sign in to call"}
+                            </span>
+                          )}
                         </div>
-                        <div className="flex items-center gap-1.5 text-zinc-500 text-[11px]">
-                          <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                          <span>Available: {item.availableDates}</span>
+
+                        <div className="text-[10px] text-zinc-400 pt-2 flex items-center justify-between border-t border-zinc-100 mt-2">
+                          <span>Direct Farmer Rental</span>
+                          <span>Verified Mobile</span>
                         </div>
                       </div>
                     </div>
-
-                    <div>
-                      <div className="bg-zinc-50 rounded-lg p-2.5 border border-zinc-200 text-xs flex items-center justify-between mt-2">
-                        <div>
-                          <span className="text-[10px] text-zinc-500 block">
-                            {language === "Tamil" ? "உரிமையாளர்" : "Farmer Owner"}
-                          </span>
-                          <strong className="text-zinc-800">{item.ownerName}</strong>
-                        </div>
-                        {auth.currentUser && item.phone && item.phone !== "Contact via App" ? (
-                          <a
-                            href={`tel:${item.phone}`}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs active:scale-95 transition-transform"
-                          >
-                            <Phone className="w-3.5 h-3.5" />
-                            <span>{language === "Tamil" ? "அழைக்க" : "Call Farmer"}</span>
-                          </a>
-                        ) : (
-                          <span className="text-[10px] font-semibold text-zinc-500 bg-zinc-200/80 px-2 py-1 rounded-md">
-                            {language === "Tamil" ? "உள்நுழைந்து அழைக்கவும்" : "Sign in to call"}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="text-[10px] text-zinc-400 pt-2 flex items-center justify-between border-t border-zinc-100 mt-2">
-                        <span>Direct Farmer Rental</span>
-                        <span>Verified Mobile</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

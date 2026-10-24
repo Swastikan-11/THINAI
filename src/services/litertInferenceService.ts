@@ -54,6 +54,15 @@ export interface NeuralInferenceResult {
   chemicalTreatment: string[];
   preventiveMeasures: string[];
   tipsForRetake?: string[];
+  sourceDocument?: {
+    title: string;
+    url: string;
+    section: string;
+  };
+  productLabelClaim?: string;
+  reviewerName?: string;
+  reviewerDate?: string;
+  verificationStatus?: string;
 }
 
 let compiledModelPromise: Promise<CompiledModel | null> | null = null;
@@ -537,7 +546,12 @@ export async function runNeuralDiseaseInference(
           immediateAction: remedy.immediateAction,
           organicTreatment: remedy.organicTreatment,
           chemicalTreatment: pilotGatedChemicals,
-          preventiveMeasures: remedy.preventiveMeasures
+          preventiveMeasures: remedy.preventiveMeasures,
+          sourceDocument: remedy.sourceDocument,
+          productLabelClaim: remedy.productLabelClaim,
+          reviewerName: remedy.reviewerName,
+          reviewerDate: remedy.reviewerDate,
+          verificationStatus: remedy.verificationStatus
         };
       }
 
