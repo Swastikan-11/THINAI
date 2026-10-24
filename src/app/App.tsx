@@ -574,19 +574,21 @@ function HomeScreen({
             {/* 1-Tap Instant Language Toggle: [ EN | தமிழ் ] (Plantix/Uzhavan Pattern) */}
             <button
               onClick={onToggleLanguage || onOpenLangModal}
-              className="min-h-[42px] px-3.5 py-1.5 rounded-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
+              className="min-h-[44px] px-3.5 py-1.5 rounded-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold active:scale-95 border border-white/30 transition-all cursor-pointer shadow-xs"
               title="Instant Language Switch (English / தமிழ்)"
-              aria-label="Toggle language between English and Tamil"
+              aria-label="EN | தமிழ் - Toggle language"
             >
               <Globe size={14} className="text-white shrink-0" />
               <span className={lang === "English" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>EN</span>
               <span className="text-white/40">|</span>
               <span className={lang === "Tamil" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>தமிழ்</span>
             </button>
-            <button onClick={() => setShowNotifications(true)}
-              className="w-10 h-10 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
-              <Bell size={16} color="#fff" />
-              <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: ACC }} />
+            <button
+              onClick={() => setShowNotifications(true)}
+              aria-label={lang === "Tamil" ? "அறிவிப்புகள்" : "Notifications"}
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
+              <Bell size={18} color="#fff" />
+              <div className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ background: ACC }} />
             </button>
           </div>
         </div>
@@ -594,6 +596,7 @@ function HomeScreen({
         <div className="flex justify-between items-start mt-1">
           <div>
             <div className="flex items-center gap-1.5">
+              <h1 className="sr-only">THINAI Agriculture Operating System</h1>
               <span className="text-xs font-medium text-white/80">{lang === "Tamil" ? "வணக்கம்," : "Welcome,"}</span>
             </div>
             <h2 className="font-black text-2xl text-white mt-0.5">{user.name || (lang === "Tamil" ? "விவசாயி" : "Farmer")} 👋</h2>
@@ -1977,13 +1980,15 @@ function AIScreen({
       <div className="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
         <button
           onClick={handleVoiceToggle}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+          aria-label={isListening ? "Stop voice listening" : "Start voice listening"}
+          className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all ${
             isListening ? "bg-red-500 text-white animate-pulse" : "bg-gray-100 text-gray-700"
           }`}>
           {isListening ? <MicOff size={18} /> : <Mic size={18} />}
         </button>
         <input
           type="text"
+          aria-label={t("askAnything", lang)}
           placeholder={t("askAnything", lang)}
           value={input}
           onChange={e => setInput(e.target.value)}
@@ -1992,8 +1997,9 @@ function AIScreen({
         />
         <button
           onClick={() => handleSend()}
-          className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center active:scale-95 shadow-xs">
-          <Send size={16} />
+          aria-label="Send query"
+          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-green-700 text-white flex items-center justify-center active:scale-95 shadow-xs">
+          <Send size={18} />
         </button>
       </div>
     </div>
@@ -2950,6 +2956,7 @@ export default function App() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            role="status" aria-live="polite"
             className={`fixed top-4 left-4 right-4 z-50 p-3 rounded-2xl text-xs font-bold text-white shadow-lg text-center ${
               toast.type === "error" ? "bg-red-600" : toast.type === "warning" ? "bg-amber-600" : "bg-green-700"
             }`}>
