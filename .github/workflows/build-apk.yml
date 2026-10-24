@@ -55,7 +55,7 @@ jobs:
           if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
             echo "Decoding release keystore from GitHub Secrets..."
             echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > app/release.jks
-            export ANDROID_KEYSTORE_PATH="app/release.jks"
+            export ANDROID_KEYSTORE_PATH="$PWD/app/release.jks"
             ./gradlew assembleRelease --no-daemon --stacktrace
           else
             echo "No ANDROID_KEYSTORE_BASE64 secret configured; assembling release with fallback signing..."

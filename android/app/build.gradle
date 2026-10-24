@@ -18,9 +18,10 @@ android {
     }
     signingConfigs {
         release {
-            def keystorePath = System.getenv("ANDROID_KEYSTORE_PATH") ?: project.findProperty("RELEASE_STORE_FILE") ?: ""
-            if (keystorePath && file(keystorePath).exists()) {
-                storeFile file(keystorePath)
+            def rawPath = System.getenv("ANDROID_KEYSTORE_PATH") ?: project.findProperty("RELEASE_STORE_FILE") ?: ""
+            def keystoreFile = rawPath ? (file(rawPath).exists() ? file(rawPath) : (rootProject.file(rawPath).exists() ? rootProject.file(rawPath) : null)) : null
+            if (keystoreFile && keystoreFile.exists()) {
+                storeFile keystoreFile
                 storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: project.findProperty("RELEASE_STORE_PASSWORD") ?: ""
                 keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: project.findProperty("RELEASE_KEY_ALIAS") ?: ""
                 keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: project.findProperty("RELEASE_KEY_PASSWORD") ?: ""
@@ -29,8 +30,9 @@ android {
     }
     buildTypes {
         release {
-            def keystorePath = System.getenv("ANDROID_KEYSTORE_PATH") ?: project.findProperty("RELEASE_STORE_FILE") ?: ""
-            if (keystorePath && file(keystorePath).exists()) {
+            def rawPath = System.getenv("ANDROID_KEYSTORE_PATH") ?: project.findProperty("RELEASE_STORE_FILE") ?: ""
+            def keystoreFile = rawPath ? (file(rawPath).exists() ? file(rawPath) : (rootProject.file(rawPath).exists() ? rootProject.file(rawPath) : null)) : null
+            if (keystoreFile && keystoreFile.exists()) {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
