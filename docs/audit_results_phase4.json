@@ -1,5 +1,12 @@
 [
   {
+    "screen": "login",
+    "language": "English",
+    "violationsCount": 0,
+    "violations": [],
+    "smallTapTargets": []
+  },
+  {
     "screen": "home",
     "language": "Tamil",
     "violationsCount": 0,
@@ -25,5 +32,12 @@
       "BUTTON: \"6 Sub-Scores\" (143x38px)",
       "BUTTON: \"What-If Lab\" (143x38px)"
     ]
+  },
+  {
+    "screen": "market",
+    "language": "English",
+    "violationsCount": 0,
+    "violations": [],
+    "smallTapTargets": []
   }
 ]
