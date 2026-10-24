@@ -32,3 +32,4 @@ thinai_screen_dashboard.jpg
 test-results/
 playwright-report/
 *.log
+dist-electron/
