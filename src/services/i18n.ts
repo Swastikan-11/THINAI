@@ -12,14 +12,15 @@ export interface LanguageOption {
 
 export const SUPPORTED_LANGUAGES: LanguageOption[] = [
   { code: "en", name: "English", nativeName: "English", speechLocale: "en-IN" },
-  { code: "ta", name: "Tamil", nativeName: "தமிழ்", speechLocale: "ta-IN" },
-  { code: "hi", name: "Hindi", nativeName: "हिन्दी", speechLocale: "hi-IN" },
-  { code: "te", name: "Telugu", nativeName: "తెలుగు", speechLocale: "te-IN" },
-  { code: "kn", name: "Kannada", nativeName: "ಕನ್ನಡ", speechLocale: "kn-IN" },
-  { code: "ml", name: "Malayalam", nativeName: "മലയാളം", speechLocale: "ml-IN" }
+  { code: "ta", name: "Tamil", nativeName: "தமிழ்", speechLocale: "ta-IN" }
 ];
 
-export const UNREVIEWED_LANGUAGES: LanguageOption[] = [];
+export const UNREVIEWED_LANGUAGES: LanguageOption[] = [
+  { code: "hi", name: "Hindi", nativeName: "हिन्दी (Hidden: Pending Native Agronomic Review)", speechLocale: "hi-IN" },
+  { code: "te", name: "Telugu", nativeName: "తెలుగు (Hidden: Pending Native Agronomic Review)", speechLocale: "te-IN" },
+  { code: "kn", name: "Kannada", nativeName: "ಕನ್ನಡ (Hidden: Pending Native Agronomic Review)", speechLocale: "kn-IN" },
+  { code: "ml", name: "Malayalam", nativeName: "മലയാളം (Hidden: Pending Native Agronomic Review)", speechLocale: "ml-IN" }
+];
 
 const STORAGE_KEY = "thinai_selected_language";
 

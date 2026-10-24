@@ -74,4 +74,18 @@ test.describe("Phase 3 Screenshots at 360x800", () => {
     await page.waitForTimeout(1000);
     await page.screenshot({ path: "docs/screenshots/feature1_disease_library.png", fullPage: true });
   });
+
+  test("Feature 2: Capture AI Assistant with Sourced Citations at 360x800", async ({ page }) => {
+    await page.goto("/?screen=ai");
+    await page.waitForTimeout(1000);
+
+    // Click first suggestion chip or type query
+    const suggestionChip = page.locator("button").filter({ hasText: /Why should I delay irrigation|தள்ளி/i }).first();
+    if (await suggestionChip.isVisible()) {
+      await suggestionChip.click();
+      await page.waitForTimeout(1500);
+    }
+
+    await page.screenshot({ path: "docs/screenshots/feature2_ai_assistant.png", fullPage: true });
+  });
 });
