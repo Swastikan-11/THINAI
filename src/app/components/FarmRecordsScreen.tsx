@@ -147,13 +147,17 @@ export function FarmRecordsScreen({
   // Handlers
   const handleCreatePlot = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPlot.name.trim()) return;
+    const area = parseFloat(newPlot.areaAcres);
+    if (!newPlot.name.trim() || isNaN(area) || area <= 0) {
+      alert(isTa ? "சரியான நிலப் பரப்பளவை (0-க்கு மேல்) உள்ளிடவும்." : "Please enter a valid plot area greater than 0 acres.");
+      return;
+    }
 
     await savePlot({
       userId,
       farmId: `farm-${userId}`,
       name: newPlot.name.trim(),
-      areaAcres: parseFloat(newPlot.areaAcres) || 1.0,
+      areaAcres: area,
       soilType: newPlot.soilType,
       currentCrop: newPlot.currentCrop,
       cropVariety: newPlot.cropVariety,
@@ -223,7 +227,10 @@ export function FarmRecordsScreen({
   const handleCreateExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     const amount = parseFloat(newExpense.amountRs);
-    if (isNaN(amount) || amount <= 0) return;
+    if (isNaN(amount) || amount <= 0) {
+      alert(isTa ? "சரியான தொகையை உள்ளிடவும் (0-க்கு மேல்)." : "Please enter a valid expense amount greater than 0.");
+      return;
+    }
 
     const selectedPlot = plots.find(p => p.id === newExpense.plotId) || plots[0];
 
