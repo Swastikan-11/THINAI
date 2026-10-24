@@ -32,29 +32,7 @@ export interface CommunityPost {
   isSample?: boolean;
 }
 
-const DEFAULT_POSTS: CommunityPost[] = [
-  {
-    id: "sample-post-1",
-    authorName: "Sample Farmer / மாதிரி விவசாயி",
-    district: "Thanjavur",
-    crop: "Paddy (CR 1009)",
-    content: "Sample Alert: Early morning mist and high humidity in Orathanadu block. Observed minor leaf folder incidence. Applying Neem oil 3% spray before morning dew dries.",
-    likesCount: 14,
-    createdAt: "Demo Reference Only",
-    isOutbreakAlert: true,
-    isSample: true
-  },
-  {
-    id: "sample-post-2",
-    authorName: "Sample Farmer / மாதிரி விவசாயி",
-    district: "Coimbatore",
-    crop: "Tomato",
-    content: "Sample Note: Pollachi mandi tomato prices touched ₹28/kg at the uzhavar sandhai. Good demand for Shivam variety.",
-    likesCount: 9,
-    createdAt: "Demo Reference Only",
-    isSample: true
-  }
-];
+const DEFAULT_POSTS: CommunityPost[] = [];
 
 interface CommunityScreenProps {
   district?: string;
@@ -69,7 +47,7 @@ export function CommunityScreen({
   language = "English",
   showToast
 }: CommunityScreenProps) {
-  const [posts, setPosts] = useState<CommunityPost[]>(DEFAULT_POSTS);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [newContent, setNewContent] = useState("");
   const [newCrop, setNewCrop] = useState(primaryCrop);
@@ -101,7 +79,7 @@ export function CommunityScreen({
     }
 
     if (syncManager.isOfflineActive()) {
-      setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
+      setPosts(localQueuedPosts);
       setLoading(false);
       return;
     }
@@ -123,14 +101,10 @@ export function CommunityScreen({
           isOutbreakAlert: !!data.isOutbreakAlert
         });
       });
-      if (remotePosts.length > 0) {
-        setPosts([...localQueuedPosts, ...remotePosts, ...DEFAULT_POSTS]);
-      } else {
-        setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
-      }
+      setPosts([...localQueuedPosts, ...remotePosts]);
     } catch {
-      // Graceful offline fallback to default posts + local queued posts
-      setPosts([...localQueuedPosts, ...DEFAULT_POSTS]);
+      // Graceful offline fallback to local queued posts
+      setPosts(localQueuedPosts);
     } finally {
       setLoading(false);
     }
