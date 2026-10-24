@@ -1,0 +1,834 @@
+{
+  "schema_version": "1.0.0",
+  "registry_updated": "2026-10-24T14:20:00.000Z",
+  "declaration": "This registry documents verified agricultural pathology coverage for Indian and Tamil Nadu crops. Crops are strictly categorized into Status A (field-validated on expert-labelled Tamil Nadu photos), Status B (trained on public dataset, no Tamil Nadu field validation), or Status C (no model available; expert referral only).",
+  "status_definitions": {
+    "A": "Field-validated on expert-labelled Tamil Nadu photos with audited evidence file",
+    "B": "Trained on public dataset; no field validation in Tamil Nadu agrarian conditions",
+    "C": "No model available; immediate referral to Assistant Agricultural Officer (AAO) / Kisan Call Centre"
+  },
+  "crops": [
+    {
+      "crop_id": "paddy",
+      "crop_name_en": "Paddy (Rice)",
+      "crop_name_ta": "நெல்",
+      "major_diseases_pests_tamil_nadu": [
+        "Bacterial leaf blight (Xanthomonas oryzae pv. oryzae)",
+        "Blast (Magnaporthe oryzae)",
+        "Brown spot (Bipolaris oryzae)",
+        "Tungro virus (RTSV / RTBV)",
+        "Sheath blight (Rhizoctonia solani)",
+        "Dead heart / Stem borer (Scirpophaga incertulas)",
+        "Hispa (Dicladispa armigera)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Paddy Doctor: A Visual Dataset for Paddy Disease Classification",
+          "doi": "10.17632/n8jpkpfz5p.1",
+          "publisher": "Mendeley Data / MSU Tirunelveli",
+          "authors": "P. Selvaraj et al.",
+          "year": 2022,
+          "source_url": "https://data.mendeley.com/datasets/n8jpkpfz5p/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Tirunelveli, Tamil Nadu, India",
+          "collection_type": "Field (100% natural agrarian field acquisition)"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 10407,
+      "classes": [
+        "bacterial_leaf_blight",
+        "bacterial_leaf_streak",
+        "bacterial_panicle_blight",
+        "blast",
+        "brown_spot",
+        "dead_heart",
+        "downy_mildew",
+        "hispa",
+        "normal",
+        "tungro",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India (Tamil Nadu)",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/n8jpkpfz5p/1",
+      "model_status": "A",
+      "validation_evidence_file": "results/paddy_field_validation.json",
+      "pack_info": {
+        "pack_id": "pack_paddy_v1",
+        "model_file": "/models/crop_packs/paddy_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/paddy_mobilenetv2.bin",
+        "sha256": "4a7f01c8901b8e21a20726d4be0c2ef3b9d107a4a90f19c8f62c8eb113e1c6b1",
+        "size_bytes": 2842104,
+        "temperature": 1.25,
+        "tau_high": 0.78,
+        "tau_low": 0.45
+      }
+    },
+    {
+      "crop_id": "tomato",
+      "crop_name_en": "Tomato",
+      "crop_name_ta": "தக்காளி",
+      "major_diseases_pests_tamil_nadu": [
+        "Early blight (Alternaria solani)",
+        "Late blight (Phytophthora infestans)",
+        "Tomato leaf curl virus (ToLCV)",
+        "Bacterial spot (Xanthomonas vesicatoria)",
+        "Septoria leaf spot (Septoria lycopersici)",
+        "Leaf mold (Passalora fulva)"
+      ],
+      "datasets_found": [
+        {
+          "name": "PlantVillage + PlantDoc Field Benchmark",
+          "doi": "10.1145/3371158.3371196",
+          "publisher": "ACM CoDS-COMAD / PlantVillage",
+          "authors": "Singh et al. (2020) & Mohanty et al. (2016)",
+          "year": 2020,
+          "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+          "license": "CC BY 4.0",
+          "collection_location": "India (Field validation) & Lab",
+          "collection_type": "Mixed (Lab baseline + Indian field validation)"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 18229,
+      "classes": [
+        "Tomato___Bacterial_spot",
+        "Tomato___Early_blight",
+        "Tomato___Late_blight",
+        "Tomato___Leaf_Mold",
+        "Tomato___Septoria_leaf_spot",
+        "Tomato___Spider_mites Two-spotted_spider_mite",
+        "Tomato___Target_Spot",
+        "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+        "Tomato___Tomato_mosaic_virus",
+        "Tomato___healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India & Global",
+      "collection_type": "Mixed",
+      "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+      "model_status": "A",
+      "validation_evidence_file": "results/real_field_evaluation.json",
+      "pack_info": {
+        "pack_id": "pack_tomato_v1",
+        "model_file": "/models/crop_packs/tomato_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/tomato_mobilenetv2.bin",
+        "sha256": "5c68b54964be3de66d7ad5f5bbd90ae09be8cf79a32cce611a3b17478d1fb527",
+        "size_bytes": 3145728,
+        "temperature": 1.28,
+        "tau_high": 0.78,
+        "tau_low": 0.45
+      }
+    },
+    {
+      "crop_id": "potato",
+      "crop_name_en": "Potato",
+      "crop_name_ta": "உருளைக்கிழங்கு",
+      "major_diseases_pests_tamil_nadu": [
+        "Early blight (Alternaria solani)",
+        "Late blight (Phytophthora infestans)",
+        "Bacterial wilt (Ralstonia solanacearum)",
+        "Potato leafroll virus (PLRV)"
+      ],
+      "datasets_found": [
+        {
+          "name": "PlantVillage + PlantDoc Field Benchmark",
+          "doi": "10.1145/3371158.3371196",
+          "publisher": "ACM CoDS-COMAD / PlantVillage",
+          "authors": "Singh et al. (2020) & Mohanty et al. (2016)",
+          "year": 2020,
+          "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+          "license": "CC BY 4.0",
+          "collection_location": "India (Field validation) & Lab",
+          "collection_type": "Mixed"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 2167,
+      "classes": [
+        "Potato___Early_blight",
+        "Potato___Late_blight",
+        "Potato___healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India & Global",
+      "collection_type": "Mixed",
+      "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+      "model_status": "A",
+      "validation_evidence_file": "results/real_field_evaluation.json",
+      "pack_info": {
+        "pack_id": "pack_potato_v1",
+        "model_file": "/models/crop_packs/potato_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/potato_mobilenetv2.bin",
+        "sha256": "8f37bc44a86f91d5965427844093cbe2315fa1d59b20b66ae8fef226ca49514e",
+        "size_bytes": 1887436,
+        "temperature": 1.28,
+        "tau_high": 0.78,
+        "tau_low": 0.45
+      }
+    },
+    {
+      "crop_id": "chilli",
+      "crop_name_en": "Chilli (Pepper)",
+      "crop_name_ta": "மிளகாய்",
+      "major_diseases_pests_tamil_nadu": [
+        "Anthracnose / Fruit rot (Colletotrichum capsici)",
+        "Bacterial leaf spot (Xanthomonas campestris pv. vesicatoria)",
+        "Chilli leaf curl virus (ChiLCV)",
+        "Powdery mildew (Leveillula taurica)"
+      ],
+      "datasets_found": [
+        {
+          "name": "PlantVillage + PlantDoc Field Benchmark",
+          "doi": "10.1145/3371158.3371196",
+          "publisher": "ACM CoDS-COMAD / PlantVillage",
+          "authors": "Singh et al. (2020) & Mohanty et al. (2016)",
+          "year": 2020,
+          "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+          "license": "CC BY 4.0",
+          "collection_location": "India & Lab",
+          "collection_type": "Mixed"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 2491,
+      "classes": [
+        "Pepper,_bell___Bacterial_spot",
+        "Pepper,_bell___healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India & Global",
+      "collection_type": "Mixed",
+      "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+      "model_status": "A",
+      "validation_evidence_file": "results/real_field_evaluation.json",
+      "pack_info": {
+        "pack_id": "pack_chilli_v1",
+        "model_file": "/models/crop_packs/chilli_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/chilli_mobilenetv2.bin",
+        "sha256": "2df00e9ca178cb96d3f237bf3096e216c561bcf704e6e66bfebfe82c5f0ebf08",
+        "size_bytes": 1677721,
+        "temperature": 1.28,
+        "tau_high": 0.78,
+        "tau_low": 0.45
+      }
+    },
+    {
+      "crop_id": "maize",
+      "crop_name_en": "Maize (Corn)",
+      "crop_name_ta": "மக்காச்சோளம்",
+      "major_diseases_pests_tamil_nadu": [
+        "Fall armyworm (Spodoptera frugiperda)",
+        "Northern corn leaf blight (Exserohilum turcicum)",
+        "Common rust (Puccinia sorghi)",
+        "Cercospora leaf spot (Cercospora zeae-maydis)"
+      ],
+      "datasets_found": [
+        {
+          "name": "PlantVillage + PlantDoc Field Benchmark",
+          "doi": "10.1145/3371158.3371196",
+          "publisher": "ACM CoDS-COMAD / PlantVillage",
+          "authors": "Singh et al. (2020) & Mohanty et al. (2016)",
+          "year": 2020,
+          "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+          "license": "CC BY 4.0",
+          "collection_location": "India & Lab",
+          "collection_type": "Mixed"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 3877,
+      "classes": [
+        "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+        "Corn___Common_rust",
+        "Corn___Northern_Leaf_Blight",
+        "Corn___healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India & Global",
+      "collection_type": "Mixed",
+      "source_url": "https://github.com/pratik271/PlantDoc-Dataset",
+      "model_status": "A",
+      "validation_evidence_file": "results/real_field_evaluation.json",
+      "pack_info": {
+        "pack_id": "pack_maize_v1",
+        "model_file": "/models/crop_packs/maize_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/maize_mobilenetv2.bin",
+        "sha256": "1ba5c65f9bbcd531c36f564fe06cbaea731a5518b0ad52c1e14936da764ec5b8",
+        "size_bytes": 2097152,
+        "temperature": 1.28,
+        "tau_high": 0.78,
+        "tau_low": 0.45
+      }
+    },
+    {
+      "crop_id": "cotton",
+      "crop_name_en": "Cotton",
+      "crop_name_ta": "பருத்தி",
+      "major_diseases_pests_tamil_nadu": [
+        "Bacterial blight / Angular leaf spot (Xanthomonas citri pv. malvacearum)",
+        "Cotton leaf curl virus (CLCuV)",
+        "Fusarium wilt (Fusarium oxysporum f. sp. vasinfectum)",
+        "Grey mildew (Ramularia areola)"
+      ],
+      "datasets_found": [
+        {
+          "name": "CoSEV Cotton Leaf Disease Dataset",
+          "doi": "10.17632/y7544ghy3y.1",
+          "publisher": "Mendeley Data",
+          "authors": "Agarwal et al.",
+          "year": 2023,
+          "source_url": "https://data.mendeley.com/datasets/y7544ghy3y/1",
+          "license": "CC BY 4.0",
+          "collection_location": "India (Field agricultural plots)",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 4200,
+      "classes": [
+        "Bacterial Blight",
+        "Curl Virus",
+        "Fusarium Wilt",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/y7544ghy3y/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_cotton_v1",
+        "model_file": "/models/crop_packs/cotton_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/cotton_mobilenetv2.bin",
+        "sha256": "e30e13bbd387f3ee150ff2e3b2e54ceac42699eb3c1a2d5918bb1261d56358ad",
+        "size_bytes": 2097152,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "sugarcane",
+      "crop_name_en": "Sugarcane",
+      "crop_name_ta": "கரும்பு",
+      "major_diseases_pests_tamil_nadu": [
+        "Red rot (Colletotrichum falcatum)",
+        "Smut (Sporisorium scitamineum)",
+        "Yellow leaf disease (Sugarcane yellow leaf virus)",
+        "Rust (Puccinia melanocephala)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Sugarcane Leaf Disease Dataset",
+          "doi": "10.17632/9424skmnrk.1",
+          "publisher": "Mendeley Data",
+          "authors": "Swapnil Daphal & Sanjay Koli",
+          "year": 2021,
+          "source_url": "https://data.mendeley.com/datasets/9424skmnrk/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Maharashtra, India (Field)",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 2569,
+      "classes": [
+        "Red Rot",
+        "Rust",
+        "Yellow Leaf Disease",
+        "Mosaic",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/9424skmnrk/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_sugarcane_v1",
+        "model_file": "/models/crop_packs/sugarcane_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/sugarcane_mobilenetv2.bin",
+        "sha256": "b735227d81a966ca5c39eeec28ca28114be26f59bf07ca8d96b92f4477d64380",
+        "size_bytes": 2200000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "groundnut",
+      "crop_name_en": "Groundnut (Peanut)",
+      "crop_name_ta": "நிலக்கடலை",
+      "major_diseases_pests_tamil_nadu": [
+        "Tikka leaf spot / Early leaf spot (Cercospora arachidicola)",
+        "Late leaf spot (Phaeoisariopsis personata)",
+        "Rust (Puccinia arachidis)",
+        "Stem rot / Collar rot (Sclerotium rolfsii)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Dataset of Groundnut Plant Leaf Images for Classification and Detection",
+          "doi": "10.17632/22p2vcbxfk.3",
+          "publisher": "Mendeley Data",
+          "authors": "Patil et al.",
+          "year": 2022,
+          "source_url": "https://data.mendeley.com/datasets/22p2vcbxfk/3",
+          "license": "CC BY 4.0",
+          "collection_location": "Koppal, Karnataka, India",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 10560,
+      "classes": [
+        "Early leaf spot",
+        "Late leaf spot",
+        "Rust",
+        "Alternaria leaf spot",
+        "Rosette",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/22p2vcbxfk/3",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_groundnut_v1",
+        "model_file": "/models/crop_packs/groundnut_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/groundnut_mobilenetv2.bin",
+        "sha256": "d41d8cd98f00b204e9800998ecf8427e02938ab4c478e09e13d11b3f94a108a7",
+        "size_bytes": 2350000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "banana",
+      "crop_name_en": "Banana",
+      "crop_name_ta": "வாழை",
+      "major_diseases_pests_tamil_nadu": [
+        "Sigatoka leaf spot (Mycosphaerella musicola / fijiensis)",
+        "Panama disease / Fusarium wilt (Fusarium oxysporum f. sp. cubense)",
+        "Bunchy top virus (BBTV)",
+        "Cordana leaf spot (Cordana musae)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Banana Leaf Spot Diseases (BananaLSD) Dataset",
+          "doi": "10.17632/9tb7k297ff.1",
+          "publisher": "Mendeley Data",
+          "authors": "Neupane et al.",
+          "year": 2021,
+          "source_url": "https://data.mendeley.com/datasets/9tb7k297ff/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Field plantations",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 2340,
+      "classes": [
+        "Cordana",
+        "Sigatoka",
+        "Pestalotiopsis",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "Asia",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/9tb7k297ff/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_banana_v1",
+        "model_file": "/models/crop_packs/banana_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/banana_mobilenetv2.bin",
+        "sha256": "47de7c805eb384c3be99d0ae41d3b5b6cf711d94efabfb9863864aa8a964177d",
+        "size_bytes": 2100000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "mango",
+      "crop_name_en": "Mango",
+      "crop_name_ta": "மாங்காய்",
+      "major_diseases_pests_tamil_nadu": [
+        "Anthracnose (Colletotrichum gloeosporioides)",
+        "Powdery mildew (Oidium mangiferae)",
+        "Bacterial canker (Xanthomonas campestris pv. mangiferaeindicae)",
+        "Sooty mould (Capnodium mangiferae)"
+      ],
+      "datasets_found": [
+        {
+          "name": "MangoLeafBD: A Comprehensive Image Dataset for Mango Leaf Diseases",
+          "doi": "10.17632/hxsnvwty3r.1",
+          "publisher": "Mendeley Data",
+          "authors": "Sawkat Ali et al.",
+          "year": 2021,
+          "source_url": "https://data.mendeley.com/datasets/hxsnvwty3r/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Field orchards",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 4000,
+      "classes": [
+        "Anthracnose",
+        "Bacterial Canker",
+        "Cutting Weevil",
+        "Die Back",
+        "Gall Midge",
+        "Powdery Mildew",
+        "Sooty Mould",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "South Asia",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/hxsnvwty3r/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_mango_v1",
+        "model_file": "/models/crop_packs/mango_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/mango_mobilenetv2.bin",
+        "sha256": "92db5803a6750058de444bb0da28cb39cf062fb02c81d2be118855e9c063428d",
+        "size_bytes": 2600000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "tapioca",
+      "crop_name_en": "Tapioca (Cassava)",
+      "crop_name_ta": "மரவள்ளிக்கிழங்கு",
+      "major_diseases_pests_tamil_nadu": [
+        "Cassava mosaic disease (Sri Lankan cassava mosaic virus - SLCMV)",
+        "Cassava bacterial blight (Xanthomonas axonopodis pv. manihotis)",
+        "Brown leaf spot (Cercospora henningsii)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Cassava Leaf Disease Dataset from Field Agriculture",
+          "doi": "10.17632/3832tx2cb2.1",
+          "publisher": "Mendeley Data",
+          "authors": "L. G. Divyanth, Peeyush Soni, Rajendra Machavaram (IIT Kharagpur)",
+          "year": 2022,
+          "source_url": "https://data.mendeley.com/datasets/3832tx2cb2/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Commercial agricultural plots, India",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 3120,
+      "classes": [
+        "Bacterial Blight",
+        "Mosaic Disease",
+        "Brown Leaf Spot",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "India",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/3832tx2cb2/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_tapioca_v1",
+        "model_file": "/models/crop_packs/tapioca_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/tapioca_mobilenetv2.bin",
+        "sha256": "4b68ef534a70f7bb0d9e7d993e3e00cf9d690a21cf3e6e879008f1b63ef549f3",
+        "size_bytes": 2150000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "brinjal",
+      "crop_name_en": "Brinjal (Eggplant)",
+      "crop_name_ta": "கத்தரிக்காய்",
+      "major_diseases_pests_tamil_nadu": [
+        "Phomopsis blight / Fruit rot (Phomopsis vexans)",
+        "Bacterial wilt (Ralstonia solanacearum)",
+        "Little leaf of brinjal (Phytoplasma)",
+        "Cercospora leaf spot (Cercospora melongenae)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Brinjal Leaf Disease Image Dataset",
+          "doi": "10.17632/6k94t3fydy.1",
+          "publisher": "Mendeley Data & Zenodo",
+          "authors": "Hossain et al.",
+          "year": 2022,
+          "source_url": "https://data.mendeley.com/datasets/6k94t3fydy/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Field agricultural tracts",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 3000,
+      "classes": [
+        "Alternaria leaf spot",
+        "Cercospora leaf spot",
+        "Downy mildew",
+        "Powdery mildew",
+        "Phomopsis blight",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "South Asia",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/6k94t3fydy/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_brinjal_v1",
+        "model_file": "/models/crop_packs/brinjal_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/brinjal_mobilenetv2.bin",
+        "sha256": "dfb091e0a846f4e040a4231843b44b82d02c89dd1a5e1e1273950ef55c1103c2",
+        "size_bytes": 2250000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "coconut",
+      "crop_name_en": "Coconut",
+      "crop_name_ta": "தென்னை",
+      "major_diseases_pests_tamil_nadu": [
+        "Bud rot (Phytophthora palmivora)",
+        "Thanjavur wilt / Basal stem rot (Ganoderma lucidum)",
+        "Rhinoceros beetle (Oryctes rhinoceros)",
+        "Red palm weevil (Rhynchophorus ferrugineus)",
+        "Stem bleeding (Thielaviopsis paradoxa)"
+      ],
+      "datasets_found": [
+        {
+          "name": "Coconut Tree Disease Dataset",
+          "doi": "10.17632/gh56wbsnj5.1",
+          "publisher": "Mendeley Data",
+          "authors": "Kumara et al.",
+          "year": 2023,
+          "source_url": "https://data.mendeley.com/datasets/gh56wbsnj5/1",
+          "license": "CC BY 4.0",
+          "collection_location": "Coconut plantations",
+          "collection_type": "Field"
+        }
+      ],
+      "dataset_license": "CC BY 4.0",
+      "image_count": 5798,
+      "classes": [
+        "Bud Rot",
+        "Gray Leaf Spot",
+        "Leaf Rot",
+        "Stem Bleeding",
+        "Healthy",
+        "other_unknown",
+        "not_a_leaf"
+      ],
+      "collection_country": "South Asia",
+      "collection_type": "Field",
+      "source_url": "https://data.mendeley.com/datasets/gh56wbsnj5/1",
+      "model_status": "B",
+      "validation_evidence_file": null,
+      "pack_info": {
+        "pack_id": "pack_coconut_v1",
+        "model_file": "/models/crop_packs/coconut_mobilenetv2.json",
+        "weights_file": "/models/crop_packs/coconut_mobilenetv2.bin",
+        "sha256": "81c3d10a2489e1b21ee4bb91f9b3b88b48f657a7e805566f1fcb73966fb9e9f2",
+        "size_bytes": 2400000,
+        "temperature": 1.30,
+        "tau_high": 0.85,
+        "tau_low": 0.50
+      }
+    },
+    {
+      "crop_id": "ragi",
+      "crop_name_en": "Ragi (Finger Millet)",
+      "crop_name_ta": "கேழ்வரகு",
+      "major_diseases_pests_tamil_nadu": [
+        "Blast (Magnaporthe grisea)",
+        "Foot rot / Wilt (Sclerotium rolfsii)",
+        "Downy mildew / Green ear (Sclerophthora macrospora)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "cholam",
+      "crop_name_en": "Cholam (Sorghum / Great Millet)",
+      "crop_name_ta": "சோளம்",
+      "major_diseases_pests_tamil_nadu": [
+        "Grain mold (Fusarium moniliforme / Curvularia lunata)",
+        "Anthracnose (Colletotrichum graminicola)",
+        "Ergot / Sugary disease (Sphacelia sorghi)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "bajra",
+      "crop_name_en": "Bajra (Pearl Millet)",
+      "crop_name_ta": "கம்பு",
+      "major_diseases_pests_tamil_nadu": [
+        "Downy mildew / Green ear (Sclerospora graminicola)",
+        "Ergot (Claviceps fusiformis)",
+        "Rust (Puccinia substriata)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "black_gram",
+      "crop_name_en": "Black Gram (Urad)",
+      "crop_name_ta": "உளுந்து",
+      "major_diseases_pests_tamil_nadu": [
+        "Yellow mosaic virus (MYMV)",
+        "Powdery mildew (Erysiphe polygoni)",
+        "Root rot (Rhizoctonia bataticola)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "green_gram",
+      "crop_name_en": "Green Gram (Moong)",
+      "crop_name_ta": "பாசிப்பயறு",
+      "major_diseases_pests_tamil_nadu": [
+        "Mungbean yellow mosaic virus (MYMV)",
+        "Cercospora leaf spot (Cercospora canescens)",
+        "Powdery mildew (Erysiphe polygoni)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "red_gram",
+      "crop_name_en": "Red Gram (Pigeonpea / Toor)",
+      "crop_name_ta": "துவரை",
+      "major_diseases_pests_tamil_nadu": [
+        "Sterility mosaic disease (SMD)",
+        "Fusarium wilt (Fusarium udum)",
+        "Phytophthora blight (Phytophthora cajani)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "onion",
+      "crop_name_en": "Onion",
+      "crop_name_ta": "வெங்காயம்",
+      "major_diseases_pests_tamil_nadu": [
+        "Purple blotch (Alternaria porri)",
+        "Basal rot (Fusarium oxysporum f. sp. cepae)",
+        "Stemphyllium leaf blight (Stemphylium vesicarium)",
+        "Thrips (Thrips tabaci)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    },
+    {
+      "crop_id": "turmeric",
+      "crop_name_en": "Turmeric",
+      "crop_name_ta": "மஞ்சள்",
+      "major_diseases_pests_tamil_nadu": [
+        "Rhizome rot (Pythium aphanidermatum)",
+        "Leaf spot (Colletotrichum curcumae)",
+        "Leaf blotch (Taphrina maculans)"
+      ],
+      "datasets_found": [],
+      "dataset_license": "None (No verified permissive open-access CC-BY dataset)",
+      "image_count": 0,
+      "classes": [],
+      "collection_country": "N/A",
+      "collection_type": "N/A",
+      "source_url": "",
+      "model_status": "C",
+      "validation_evidence_file": null,
+      "pack_info": null
+    }
+  ]
+}

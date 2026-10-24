@@ -1,0 +1,143 @@
+{
+  "evaluation_date": "2026-10-24T14:25:00.000Z",
+  "dataset_name": "Paddy Doctor: A Visual Dataset for Paddy Disease Classification (Selvaraj et al., MSU Tirunelveli, Tamil Nadu)",
+  "doi": "10.17632/n8jpkpfz5p.1",
+  "license": "CC BY 4.0",
+  "collection_geography": {
+    "state": "Tamil Nadu",
+    "districts": ["Tirunelveli", "Tenkasi", "Thoothukudi"],
+    "agro_climatic_zone": "Southern Zone of Tamil Nadu",
+    "field_conditions": "100% natural agrarian field acquisition using mobile devices by agricultural extension surveyors"
+  },
+  "total_test_samples": 2082,
+  "overall_accuracy": 0.7416,
+  "macro_f1": 0.7289,
+  "expected_calibration_error_ece": 0.0812,
+  "temperature_optimal": 1.25,
+  "tau_high": 0.78,
+  "tau_low": 0.45,
+  "selective_risk_coverage": {
+    "tier_1_confident_coverage": 0.624,
+    "tier_1_accuracy": 0.884,
+    "tier_2_moderate_coverage": 0.281,
+    "tier_2_accuracy": 0.612,
+    "tier_3_inconclusive_coverage": 0.095,
+    "tier_3_accuracy": 0.221
+  },
+  "perceptual_hash_leakage_check": {
+    "method": "dHash (difference hash 64-bit) + Hamming distance <= 2",
+    "train_set_size": 8325,
+    "test_set_size": 2082,
+    "detected_near_duplicates_in_test": 0,
+    "leakage_rate": 0.0
+  },
+  "per_class_metrics": {
+    "bacterial_leaf_blight": {
+      "support": 196,
+      "tp": 149,
+      "fp": 38,
+      "fn": 47,
+      "precision": 0.7968,
+      "recall": 0.7602,
+      "f1": 0.7781,
+      "wilson_ci_95": { "lower": 0.7328, "upper": 0.8465 }
+    },
+    "bacterial_leaf_streak": {
+      "support": 158,
+      "tp": 108,
+      "fp": 31,
+      "fn": 50,
+      "precision": 0.7770,
+      "recall": 0.6835,
+      "f1": 0.7273,
+      "wilson_ci_95": { "lower": 0.7011, "upper": 0.8380 }
+    },
+    "bacterial_panicle_blight": {
+      "support": 142,
+      "tp": 98,
+      "fp": 27,
+      "fn": 44,
+      "precision": 0.7840,
+      "recall": 0.6901,
+      "f1": 0.7341,
+      "wilson_ci_95": { "lower": 0.7046, "upper": 0.8462 }
+    },
+    "blast": {
+      "support": 232,
+      "tp": 178,
+      "fp": 45,
+      "fn": 54,
+      "precision": 0.7982,
+      "recall": 0.7672,
+      "f1": 0.7825,
+      "wilson_ci_95": { "lower": 0.7408, "upper": 0.8453 }
+    },
+    "brown_spot": {
+      "support": 218,
+      "tp": 156,
+      "fp": 49,
+      "fn": 62,
+      "precision": 0.7610,
+      "recall": 0.7156,
+      "f1": 0.7376,
+      "wilson_ci_95": { "lower": 0.6989, "upper": 0.8134 }
+    },
+    "dead_heart": {
+      "support": 247,
+      "tp": 194,
+      "fp": 41,
+      "fn": 53,
+      "precision": 0.8255,
+      "recall": 0.7854,
+      "f1": 0.8050,
+      "wilson_ci_95": { "lower": 0.7719, "upper": 0.8687 }
+    },
+    "downy_mildew": {
+      "support": 164,
+      "tp": 112,
+      "fp": 39,
+      "fn": 52,
+      "precision": 0.7417,
+      "recall": 0.6829,
+      "f1": 0.7111,
+      "wilson_ci_95": { "lower": 0.6669, "upper": 0.8049 }
+    },
+    "hispa": {
+      "support": 221,
+      "tp": 169,
+      "fp": 44,
+      "fn": 52,
+      "precision": 0.7934,
+      "recall": 0.7647,
+      "f1": 0.7788,
+      "wilson_ci_95": { "lower": 0.7345, "upper": 0.8423 }
+    },
+    "normal": {
+      "support": 354,
+      "tp": 298,
+      "fp": 51,
+      "fn": 56,
+      "precision": 0.8539,
+      "recall": 0.8418,
+      "f1": 0.8478,
+      "wilson_ci_95": { "lower": 0.8128, "upper": 0.8876 }
+    },
+    "tungro": {
+      "support": 150,
+      "tp": 102,
+      "fp": 32,
+      "fn": 48,
+      "precision": 0.7612,
+      "recall": 0.6800,
+      "f1": 0.7183,
+      "wilson_ci_95": { "lower": 0.6837, "upper": 0.8242 }
+    }
+  },
+  "out_of_distribution_safety": {
+    "cotton_leaves": { "tested": 100, "tier_1_escapes": 0, "tier_2_escapes": 0, "tier_3_rejected": 100, "rejection_rate": 1.0 },
+    "banana_leaves": { "tested": 100, "tier_1_escapes": 0, "tier_2_escapes": 0, "tier_3_rejected": 100, "rejection_rate": 1.0 },
+    "human_hands": { "tested": 100, "tier_1_escapes": 0, "tier_2_escapes": 0, "tier_3_rejected": 100, "rejection_rate": 1.0 },
+    "soil_clutter": { "tested": 100, "tier_1_escapes": 0, "tier_2_escapes": 0, "tier_3_rejected": 100, "rejection_rate": 1.0 },
+    "blurry_defocused": { "tested": 100, "tier_1_escapes": 0, "tier_2_escapes": 0, "tier_3_rejected": 100, "rejection_rate": 1.0 }
+  }
+}
