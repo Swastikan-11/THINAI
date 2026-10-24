@@ -695,7 +695,7 @@ function HomeScreen({
                 <CloudRain size={16} />
               </div>
               <div>
-                <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-500">
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-700">
                   {lang === "Tamil" ? "வானிலை & மருந்து தெளிப்பு வழிகாட்டல் (Open-Meteo ~11 கிமீ கிரிட்)" : "Weather & Spray Advisory (Open-Meteo ~11 km grid)"}
                 </div>
                 <div className="text-xs font-bold text-gray-900">
@@ -717,20 +717,20 @@ function HomeScreen({
 
           <div className="grid grid-cols-4 gap-2 my-2 py-2 border-y border-black/5 text-center text-xs">
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "மழை வாய்ப்பு" : "Rain Prob"}</div>
-              <div className="font-bold text-gray-800">{weather.rainProbability}%</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "மழை வாய்ப்பு" : "Rain Prob"}</div>
+              <div className="font-bold text-gray-900">{weather.rainProbability}%</div>
             </div>
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "மழை அளவு" : "Rain 48h"}</div>
-              <div className="font-bold text-gray-800">{weather.rainfallMmExpected} mm</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "மழை அளவு" : "Rain 48h"}</div>
+              <div className="font-bold text-gray-900">{weather.rainfallMmExpected} mm</div>
             </div>
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "காற்று வேகம்" : "Wind"}</div>
-              <div className="font-bold text-gray-800">{weather.windSpeed} km/h</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "காற்று வேகம்" : "Wind"}</div>
+              <div className="font-bold text-gray-900">{weather.windSpeed} km/h</div>
             </div>
             <div>
-              <div className="text-[10px] text-gray-500">{lang === "Tamil" ? "ஈரப்பதம்" : "Humidity"}</div>
-              <div className="font-bold text-gray-800">{weather.humidity}%</div>
+              <div className="text-[10px] font-semibold text-gray-700">{lang === "Tamil" ? "ஈரப்பதம்" : "Humidity"}</div>
+              <div className="font-bold text-gray-900">{weather.humidity}%</div>
             </div>
           </div>
 
@@ -740,9 +740,10 @@ function HomeScreen({
             </span>
             <button 
               onClick={onRefreshWeather}
-              className="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-0.5 shrink-0 ml-2 cursor-pointer"
+              aria-label="Refresh live weather forecast"
+              className="min-h-[44px] px-2 py-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 shrink-0 ml-2 cursor-pointer"
             >
-              <RefreshCw size={10} />
+              <RefreshCw size={12} />
               <span>{weather.lastUpdatedLabel || "Live"}</span>
             </button>
           </div>
