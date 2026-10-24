@@ -759,8 +759,8 @@ export function CropDoctorScreen({
                 </strong>
                 <p className="text-[11px] text-emerald-900/80 leading-relaxed mt-0.5">
                   {language === "Tamil" 
-                    ? "கணக்கிடப்பட்ட துல்லியம் >= 78% (இடர் <= 2.1%). குறிப்பிட்ட நோய் அடையாளம் காணப்பட்டு அங்கீகரிக்கப்பட்ட இயற்கை மற்றும் ரசாயன சிகிச்சைகள் வழங்கப்பட்டுள்ளன." 
-                    : "Calibrated confidence >= 78% (Selective risk <= 2.1%). High-certainty diagnosis with verified remedies enabled."}
+                    ? "கணக்கிடப்பட்ட துல்லியம் >= 78% (இடர் <= 2.1%). குறிப்பிட்ட நோய் அடையாளம் காணப்பட்டு ஆய்வுக்குட்பட்ட சிகிச்சைகள் வழங்கப்பட்டுள்ளன." 
+                    : "Calibrated confidence >= 78% (Selective risk <= 2.1%). High-certainty diagnosis with pilot-gated remedies enabled."}
                 </p>
               </div>
             </div>
@@ -918,13 +918,37 @@ export function CropDoctorScreen({
               {diagnosis.immediateAction}
             </p>
 
-            {/* TIER 1: SPECIFIC CHEMICAL REMEDY ALLOWED */}
+            {/* TIER 1: SPECIFIC CHEMICAL REMEDY ALLOWED WITH PILOT SAFEGUARDS */}
             {diagnosis.tier === "TIER_1_CONFIDENT" && diagnosis.chemicalTreatment && diagnosis.chemicalTreatment.length > 0 && (
-              <div className="pt-1.5 text-[11px] text-zinc-700 bg-white p-2.5 rounded-lg border border-emerald-200">
-                <strong className="text-emerald-900 block font-bold mb-0.5">
-                  {language === "Tamil" ? "பரிந்துரைக்கப்பட்ட ரசாயன அளவு (அங்கீகரிக்கப்பட்டது):" : "Verified Chemical Dosage (Tier 1 Confirmed):"}
-                </strong>
-                <span>{diagnosis.chemicalTreatment.join("; ")}</span>
+              <div className="pt-1.5 text-[11px] text-zinc-700 bg-white p-2.5 rounded-lg border border-emerald-200 space-y-2">
+                <div>
+                  <strong className="text-emerald-900 block font-bold mb-0.5">
+                    {language === "Tamil" ? "பரிந்துரைக்கப்பட்ட ரசாயன அளவு (ஆய்வில் உள்ளது - உறுதிப்படுத்தப்படவில்லை):" : "Prescribed Chemical Formulation (UNVERIFIED - Awaiting Agronomist Sign-Off):"}
+                  </strong>
+                  <span>{diagnosis.chemicalTreatment.join("; ")}</span>
+                </div>
+
+                <div className="bg-amber-50 border border-amber-200 rounded p-2 text-[10px] text-amber-900 space-y-1">
+                  <div className="font-semibold flex items-center justify-between">
+                    <span>{language === "Tamil" ? "ஆய்வு நிலை: UNVERIFIED" : "Status: UNVERIFIED (Pending Agronomist Sign-Off)"}</span>
+                    <span className="text-amber-700 italic">{diagnosis.reviewerName ? `Signed: ${diagnosis.reviewerName}` : "(Awaiting agronomist signature)"}</span>
+                  </div>
+                  {diagnosis.productLabelClaim && (
+                    <div>
+                      <span className="font-semibold">Label Claim: </span>
+                      <span>{diagnosis.productLabelClaim}</span>
+                    </div>
+                  )}
+                  {diagnosis.sourceDocument && (
+                    <div>
+                      <span className="font-semibold">Source Document: </span>
+                      <a href={diagnosis.sourceDocument.url} target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">
+                        {diagnosis.sourceDocument.title}
+                      </a>
+                      <span className="text-gray-500"> ({diagnosis.sourceDocument.section})</span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
