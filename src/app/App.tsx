@@ -2879,10 +2879,10 @@ export default function App() {
           <div className="flex flex-col h-full select-none" style={{ background: BG }}>
             <div style={{ background: "linear-gradient(160deg, #004D40, #00796B)", borderRadius: "0 0 24px 24px" }}>
               <SBar light />
-              <BkHdr title="Crop Health Library" navigate={setScreen} light />
+              <BkHdr title={user.language === "Tamil" ? "பயிர் நலன் & நோய் களஞ்சியம்" : "Crop Health Library"} navigate={setScreen} light />
             </div>
             <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: "none" }}>
-              <CropHealthLibrary />
+              <CropHealthLibrary language={user.language} onBack={() => setScreen("doctor")} />
             </div>
           </div>
         )}
