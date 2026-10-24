@@ -631,7 +631,10 @@ export function FarmRecordsScreen({
               <h3 className="text-sm font-bold text-gray-900">
                 {isTa ? "புதிய நிலப்பிரிவு சேர்க்க" : "Add Cultivation Plot"}
               </h3>
-              <button onClick={() => setShowPlotModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setShowPlotModal(false)}
+                aria-label="Close plot modal"
+                className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <X size={16} />
               </button>
             </div>
@@ -731,7 +734,10 @@ export function FarmRecordsScreen({
               <h3 className="text-sm font-bold text-gray-900">
                 {isTa ? "தெளிப்பு விவரம் பதிவு செய்ய" : "Log Spray Application"}
               </h3>
-              <button onClick={() => setShowSprayModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setShowSprayModal(false)}
+                aria-label="Close spray modal"
+                className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <X size={16} />
               </button>
             </div>
@@ -827,7 +833,10 @@ export function FarmRecordsScreen({
               <h3 className="text-sm font-bold text-gray-900">
                 {isTa ? "செலவைச் சேர்க்க" : "Add Farm Expense"}
               </h3>
-              <button onClick={() => setShowExpenseModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setShowExpenseModal(false)}
+                aria-label="Close expense modal"
+                className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <X size={16} />
               </button>
             </div>

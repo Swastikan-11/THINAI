@@ -1467,7 +1467,10 @@ function HomeScreen({
                     {lang === "Tamil" ? "பண்ணை அறிவிப்புகள்" : "Farm Advisories & Alerts"}
                   </h3>
                 </div>
-                <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
+                <button
+                  onClick={() => setShowNotifications(false)}
+                  aria-label="Close notifications modal"
+                  className="text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center">
                   <X size={16} />
                 </button>
               </div>
