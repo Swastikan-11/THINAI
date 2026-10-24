@@ -88,4 +88,18 @@ test.describe("Phase 3 Screenshots at 360x800", () => {
 
     await page.screenshot({ path: "docs/screenshots/feature2_ai_assistant.png", fullPage: true });
   });
+
+  test("Feature 3: Capture Weather with Spray and Irrigation Rules at 360x800", async ({ page }) => {
+    await page.goto("/?screen=home");
+    await page.waitForTimeout(1500);
+
+    // Scroll to the Weather and Current Conditions card
+    const weatherCard = page.locator("text=/CURRENT CONDITIONS|வானிலை/i").first();
+    if (await weatherCard.isVisible()) {
+      await weatherCard.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(500);
+    }
+
+    await page.screenshot({ path: "docs/screenshots/feature3_weather_rules.png", fullPage: false });
+  });
 });

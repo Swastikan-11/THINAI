@@ -52,7 +52,8 @@ import {
   fetchFarmWeather,
   getCurrentLocationCoordinates,
   WeatherData,
-  evaluateSpraySafety
+  evaluateSpraySafety,
+  evaluateIrrigationAdvice
 } from "../services/weatherService";
 import {
   getMarketIntelligence,
@@ -1102,12 +1103,29 @@ function HomeScreen({
               </button>
             </div>
           </div>
-          {/* Spray-Safety Weather Advisory (Phase 3.2 - Rule-Based) */}
+          {/* Offline Cache Age Banner */}
+          {(weather.status === "CACHED" || weather.isOfflineCached) && (
+            <div className="mt-2.5 p-2 rounded-xl bg-amber-50 border border-amber-300 text-[11px] text-amber-950 flex items-center justify-between">
+              <div className="flex items-center gap-1.5 font-bold">
+                <WifiOff className="w-3.5 h-3.5 text-amber-700" />
+                <span>
+                  {lang === "Tamil"
+                    ? `ஆஃப்லைன் முந்தைய முன்னறிவிப்பு (வயது: ${weather.cacheAgeText || weather.lastUpdatedLabel})`
+                    : `Offline Cached Forecast (Age: ${weather.cacheAgeText || weather.lastUpdatedLabel})`}
+                </span>
+              </div>
+              <span className="text-[10px] font-mono font-bold bg-amber-200/80 px-1.5 py-0.5 rounded">
+                Dexie Cache
+              </span>
+            </div>
+          )}
+
+          {/* Spray-Safety Weather Advisory (Rule-Based with Explicit Rule Shown) */}
           {(() => {
             const sprayAdvisory = evaluateSpraySafety(weather);
             const isTa = lang === "Tamil";
             return (
-              <div className={`mt-3 p-2.5 rounded-xl border text-xs flex flex-col gap-1 transition-all ${
+              <div className={`mt-2.5 p-2.5 rounded-xl border text-xs flex flex-col gap-1 transition-all ${
                 sprayAdvisory.badgeColor === "emerald"
                   ? "bg-emerald-50/90 border-emerald-200 text-emerald-950"
                   : sprayAdvisory.badgeColor === "amber"
@@ -1122,16 +1140,60 @@ function HomeScreen({
                     <span>{isTa ? sprayAdvisory.statusTextTamil : sprayAdvisory.statusText}</span>
                   </div>
                   <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-white/80 border border-current font-bold">
-                    Rule-Based Advisory
+                    Spray Rule
                   </span>
                 </div>
                 <p className="text-[11px] opacity-90 leading-tight">
                   {isTa ? sprayAdvisory.reasonTamil : sprayAdvisory.reason}
                 </p>
+                <div className="mt-0.5 p-1.5 rounded-lg bg-black/5 text-[10px] font-mono border border-black/10">
+                  <strong className="block text-zinc-800">{isTa ? "பயன்படுத்தப்பட்ட விதி:" : "Rule Applied:"}</strong>
+                  <span>{isTa ? sprayAdvisory.ruleUsedTamil : sprayAdvisory.ruleUsed}</span>
+                </div>
                 <div className="flex items-center gap-3 text-[10px] opacity-75 font-mono pt-0.5">
                   <span>Wind: {sprayAdvisory.windSpeed} km/h</span>
                   <span>Rain Prob: {sprayAdvisory.rainProbability}%</span>
                   <span>Temp: {sprayAdvisory.temperature}°C</span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Irrigation Weather Advisory (Rule-Based with Explicit Rule Shown) */}
+          {(() => {
+            const irrigationAdvisory = evaluateIrrigationAdvice(weather, user.soilMoistureStatus || "optimal");
+            const isTa = lang === "Tamil";
+            return (
+              <div className={`mt-2.5 p-2.5 rounded-xl border text-xs flex flex-col gap-1 transition-all ${
+                irrigationAdvisory.badgeColor === "emerald"
+                  ? "bg-emerald-50/90 border-emerald-200 text-emerald-950"
+                  : irrigationAdvisory.badgeColor === "blue"
+                  ? "bg-blue-50/90 border-blue-200 text-blue-950"
+                  : irrigationAdvisory.badgeColor === "amber"
+                  ? "bg-amber-50/90 border-amber-200 text-amber-950"
+                  : "bg-rose-50/90 border-rose-200 text-rose-950"
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 font-bold">
+                    <span className="text-sm">
+                      {irrigationAdvisory.action === "IRRIGATE_NOW" ? "💧" : "🛑"}
+                    </span>
+                    <span>{isTa ? irrigationAdvisory.titleTamil : irrigationAdvisory.title}</span>
+                  </div>
+                  <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-sm bg-white/80 border border-current font-bold">
+                    Irrigation Rule
+                  </span>
+                </div>
+                <p className="text-[11px] opacity-90 leading-tight">
+                  {isTa ? irrigationAdvisory.reasonTamil : irrigationAdvisory.reason}
+                </p>
+                <div className="mt-0.5 p-1.5 rounded-lg bg-black/5 text-[10px] font-mono border border-black/10">
+                  <strong className="block text-zinc-800">{isTa ? "பயன்படுத்தப்பட்ட விதி:" : "Rule Applied:"}</strong>
+                  <span>{isTa ? irrigationAdvisory.ruleUsedTamil : irrigationAdvisory.ruleUsed}</span>
+                </div>
+                <div className="flex items-center gap-3 text-[10px] opacity-75 font-mono pt-0.5">
+                  <span>Rain 48h: {irrigationAdvisory.rainExpectedMm} mm</span>
+                  <span>Soil: {user.soilMoistureStatus || "optimal"}</span>
                 </div>
               </div>
             );

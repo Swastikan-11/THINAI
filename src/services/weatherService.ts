@@ -28,6 +28,10 @@ export interface WeatherData {
   latitude?: number;
   longitude?: number;
   locationName?: string;
+  cacheAgeMinutes?: number;
+  cacheAgeText?: string;
+  isOfflineCached?: boolean;
+  cachedAt?: string;
 }
 
 // Coordinate lookup for agricultural districts
@@ -245,12 +249,16 @@ async function getCachedOrUnavailableWeather(locationLabel: string): Promise<Wea
       const minutesAgo = Math.max(1, Math.round((Date.now() - fetchedDate.getTime()) / (1000 * 60)));
       const timeAgoLabel = minutesAgo < 60 
         ? `${minutesAgo} minute(s) ago` 
-        : `${Math.round(minutesAgo / 60)} hour(s) ago`;
+        : `${Math.floor(minutesAgo / 60)}h ${minutesAgo % 60}m ago`;
 
       return {
         ...cached.data,
         isAvailable: true,
         status: "CACHED",
+        isOfflineCached: true,
+        cacheAgeMinutes: minutesAgo,
+        cacheAgeText: timeAgoLabel,
+        cachedAt: fetchedDate.toLocaleString(),
         source: `Open-Meteo (~11 km grid, ${cached.source})`,
         gridResolution: "~11 km grid",
         lastUpdatedLabel: isValid ? `Cached: ${timeAgoLabel}` : `Stale Cache (>3h): ${timeAgoLabel}`,
@@ -307,9 +315,25 @@ export interface SprayAdvisory {
   badgeColor: "emerald" | "amber" | "rose";
   reason: string;
   reasonTamil: string;
+  ruleUsed: string;
+  ruleUsedTamil: string;
   windSpeed: number;
   rainProbability: number;
   temperature: number;
+}
+
+export interface IrrigationAdvisory {
+  isRecommended: boolean;
+  action: "SUSPEND" | "DELAY" | "MAINTAIN" | "IRRIGATE_NOW";
+  title: string;
+  titleTamil: string;
+  badgeColor: "emerald" | "amber" | "rose" | "blue";
+  reason: string;
+  reasonTamil: string;
+  ruleUsed: string;
+  ruleUsedTamil: string;
+  rainExpectedMm: number;
+  soilMoistureStatus?: string;
 }
 
 export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
@@ -324,6 +348,8 @@ export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
       badgeColor: "amber",
       reason: weather.unavailableReason || "Weather data is unavailable offline. Check wind speed and cloud cover locally before spraying.",
       reasonTamil: "ஆஃப்லைனில் வானிலை தரவு இல்லை. தெளிப்பதற்கு முன் காற்று வேகம் மற்றும் மேகக் கூட்டத்தை நேரில் சரிபார்க்கவும்.",
+      ruleUsed: "Safety Rule: Cold-start offline state requires manual visual verification of wind and foliage moisture.",
+      ruleUsedTamil: "பாதுகாப்பு விதி: வானிலை இல்லாத நிலையில் காற்று மற்றும் இலை ஈரப்பதத்தை நேரில் சரிபார்க்கவும்.",
       windSpeed: 0,
       rainProbability: 0,
       temperature: 0
@@ -339,6 +365,8 @@ export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
       badgeColor: "rose",
       reason: `Rain forecast (${rainProbability}% chance, ${rainfallMmExpected}mm) will wash off chemical inputs within 4 hours.`,
       reasonTamil: `மழை பெய்ய வாய்ப்பு (${rainProbability}%, ${rainfallMmExpected} மிமீ) உள்ளதால் மருந்து கழுவிச் செல்லும் அபாயம்.`,
+      ruleUsed: "TNAU Wash-off Rule: Spray cancelled if rain probability > 40% or expected rain > 2mm within 4h.",
+      ruleUsedTamil: "TNAU விதி: 4 மணி நேரத்திற்குள் மழை வாய்ப்பு > 40% அல்லது மழை > 2 மி.மீ இருப்பின் தெளிப்பு ரத்து.",
       windSpeed,
       rainProbability,
       temperature
@@ -354,6 +382,8 @@ export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
       badgeColor: "amber",
       reason: `Wind speed (${windSpeed} km/h > 15 km/h threshold) causes aerosol drift off target canopy.`,
       reasonTamil: `காற்று வேகம் (${windSpeed} கி.மீ/மணி) அதிகமாக இருப்பதால் தெளிப்பு திரவம் காற்றில் அடித்துச் செல்லப்படும்.`,
+      ruleUsed: "CIBRC Drift Rule: Wind speed > 15 km/h exceeds safe foliar application limits; causes drift to non-target crops.",
+      ruleUsedTamil: "CIBRC விதி: காற்றின் வேகம் மணிக்கு 15 கி.மீக்கு மேல் இருப்பின் தெளிப்பு மருந்து காற்றில் அடித்துச் செல்லப்படும்.",
       windSpeed,
       rainProbability,
       temperature
@@ -369,6 +399,8 @@ export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
       badgeColor: "amber",
       reason: `High ambient temperature (${temperature}°C) accelerates droplet evaporation and leaf scorch risk. Spray during early morning (6-8 AM) or evening.`,
       reasonTamil: `வெப்பநிலை (${temperature}°C) அதிகமாக உள்ளது. அதிகாலை (6-8 மணி) அல்லது மாலை வேளையில் தெளிக்கவும்.`,
+      ruleUsed: "ICAR Volatilization Rule: Ambient temp > 35°C accelerates droplet evaporation and increases chemical phytotoxicity risk.",
+      ruleUsedTamil: "ICAR விதி: வெப்பநிலை > 35°C இருக்கும்போது தெளிப்பு திரவம் வேகமாக ஆவியாகி இலை கருகும் அபாயம்.",
       windSpeed,
       rainProbability,
       temperature
@@ -383,8 +415,122 @@ export function evaluateSpraySafety(weather: WeatherData): SprayAdvisory {
     badgeColor: "emerald",
     reason: `Favorable canopy conditions: Wind speed ${windSpeed} km/h, low rain probability (${rainProbability}%), temp ${temperature}°C.`,
     reasonTamil: `சாதகமான சூழல்: குறைந்த காற்று வேகம் (${windSpeed} கி.மீ/மணி), மழை வாய்ப்புக் குறைவு (${rainProbability}%), வெப்பநிலை ${temperature}°C.`,
+    ruleUsed: "CIBRC / TNAU Optimal Window: Wind <= 15 km/h, Rain Prob <= 40%, Temp <= 35°C (Target Canopy Retention Window).",
+    ruleUsedTamil: "CIBRC / TNAU விதி: காற்று <= 15 கி.மீ, மழை வாய்ப்பு <= 40%, வெப்பநிலை <= 35°C (பாதுகாப்பான தெளிப்பு சூழல்).",
     windSpeed,
     rainProbability,
     temperature
+  };
+}
+
+/**
+ * Irrigation Advice Rule Engine
+ * Deterministic agronomic rules based on TNAU Water Technology Centre protocols.
+ */
+export function evaluateIrrigationAdvice(
+  weather: WeatherData,
+  soilMoistureStatus: "dry" | "optimal" | "wet" = "optimal"
+): IrrigationAdvisory {
+  const rain48h = weather.rainfallMmExpected || 0;
+  const rainProb = weather.rainProbability || 0;
+
+  // 0. Weather Unavailable State
+  if (!weather.isAvailable) {
+    return {
+      isRecommended: false,
+      action: "DELAY",
+      title: "Weather Unavailable - Manual Soil Check Required",
+      titleTamil: "வானிலை இல்லை - மண் ஈரப்பதத்தை நேரில் சரிபார்க்கவும்",
+      badgeColor: "amber",
+      reason: "Live precipitation forecast unavailable. Check top 5 cm of field soil by hand before running pump.",
+      reasonTamil: "மழை முன்னறிவிப்பு இல்லை. பம்பை இயக்குவதற்கு முன் மேல்மண் 5 செ.மீ ஆழத்தில் ஈரப்பதத்தை நேரில் சோதிக்கவும்.",
+      ruleUsed: "Offline Water Rule: In absence of live numerical forecast, soil moisture touch-feel test determines pumping.",
+      ruleUsedTamil: "ஆஃப்லைன் பாசன விதி: வானிலை கணிப்பு இல்லாதபோது கைகளால் மண் ஈரப்பதத்தை பரிசோதித்து முடிவெடுக்கவும்.",
+      rainExpectedMm: 0,
+      soilMoistureStatus
+    };
+  }
+
+  // Rule 1: Heavy Rainfall Expected (>= 15mm)
+  if (rain48h >= 15) {
+    return {
+      isRecommended: false,
+      action: "SUSPEND",
+      title: "Suspend Irrigation (Heavy Rain Forecast)",
+      titleTamil: "பாசனத்தை நிறுத்துங்கள் (கனமழை வாய்ப்பு)",
+      badgeColor: "rose",
+      reason: `Forecasted rainfall of ${rain48h}mm will supply ample root moisture. Further pumping will cause root water-logging and hypoxia.`,
+      reasonTamil: `அடுத்த 48 மணி நேரத்தில் ${rain48h} மி.மீ மழை எதிர்பார்க்கப்படுவதால் பாசனத்தை நிறுத்தவும். நீர் தேங்கினால் வேர் அழுகும்.`,
+      ruleUsed: "TNAU Water Tech Rule 1: Suspend all pumping when upcoming 48h rainfall >= 15 mm to avert waterlogging and electricity waste.",
+      ruleUsedTamil: "TNAU விதி 1: 48 மணி நேரத்தில் மழை >= 15 மி.மீ இருப்பின் பாசனத்தை நிறுத்தி மின்சாரம் மற்றும் டீசலை மிச்சப்படுத்துக.",
+      rainExpectedMm: rain48h,
+      soilMoistureStatus
+    };
+  }
+
+  // Rule 2: Moderate Rain Expected (5 - 14mm or rain probability > 50%)
+  if (rain48h >= 5 || rainProb > 50) {
+    return {
+      isRecommended: false,
+      action: "DELAY",
+      title: "Delay Irrigation by 24 Hours",
+      titleTamil: "பாசனத்தை 24 மணி நேரம் தள்ளிப்போடவும்",
+      badgeColor: "amber",
+      reason: `Moderate rain expected (${rain48h}mm, ${rainProb}% probability). Delay irrigation and evaluate soil after rain passes.`,
+      reasonTamil: `மிதமான மழை வாய்ப்பு (${rain48h} மி.மீ, ${rainProb}% வாய்ப்பு). பாசனத்தை 24 மணி நேரம் தள்ளிவைத்து மழைக்கு பின் சோதிக்கவும்.`,
+      ruleUsed: "TNAU Water Tech Rule 2: Postpone irrigation when rain probability > 50% or precipitation >= 5 mm.",
+      ruleUsedTamil: "TNAU விதி 2: மழை வாய்ப்பு > 50% அல்லது மழை >= 5 மி.மீ இருப்பின் பாசனத்தை ஒரு நாள் தள்ளிப்போடுக.",
+      rainExpectedMm: rain48h,
+      soilMoistureStatus
+    };
+  }
+
+  // Rule 3: Soil Saturated (Wet)
+  if (soilMoistureStatus === "wet") {
+    return {
+      isRecommended: false,
+      action: "DELAY",
+      title: "Delay Irrigation (Soil Saturated)",
+      titleTamil: "பாசனத்தை தள்ளிப்போடவும் (மண் அதிக ஈரமாக உள்ளது)",
+      badgeColor: "amber",
+      reason: "Current field soil moisture is saturated. Allow plot surface to aerate before adding further water.",
+      reasonTamil: "வயலில் போதிய நீர் உள்ளது. மண்ணிற்கு காற்றோட்டம் கிடைக்க நீர் வடிவதை உறுதிசெய்யவும்.",
+      ruleUsed: "ICAR Soil Aeration Rule: Do not irrigate saturated soil (>70% field capacity) to prevent fungal root rot.",
+      ruleUsedTamil: "ICAR விதி: அதிக ஈரப்பதம் உள்ள நிலத்தில் பாசனம் செய்தால் வேர் அழுகல் நோய் தாக்கும்.",
+      rainExpectedMm: rain48h,
+      soilMoistureStatus
+    };
+  }
+
+  // Rule 4: Dry Soil with Clear Forecast (<5mm)
+  if (soilMoistureStatus === "dry" && rain48h < 5) {
+    return {
+      isRecommended: true,
+      action: "IRRIGATE_NOW",
+      title: "Irrigation Recommended (Depleted Soil Moisture)",
+      titleTamil: "பாசனம் தேவை (மண்ணில் ஈரப்பதம் குறைவு)",
+      badgeColor: "blue",
+      reason: "Soil moisture is depleted with dry weather ahead. Apply scheduled drip or light surface irrigation.",
+      reasonTamil: "மண்ணில் ஈரப்பதம் குறைந்துள்ளது மற்றும் மழை வாய்ப்பு இல்லை. திட்டமிட்ட பாசனத்தை தொடங்கலாம்.",
+      ruleUsed: "TNAU Crop Water Requirement Rule: Soil moisture < 35% with < 5 mm rain requires active replenishment.",
+      ruleUsedTamil: "TNAU விதி: குறைந்த மண் ஈரப்பதம் மற்றும் வறண்ட வானிலையில் பாசனம் செய்து பயிர் வாடுவதைத் தடுக்கவும்.",
+      rainExpectedMm: rain48h,
+      soilMoistureStatus
+    };
+  }
+
+  // Rule 5: Optimal Soil Moisture & Stable Weather
+  return {
+    isRecommended: false,
+    action: "MAINTAIN",
+    title: "Maintain Routine Watering Cycle",
+    titleTamil: "வழக்கமான பாசன முறையைத் தொடரவும்",
+    badgeColor: "emerald",
+    reason: `Soil moisture is balanced and rainfall is minimal (${rain48h}mm). Maintain standard alternate-day schedule.`,
+    reasonTamil: `மண் ஈரப்பதம் சீராக உள்ளது. மழைப்பொழிவு குறைவு (${rain48h} மி.மீ). வழக்கமான பாசன முறையைத் தொடரவும்.`,
+    ruleUsed: "TNAU Maintenance Rule: Optimal soil moisture with stable weather; maintain existing irrigation rotation.",
+    ruleUsedTamil: "TNAU பராமரிப்பு விதி: சீரான மண் ஈரப்பதம்; தற்போதைய பாசன சுழற்சியை மாற்ற தேவையில்லை.",
+    rainExpectedMm: rain48h,
+    soilMoistureStatus
   };
 }
