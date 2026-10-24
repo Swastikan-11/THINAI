@@ -216,11 +216,18 @@ export function wilsonScoreInterval(
  * Tier 2 (tau_low <= conf < tau_high): Possible diagnosis, monitoring/cultural only (NO CHEMICALS)
  * Tier 3 (< tau_low): Inconclusive ("cannot tell"), photo saved for expert
  */
+export const IS_G4_FIELD_VALIDATED = false;
+
 export function getConfidenceGatedTier(
   calibratedConfidence: number,
   tauHigh: number = 0.78,
-  tauLow: number = 0.45
+  tauLow: number = 0.45,
+  enforceG4Disabling: boolean = false
 ): "TIER_1_CONFIDENT" | "TIER_2_MODERATE" | "TIER_3_INCONCLUSIVE" {
+  if (enforceG4Disabling && !IS_G4_FIELD_VALIDATED) {
+    if (calibratedConfidence >= tauLow) return "TIER_2_MODERATE";
+    return "TIER_3_INCONCLUSIVE";
+  }
   if (calibratedConfidence >= tauHigh) {
     return "TIER_1_CONFIDENT";
   }
@@ -277,7 +284,7 @@ export function assignTierRemedies(
     return {
       organicTreatment: organicTreatments,
       chemicalTreatment: [],
-      immediateAction: "Monitor the plant daily for 48 hours. Retake photo under clear daylight if lesions spread.",
+      immediateAction: "Possible disease: confirm with an extension officer before applying treatments. Monitor daily for 48 hours.",
       tipsForRetake: [
         "Maintain 10 - 15 cm distance from leaf surface.",
         "Avoid direct harsh sunlight glare or heavy shadows.",
@@ -616,6 +623,34 @@ export async function runNeuralDiseaseInference(
 
       // TIER 1 (Calibrated Confidence >= tau_high): Specific Diagnosis + Remedy Allowed
       if (maxCalibratedProb >= thresholds.tau_high) {
+        if (!IS_G4_FIELD_VALIDATED) {
+          return {
+            source: "LITERT_NEURAL_MODEL",
+            tier: "TIER_2_MODERATE",
+            calibratedConfidence: calibratedPercent,
+            rawConfidence: rawPercent,
+            temperatureApplied: temperature,
+            labelStatus: "possible disease: confirm with an extension officer",
+            isReliable: false,
+            diseaseName: remedy.diseaseName,
+            scientificName: remedy.scientificName,
+            crop: selectedCrop,
+            confidence: calibratedPercent,
+            allProbabilities: allResults.slice(0, 4),
+            symptoms: remedy.symptoms,
+            immediateAction: "Possible disease: confirm with an extension officer before applying treatments.",
+            organicTreatment: remedy.organicTreatment,
+            chemicalTreatment: [
+              "Chemical treatments are disabled pending field validation (Gate G4). Consult your local Agricultural Extension Officer (AAO)."
+            ],
+            preventiveMeasures: remedy.preventiveMeasures,
+            sourceDocument: remedy.sourceDocument,
+            productLabelClaim: remedy.productLabelClaim,
+            reviewerName: remedy.reviewerName,
+            reviewerDate: remedy.reviewerDate,
+            verificationStatus: "UNVERIFIED (Tier 1 Chemical Advice Disabled Pending Gate G4 Field Validation)"
+          };
+        }
         return {
           source: "LITERT_NEURAL_MODEL",
           tier: "TIER_1_CONFIDENT",

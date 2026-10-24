@@ -96,4 +96,10 @@ describe("Confidence-Gated Selective Advisory Engine (Phase G)", () => {
       }
     }
   });
+
+  it("disables Tier 1 when G4 field validation is not passed", () => {
+    expect(getConfidenceGatedTier(0.95, TAU_HIGH, TAU_LOW, true)).toBe("TIER_2_MODERATE");
+    expect(getConfidenceGatedTier(0.50, TAU_HIGH, TAU_LOW, true)).toBe("TIER_2_MODERATE");
+    expect(getConfidenceGatedTier(0.20, TAU_HIGH, TAU_LOW, true)).toBe("TIER_3_INCONCLUSIVE");
+  });
 });

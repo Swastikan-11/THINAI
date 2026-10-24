@@ -2187,6 +2187,38 @@ function ProfileScreen({
           </div>
         </Card>
 
+        {/* Model Accuracy & G4 Status Card (About THINAI Diagnostics) */}
+        <Card>
+          <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-gray-100">
+            <span className="font-bold text-xs text-amber-800 uppercase tracking-wide flex items-center gap-1.5">
+              <Activity size={14} className="text-amber-700" />
+              {lang === "Tamil" ? "கள துல்லியம் & மாதிரி நிலை" : "Model Field Accuracy & Validation"}
+            </span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+              Gate G4: Pending Field Validation
+            </span>
+          </div>
+          <div className="space-y-1.5 text-xs text-gray-700">
+            <div className="flex justify-between py-1 border-b border-gray-100">
+              <span className="text-gray-500">{lang === "Tamil" ? "கள துல்லியம் (PlantDoc, N=125)" : "Field Accuracy (Singh et al., N=125)"}</span>
+              <span className="font-bold text-red-700">25.60%</span>
+            </div>
+            <div className="flex justify-between py-1 border-b border-gray-100">
+              <span className="text-gray-500">{lang === "Tamil" ? "கலிப்ரேஷன் பிழை (ECE)" : "Expected Calibration Error (ECE)"}</span>
+              <span className="font-bold text-amber-700">40.49% (T*=1.28)</span>
+            </div>
+            <div className="flex justify-between py-1 border-b border-gray-100">
+              <span className="text-gray-500">{lang === "Tamil" ? "நிலை 1 வேதியியல் பரிந்துரை" : "Tier 1 Chemical Diagnosis"}</span>
+              <span className="font-bold text-red-600">DISABLED (Cultural Only)</span>
+            </div>
+            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
+              {lang === "Tamil"
+                ? "கள துல்லியம் 25.60% உள்ளதால், நிலை 1 இரசாயன பரிந்துரைகள் முடக்கப்பட்டுள்ளன. அனைத்து ஸ்கேன்களும் விவசாய விரிவாக்க அலுவலரின் (AAO) சரிபார்ப்புக்கு பரிந்துரைக்கப்படுகின்றன."
+                : "Because held-out Indian field accuracy is 25.60% and ECE is 40.49%, Tier 1 chemical diagnoses are strictly disabled. All scans are restricted to cultural advice and routed to extension officers."}
+            </p>
+          </div>
+        </Card>
+
         {/* Change Password Section */}
         <div className="bg-white rounded-2xl p-3 border border-emerald-100 shadow-xs">
           <button
