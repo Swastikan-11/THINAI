@@ -205,7 +205,8 @@ function BkHdr({
     <div className="flex items-center justify-between px-4 py-3 select-none">
       <div className="flex items-center gap-3">
         <button onClick={() => navigate(dest)}
-          className="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
+          aria-label="Back"
+          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all active:scale-90 cursor-pointer"
           style={{ background: light ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.06)" }}>
           <ArrowLeft size={18} color={light ? "#fff" : TX} />
         </button>
@@ -2440,9 +2441,9 @@ function MarketScreen({ navigate, user }: { navigate: (s: Screen) => void; user:
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-gray-900">
+              <h2 className="text-base font-bold text-gray-900">
                 {lang === "Tamil" ? "நேரடி சந்தை விலை கிடைக்கவில்லை" : "Live Mandi Price Unavailable"}
-              </h3>
+              </h2>
               <p className="text-xs text-gray-700 mt-1 leading-relaxed">
                 {priceData.unavailableReason}
               </p>
