@@ -1,0 +1,33 @@
+{
+  "pack_id": "pack_tomato_v1",
+  "crop_id": "tomato",
+  "crop_name_en": "Tomato",
+  "crop_name_ta": "தக்காளி",
+  "model_status": "A",
+  "architecture": "MobileNetV2-Quantized-Head",
+  "classes": [
+    "Tomato___Bacterial_spot",
+    "Tomato___Early_blight",
+    "Tomato___Late_blight",
+    "Tomato___Leaf_Mold",
+    "Tomato___Septoria_leaf_spot",
+    "Tomato___Spider_mites Two-spotted_spider_mite",
+    "Tomato___Target_Spot",
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "Tomato___Tomato_mosaic_virus",
+    "Tomato___healthy",
+    "other_unknown",
+    "not_a_leaf"
+  ],
+  "temperature": 1.28,
+  "tau_high": 0.78,
+  "tau_low": 0.45,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "dataset": "PlantVillage + PlantDoc Field Benchmark",
+  "license": "CC BY 4.0"
+}

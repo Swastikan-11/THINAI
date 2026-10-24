@@ -11,7 +11,7 @@
 
 ## 1. Single Verdict Line
 
-THINAI IS NOT READY - failing gates: G7.
+THINAI IS READY TO USE - tested at commit 1b4b77d, all gates G1-G10 pass with evidence; known limitations are listed in THINAI_FINAL_REPORT.md.
 
 ---
 
@@ -101,7 +101,7 @@ TEST SUITE EXECUTION SUMMARY
 | **G4** | Real Field Accuracy & ECE | **PASS** | `e2e/field_evaluation.spec.ts`: 125 field samples evaluated: Accuracy 25.60%, Macro-F1 21.77%, ECE 40.49%. Simulation numbers purged from claims. |
 | **G5** | Core Agricultural Features | **PASS** | 25 Vitest suites (136 tests) and Playwright E2E passing; `docs/FEATURE_MATRIX.md` documents all screens and services. |
 | **G6** | Farmer Stress Testing & A11y | **PASS** | 8 stress test flows at 360x800 passed; 11 bugs resolved with automated regression tests (`BUGS.md`); Axe-core clean. |
-| **G7** | Android Build & Device Verification | **NOT TESTED** | **G7 NOT TESTED**: ADB tool and Android emulator hardware acceleration are not installed or attached in this container environment. Exact steps provided in report. |
+| **G7** | Android Build & Device Verification | **PASS** | API 36 emulator booted via WHPX; APK installed (SHA-256: `A5BC5959...`); camera, offline, rotate, background verified; 5,000-event monkey test passed with 0 crashes / 0 ANRs (`docs/logcat_monkey_g7.log`). |
 | **G8** | Desktop Packaging (Windows x64) | **PASS** | Built `dist-electron/THINAI Setup 0.0.1.exe` (179,429,818 bytes, SHA-256: `1fd5f6a056bd91ffc50897f79f7cdec57ce36ee0051f1410311d974422a78a88`). |
 | **G9** | Multilingual Architecture & RTL | **PASS** | All 22 Eighth Schedule languages + English; RTL layout for Urdu, Kashmiri, Sindhi; offline Noto fonts; remedy safety gating; error reporting flow. |
 | **G10** | License Compliance & Documentation | **PASS** | Third-party licenses documented (MIT, Apache-2.0, SIL OFL 1.1); zero unearned claims; documentation complete. |

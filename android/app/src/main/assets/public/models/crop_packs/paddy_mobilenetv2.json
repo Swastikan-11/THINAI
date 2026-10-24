@@ -1,0 +1,33 @@
+{
+  "pack_id": "pack_paddy_v1",
+  "crop_id": "paddy",
+  "crop_name_en": "Paddy (Rice)",
+  "crop_name_ta": "நெல்",
+  "model_status": "A",
+  "architecture": "MobileNetV2-Quantized-Head",
+  "classes": [
+    "bacterial_leaf_blight",
+    "bacterial_leaf_streak",
+    "bacterial_panicle_blight",
+    "blast",
+    "brown_spot",
+    "dead_heart",
+    "downy_mildew",
+    "hispa",
+    "normal",
+    "tungro",
+    "other_unknown",
+    "not_a_leaf"
+  ],
+  "temperature": 1.25,
+  "tau_high": 0.78,
+  "tau_low": 0.45,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "dataset": "Paddy Doctor: A Visual Dataset for Paddy Disease Classification",
+  "license": "CC BY 4.0"
+}
