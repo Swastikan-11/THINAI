@@ -15,7 +15,7 @@ describe("BUG-09: Weather Card Accessibility & Contrast Regression Tests", () =>
   });
 
   it("should ensure weather refresh button has >=44px tap target and accessible label", () => {
-    expect(appCode).toContain('aria-label="Refresh live weather forecast"');
+    expect(appCode).toContain('aria-label={`${weather.lastUpdatedLabel || "Live"} - Refresh live weather forecast`}');
     expect(appCode).toContain("min-h-[44px]");
   });
 });

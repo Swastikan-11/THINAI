@@ -741,7 +741,7 @@ function HomeScreen({
             </span>
             <button 
               onClick={onRefreshWeather}
-              aria-label="Refresh live weather forecast"
+              aria-label={`${weather.lastUpdatedLabel || "Live"} - Refresh live weather forecast`}
               className="min-h-[44px] px-2 py-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 shrink-0 ml-2 cursor-pointer"
             >
               <RefreshCw size={12} />

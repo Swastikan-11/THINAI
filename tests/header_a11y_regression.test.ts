@@ -23,7 +23,7 @@ describe("BUG-08: Header & App Shell Accessibility Regression Tests", () => {
   });
 
   it("should ensure SyncStatusBar offline toggle has >=44px tap target and accessible label", () => {
-    expect(syncStatusCode).toContain('aria-label={isOffline ? "Toggle offline mode (currently offline)" : "Toggle offline mode (currently online)"}');
+    expect(syncStatusCode).toContain('aria-label={`${isOffline ? "Offline • ஆஃப்லைன்" : "Online • இணைப்பில்"} - Click to toggle mode`}');
     expect(syncStatusCode).toContain("min-h-[44px]");
   });
 
