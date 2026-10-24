@@ -104,11 +104,9 @@ import { FarmRecordsScreen } from "./components/FarmRecordsScreen";
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
   | "splash" | "onboarding" | "login" | "register"
-  | "home" | "community" | "mycrop" | "doctor" | "disease" | "weather"
+  | "home" | "community" | "mycrop" | "doctor" | "disease"
   | "market" | "schemes" | "services" | "library" | "calculator" | "fieldAccuracy" | "officerDashboard"
-  | "ai" | "voice" | "reports" | "notifications"
-  | "profile" | "editprofile" | "settings" | "help"
-  | "whatif" | "records";
+  | "ai" | "profile" | "editprofile" | "whatif" | "records";
 
 type ToastType = "success" | "error" | "info" | "warning";
 
@@ -545,6 +543,7 @@ function HomeScreen({
   const [showAlternative, setShowAlternative] = useState(false);
   const [whyExpanded, setWhyExpanded] = useState(true);
   const [showARFIDrawer, setShowARFIDrawer] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [diagnosisConfirmed, setDiagnosisConfirmed] = useState(false);
 
   const sprayAdvisory = evaluateSpraySafety(weather);
@@ -584,7 +583,7 @@ function HomeScreen({
               <span className="text-white/40">|</span>
               <span className={lang === "Tamil" ? "text-amber-300 font-black underline underline-offset-2" : "text-white/70"}>தமிழ்</span>
             </button>
-            <button onClick={() => navigate("notifications")}
+            <button onClick={() => setShowNotifications(true)}
               className="w-10 h-10 rounded-full flex items-center justify-center relative bg-white/20 active:scale-95 cursor-pointer">
               <Bell size={16} color="#fff" />
               <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: ACC }} />
@@ -1456,6 +1455,61 @@ function HomeScreen({
             <span className="text-[10px] text-blue-800">Mandi Price Benchmarks</span>
           </button>
         </div>
+
+{/* Agronomic Notifications Modal (Phase 3 Feature 6) */}
+        {showNotifications && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl w-full max-w-sm p-4 space-y-3 shadow-xl">
+              <div className="flex items-center justify-between border-b pb-2">
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-emerald-700" />
+                  <h3 className="text-sm font-bold text-gray-900">
+                    {lang === "Tamil" ? "பண்ணை அறிவிப்புகள்" : "Farm Advisories & Alerts"}
+                  </h3>
+                </div>
+                <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="space-y-2 max-h-80 overflow-y-auto text-xs">
+                {/* Spray Alert */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-gray-800">
+                      {lang === "Tamil" ? "தெளிப்பு பாதுகாப்பு ஆலோசனை" : "Spray Safety Advisory"}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      sprayAdvisory.isSafe ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                    }`}>
+                      {sprayAdvisory.isSafe ? "SAFE TO SPRAY" : "AVOID SPRAYING"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-600">{lang === "Tamil" ? sprayAdvisory.reasonTamil : sprayAdvisory.reason}</p>
+                </div>
+
+                {/* Weather Alert */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-gray-800">
+                      {lang === "Tamil" ? "வானிலை முன்னறிவிப்பு" : "Weather Condition"}
+                    </span>
+                    <span className="text-[10px] text-gray-500">{weather.locationName || user.district || "Farm"}</span>
+                  </div>
+                  <p className="text-[11px] text-gray-600">
+                    {weather.temperature}°C, {weather.humidity}% humidity, {weather.condition}. Wind: {weather.windSpeed} km/h.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowNotifications(false)}
+                className="w-full py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs">
+                {lang === "Tamil" ? "சரி" : "Dismiss"}
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

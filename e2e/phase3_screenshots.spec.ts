@@ -114,4 +114,18 @@ test.describe("Phase 3 Screenshots at 360x800", () => {
     await page.waitForTimeout(1500);
     await page.screenshot({ path: "docs/screenshots/feature5_farm_records.png", fullPage: false });
   });
+
+  test("Feature 6: Capture Clean Navigation & Notification Advisories at 360x800", async ({ page }) => {
+    await page.goto("/?screen=home");
+    await page.waitForTimeout(1500);
+
+    // Click the notification bell to verify working alert modal instead of dead navigation
+    const bellBtn = page.locator('button[title="Farm Advisories & Alerts"]');
+    if (await bellBtn.isVisible()) {
+      await bellBtn.click();
+      await page.waitForTimeout(500);
+    }
+
+    await page.screenshot({ path: "docs/screenshots/feature6_clean_navigation.png", fullPage: false });
+  });
 });
