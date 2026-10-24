@@ -1,7 +1,7 @@
 {
   "gate": "G1",
   "name": "Code Quality & Build",
-  "sha": "bef9ab50f625a2378270029cb968bd26eb6d8484",
+  "sha": "5c74517053e7f66bb7818cdecc503918af7fc4a9",
   "command": "npx tsc --noEmit && npm run build",
   "timestamp": "2026-10-24T14:15:56Z",
   "metrics": {

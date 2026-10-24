@@ -1,7 +1,7 @@
 {
   "gate": "G4",
   "name": "Field ML Performance & Calibration",
-  "sha": "bef9ab50f625a2378270029cb968bd26eb6d8484",
+  "sha": "5c74517053e7f66bb7818cdecc503918af7fc4a9",
   "command": "npx playwright test e2e/field_evaluation.spec.ts",
   "timestamp": "2026-10-24T14:17:17Z",
   "metrics": {

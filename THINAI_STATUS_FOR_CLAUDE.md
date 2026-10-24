@@ -4,23 +4,24 @@
 **Repository**: `https://github.com/Swastikan-11/THINAI.git` (Status: **PUBLIC**)  
 **Working Directory**: `c:\Users\cswas\Documents\THINAI`  
 **Current Branch**: `main`  
-**Tested Commit SHA**: `bef9ab50f625a2378270029cb968bd26eb6d8484` (`bef9ab5`)  
-**Release Tag**: `v1.0.0-rc`
+**Tested Commit SHA**: `5c74517053e7f66bb7818cdecc503918af7fc4a9` (`5c74517`)  
+**Release Tag**: (None - deleted local and remote tags until verification passes)
 
 ---
 
 ## 1. Single Verdict Line (Pasted Verbatim from `node scripts/verify_gates.mjs`)
 
-THINAI IS NOT READY - failing gates: G4.
+THINAI IS NOT READY - failing gates: G4, G10.
 
 ---
 
 ## 2. Git Status & Repository Governance
 
 - **Active Branch**: `main`
-- **Tested Commit SHA**: `bef9ab50f625a2378270029cb968bd26eb6d8484` (clean working tree for audit)
+- **Tested Commit SHA**: `5c74517053e7f66bb7818cdecc503918af7fc4a9`
 - **Remote Origin**: `https://github.com/Swastikan-11/THINAI.git`
-- **Key Secrets**: Formally retired development keystores (`thinai-release-key.jks`, password `thinai2026` committed in historical commit `d774219`). Verified never signed any distributed APK. CI release binaries signed exclusively via GitHub Secrets (`ANDROID_KEYSTORE_BASE64`). Zero secrets or private keys in current code.
+- **Production Keystore Signing (G9)**: CI release APK is signed with production certificate (`CN=THINAI Production Release`, SHA-256 `5a5b2ea2cbe3e4ab7c6dff0267b3e2b78115836419c367965915fcb50a201cc4`) generated and externalized to GitHub Secrets. Keystore owned by SWASTIKAN C (`swastikan.2401246@srec.ac.in`), backed up securely at `C:\Users\cswas\.thinai_keys\thinai-prod-release.keystore`. Compromised historical debug key (`d774219`) is formally retired and verified never to have signed any distributed APK.
+- **Git Tags**: Remote and local `v1.0.0-rc` tags deleted per audit instructions. No new tag created until `verify_gates.mjs` outputs READY.
 
 ---
 
@@ -90,10 +91,10 @@ TEST SUITE EXECUTION SUMMARY (Tested at commit bef9ab5)
 | **G4** | **Field ML Performance & Calibration** | **FAIL** | `evidence/G4.json`: Evaluated on 125 Indian field samples (PlantDoc): Empirical Accuracy = 25.60% (95% Wilson CI: [18.66%, 34.02%]), Macro-F1 = 21.77%, Field ECE = 40.49% ($T^*=1.28$). Pilot protocol thresholds not set by owner -> G4 FAIL. In response, Tier 1 chemical advice is disabled in code for all crops. |
 | **G5** | **Selective Gating & Safety Invariants** | **PASS** | `evidence/G5.json`: 200 random input trials emit 0 chemical advice in Tier 2/3. Tier 1 chemical diagnoses disabled in code while G4 fails; cultural/monitoring advice only; remedies require officer sign-off. |
 | **G6** | **Offline Capability & Sync** | **PASS** | `evidence/G6.json`: Service worker precache verified; Dexie IndexedDB offline mutation queue with FIFO ordering and LWW conflict resolution verified in 19 tests. |
-| **G7** | **Mobile Native & Android 16 on Target** | **PASS** | `evidence/G7.json`: CI signed release APK (`THINAI-app-release-apk`, SHA-256: `AC3F9C8EA4D91B34C3026DC88E563B63355D97B56A05759278032494F6CB62F7`) verified with `apksigner` v2. Installed on API 36 emulator. Passed 5,000-event monkey stress test (`docs/logcat_ci_release_monkey_g7.log`: 0 fatal, 0 ANRs). Real phone: NOT TESTED. |
+| **G7** | **Mobile Native & Android 16 on Target** | **PASS** | `evidence/G7.json`: CI release APK (`THINAI-app-release-apk`, run 40104107409, head SHA `5c74517`, SHA-256 `4BB7C6DFBE26A3B514FA91CE29AB20511D6369BD5D43F7200A29C07A9223E691`) signed with production cert (`CN=THINAI Production Release`). Installed on Android 16 (API 36) emulator. Passed all 12 functional flows with screenshots and 5,000-event monkey stress test (`docs/monkey_ci_release_output.txt`: `Dropped: keys=0 pointers=0 trackballs=0 flips=10 rotations=0`; `docs/logcat_ci_release_monkey_g7.log`: 0 fatal, 0 ANRs). Real phone: NOT TESTED (awaiting user logs). |
 | **G8** | **Live Network Services & Transparent Fallbacks** | **PASS** | `evidence/G8.json`: Open-Meteo live API verified (135ms latency); Agmarknet fallback transparently labeled "Benchmark Price"; curated TNAU/ICAR assistant verified. |
-| **G9** | **Security, Keystore & Zero Committed Secrets** | **PASS** | `evidence/G9.json`: Compromised historical keystore formally retired; CI release signing uses GitHub Secrets; 23/23 emulator rules pass; 0 secrets in active git tree. |
-| **G10** | **Field Pilot Protocol & Extension Dashboard** | **PASS** | `evidence/G10.json`: `PILOT_PROTOCOL.md` pre-registered; DPDP Act affirmative consent; extension officer collection rules and dashboard verified. |
+| **G9** | **Security, Keystore & Zero Committed Secrets** | **PASS** | `evidence/G9.json`: CI release signing verified via non-debug production certificate (`CN=THINAI Production Release`, SHA-256 `5a5b2ea2cbe3e4ab7c6dff0267b3e2b78115836419c367965915fcb50a201cc4`); path resolution bug in `build.gradle` fixed; secrets externalized; compromised historical key `d774219` retired; 23/23 emulator rules pass. |
+| **G10** | **Field Pilot Protocol & Extension Dashboard** | **FAIL** | `evidence/G10.json`: Pilot protocol pre-registered in `PILOT_PROTOCOL.md`, but threshold parameters (`tau_high`, `tau_low`) are marked PROPOSED-BY-AGENT and have not been approved/set by owner -> FAIL per audit criteria. |
 
 ---
 
