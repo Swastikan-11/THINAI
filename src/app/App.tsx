@@ -10,7 +10,8 @@ import {
   Trees, Wifi, WifiOff, Bot, Phone, ChevronDown, BarChart2,
   Microscope, RefreshCw, X, CheckCircle, AlertCircle, Edit3,
   Trash2, MapPin, Landmark, Clock, Plus, ThumbsUp, ThumbsDown, BookOpen, Layers,
-  Compass, Share2, Sparkles, Filter, CheckSquare, ShieldAlert, Sliders, Wrench
+  Compass, Share2, Sparkles, Filter, CheckSquare, ShieldAlert, Sliders, Wrench,
+  FileSpreadsheet
 } from "lucide-react";
 import {
   AreaChart, Area, LineChart, Line, BarChart, Bar,
@@ -98,6 +99,7 @@ import { CropDoctorScreen } from "./components/CropDoctorScreen";
 import { CommunityScreen } from "./components/CommunityScreen";
 import { FieldAccuracyScreen } from "./components/FieldAccuracyScreen";
 import { OfficerDashboardScreen } from "./components/OfficerDashboardScreen";
+import { FarmRecordsScreen } from "./components/FarmRecordsScreen";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Screen =
@@ -106,7 +108,7 @@ export type Screen =
   | "market" | "schemes" | "services" | "library" | "calculator" | "fieldAccuracy" | "officerDashboard"
   | "ai" | "voice" | "reports" | "notifications"
   | "profile" | "editprofile" | "settings" | "help"
-  | "whatif";
+  | "whatif" | "records";
 
 type ToastType = "success" | "error" | "info" | "warning";
 
@@ -230,7 +232,7 @@ function BNav({
   const getTab = (s: Screen) => {
     if (["home", "whatif", "mycrop", "doctor", "disease"].includes(s)) return "home";
     if (s === "community") return "community";
-    if (["services", "schemes", "calculator", "library", "market", "weather"].includes(s)) return "services";
+    if (["services", "schemes", "calculator", "library", "market", "weather", "records"].includes(s)) return "services";
     return "profile";
   };
 
@@ -943,13 +945,21 @@ function HomeScreen({
             <span className="text-[10px] text-zinc-500 font-mono">Decision & Field Tools</span>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center text-xs">
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 text-center text-xs">
             <button
-              onClick={() => navigate("mycrop")}
+              onClick={() => navigate("records")}
               className="p-2 rounded-xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200 transition-all flex flex-col items-center gap-1 active:scale-95"
             >
-              <Sprout className="w-5 h-5 text-emerald-700" />
-              <span className="font-bold text-[11px] text-emerald-950">My Crop</span>
+              <FileSpreadsheet className="w-5 h-5 text-emerald-700" />
+              <span className="font-bold text-[11px] text-emerald-950">Records</span>
+            </button>
+
+            <button
+              onClick={() => navigate("mycrop")}
+              className="p-2 rounded-xl bg-teal-50/70 hover:bg-teal-100/80 border border-teal-200 transition-all flex flex-col items-center gap-1 active:scale-95"
+            >
+              <Sprout className="w-5 h-5 text-teal-700" />
+              <span className="font-bold text-[11px] text-teal-950">My Crop</span>
             </button>
 
             <button
@@ -3035,6 +3045,23 @@ export default function App() {
           </div>
         )}
 
+        {screen === "records" && (
+          <div className="flex flex-col h-full select-none" style={{ background: BG }}>
+            <div className="flex-1 overflow-hidden">
+              <FarmRecordsScreen
+                userId={firebaseUser?.uid || "local-user"}
+                farmerName={user.name}
+                language={user.language}
+                primaryCrop={user.primaryCrop}
+                cropVariety={user.cropVariety}
+                farmSize={user.farmSize}
+                soilType={user.soilType}
+                onBack={() => setScreen("home")}
+              />
+            </div>
+          </div>
+        )}
+
         {screen === "library" && (
           <div className="flex flex-col h-full select-none" style={{ background: BG }}>
             <div style={{ background: "linear-gradient(160deg, #004D40, #00796B)", borderRadius: "0 0 24px 24px" }}>
@@ -3157,7 +3184,7 @@ export default function App() {
       </div>
 
       {/* Persistent Bottom Navigation */}
-      {["home", "community", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile"].includes(screen) && (
+      {["home", "community", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile", "records"].includes(screen) && (
         <BNav screen={screen} navigate={setScreen} lang={user.language} />
       )}
 

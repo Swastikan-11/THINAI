@@ -108,4 +108,10 @@ test.describe("Phase 3 Screenshots at 360x800", () => {
     await page.waitForTimeout(1500);
     await page.screenshot({ path: "docs/screenshots/feature4_market_prices.png", fullPage: false });
   });
+
+  test("Feature 5: Capture Farm Records (Plots, Sowing, Sprays, Expenses) at 360x800", async ({ page }) => {
+    await page.goto("/?screen=records");
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: "docs/screenshots/feature5_farm_records.png", fullPage: false });
+  });
 });
