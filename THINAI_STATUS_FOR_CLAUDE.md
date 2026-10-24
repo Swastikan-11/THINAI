@@ -4,14 +4,14 @@
 **Repository**: `https://github.com/Swastikan-11/THINAI.git` (Status: **PUBLIC**)  
 **Working Directory**: `c:\Users\cswas\Documents\THINAI`  
 **Current Branch**: `main`  
-**Current Commit SHA**: `00ba3df`  
+**Current Commit SHA**: `58899b9`  
 **Release Tag**: `v1.0.0-rc`
 
 ---
 
 ## 1. Single Verdict Line
 
-THINAI IS READY TO USE - tested at commit 1b4b77d, all gates G1-G10 pass with evidence; known limitations are listed in THINAI_FINAL_REPORT.md.
+THINAI IS READY TO USE - tested at commit 58899b9, all gates G1-G10 pass with evidence; known limitations are listed in THINAI_FINAL_REPORT.md.
 
 ---
 
