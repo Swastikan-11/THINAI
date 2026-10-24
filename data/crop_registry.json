@@ -59,8 +59,8 @@
         "pack_id": "pack_paddy_v1",
         "model_file": "/models/crop_packs/paddy_mobilenetv2.json",
         "weights_file": "/models/crop_packs/paddy_mobilenetv2.bin",
-        "sha256": "4a7f01c8901b8e21a20726d4be0c2ef3b9d107a4a90f19c8f62c8eb113e1c6b1",
-        "size_bytes": 2842104,
+        "sha256": "19925013fb222f6b0591bae8f2f9a68d49abc9913ff5761c18b11b633d7f00f2",
+        "size_bytes": 28672,
         "temperature": 1.25,
         "tau_high": 0.78,
         "tau_low": 0.45
@@ -116,8 +116,8 @@
         "pack_id": "pack_tomato_v1",
         "model_file": "/models/crop_packs/tomato_mobilenetv2.json",
         "weights_file": "/models/crop_packs/tomato_mobilenetv2.bin",
-        "sha256": "5c68b54964be3de66d7ad5f5bbd90ae09be8cf79a32cce611a3b17478d1fb527",
-        "size_bytes": 3145728,
+        "sha256": "d6a26de3115520e8075623a1214d1c0a9fc717afdc34967a7ab3bd9050558d87",
+        "size_bytes": 28672,
         "temperature": 1.28,
         "tau_high": 0.78,
         "tau_low": 0.45
@@ -164,8 +164,8 @@
         "pack_id": "pack_potato_v1",
         "model_file": "/models/crop_packs/potato_mobilenetv2.json",
         "weights_file": "/models/crop_packs/potato_mobilenetv2.bin",
-        "sha256": "8f37bc44a86f91d5965427844093cbe2315fa1d59b20b66ae8fef226ca49514e",
-        "size_bytes": 1887436,
+        "sha256": "e87d02e938e4bae88dd1d1a96c1b53910988b78856aa9ef3b16c4692163ccacd",
+        "size_bytes": 21504,
         "temperature": 1.28,
         "tau_high": 0.78,
         "tau_low": 0.45
@@ -211,8 +211,8 @@
         "pack_id": "pack_chilli_v1",
         "model_file": "/models/crop_packs/chilli_mobilenetv2.json",
         "weights_file": "/models/crop_packs/chilli_mobilenetv2.bin",
-        "sha256": "2df00e9ca178cb96d3f237bf3096e216c561bcf704e6e66bfebfe82c5f0ebf08",
-        "size_bytes": 1677721,
+        "sha256": "65fbe4cfd1cff34d034da34621e988925980640b86fc9c8d94f4e914ed9a8a46",
+        "size_bytes": 20480,
         "temperature": 1.28,
         "tau_high": 0.78,
         "tau_low": 0.45
@@ -260,8 +260,8 @@
         "pack_id": "pack_maize_v1",
         "model_file": "/models/crop_packs/maize_mobilenetv2.json",
         "weights_file": "/models/crop_packs/maize_mobilenetv2.bin",
-        "sha256": "1ba5c65f9bbcd531c36f564fe06cbaea731a5518b0ad52c1e14936da764ec5b8",
-        "size_bytes": 2097152,
+        "sha256": "f93ca34b4f88ed108897230ec57fd96d233c01084955570b2e659d489bc3baba",
+        "size_bytes": 22528,
         "temperature": 1.28,
         "tau_high": 0.78,
         "tau_low": 0.45
@@ -309,11 +309,11 @@
         "pack_id": "pack_cotton_v1",
         "model_file": "/models/crop_packs/cotton_mobilenetv2.json",
         "weights_file": "/models/crop_packs/cotton_mobilenetv2.bin",
-        "sha256": "e30e13bbd387f3ee150ff2e3b2e54ceac42699eb3c1a2d5918bb1261d56358ad",
-        "size_bytes": 2097152,
-        "temperature": 1.30,
+        "sha256": "2d1a9f5584871d9e077237ce820f7954c0446d6cd1fba83128726c67bdd9f33a",
+        "size_bytes": 22528,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -359,11 +359,11 @@
         "pack_id": "pack_sugarcane_v1",
         "model_file": "/models/crop_packs/sugarcane_mobilenetv2.json",
         "weights_file": "/models/crop_packs/sugarcane_mobilenetv2.bin",
-        "sha256": "b735227d81a966ca5c39eeec28ca28114be26f59bf07ca8d96b92f4477d64380",
-        "size_bytes": 2200000,
-        "temperature": 1.30,
+        "sha256": "c5e8957c5b931ffaa072155235530649c1862e9cc048b5109b5e68e32d0f9de0",
+        "size_bytes": 23552,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -410,11 +410,11 @@
         "pack_id": "pack_groundnut_v1",
         "model_file": "/models/crop_packs/groundnut_mobilenetv2.json",
         "weights_file": "/models/crop_packs/groundnut_mobilenetv2.bin",
-        "sha256": "d41d8cd98f00b204e9800998ecf8427e02938ab4c478e09e13d11b3f94a108a7",
-        "size_bytes": 2350000,
-        "temperature": 1.30,
+        "sha256": "b57b8f749d825a24d37762945a243c241b9ba30c0201055a9ffb54f058c2ee13",
+        "size_bytes": 24576,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -459,11 +459,11 @@
         "pack_id": "pack_banana_v1",
         "model_file": "/models/crop_packs/banana_mobilenetv2.json",
         "weights_file": "/models/crop_packs/banana_mobilenetv2.bin",
-        "sha256": "47de7c805eb384c3be99d0ae41d3b5b6cf711d94efabfb9863864aa8a964177d",
-        "size_bytes": 2100000,
-        "temperature": 1.30,
+        "sha256": "da403e52191590bca58ae2fe9f9ae8177767253ebc5c41989cf64f81d4acfa2f",
+        "size_bytes": 22528,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -512,11 +512,11 @@
         "pack_id": "pack_mango_v1",
         "model_file": "/models/crop_packs/mango_mobilenetv2.json",
         "weights_file": "/models/crop_packs/mango_mobilenetv2.bin",
-        "sha256": "92db5803a6750058de444bb0da28cb39cf062fb02c81d2be118855e9c063428d",
-        "size_bytes": 2600000,
-        "temperature": 1.30,
+        "sha256": "6e8c2ce08515a54e3cf010893ba3194187e8db3185ba95a50f78982a6588cbf6",
+        "size_bytes": 26624,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -560,11 +560,11 @@
         "pack_id": "pack_tapioca_v1",
         "model_file": "/models/crop_packs/tapioca_mobilenetv2.json",
         "weights_file": "/models/crop_packs/tapioca_mobilenetv2.bin",
-        "sha256": "4b68ef534a70f7bb0d9e7d993e3e00cf9d690a21cf3e6e879008f1b63ef549f3",
-        "size_bytes": 2150000,
-        "temperature": 1.30,
+        "sha256": "946b72fcdd2a36bc40679bf8a9b5c1175d8080e03283cc8303327540bd9332a8",
+        "size_bytes": 22528,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -611,11 +611,11 @@
         "pack_id": "pack_brinjal_v1",
         "model_file": "/models/crop_packs/brinjal_mobilenetv2.json",
         "weights_file": "/models/crop_packs/brinjal_mobilenetv2.bin",
-        "sha256": "dfb091e0a846f4e040a4231843b44b82d02c89dd1a5e1e1273950ef55c1103c2",
-        "size_bytes": 2250000,
-        "temperature": 1.30,
+        "sha256": "6afd15b5a92458a45c4f7f5176b4c0adcb1b428727b81d42ce6a37d633a100a6",
+        "size_bytes": 24576,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {
@@ -662,11 +662,11 @@
         "pack_id": "pack_coconut_v1",
         "model_file": "/models/crop_packs/coconut_mobilenetv2.json",
         "weights_file": "/models/crop_packs/coconut_mobilenetv2.bin",
-        "sha256": "81c3d10a2489e1b21ee4bb91f9b3b88b48f657a7e805566f1fcb73966fb9e9f2",
-        "size_bytes": 2400000,
-        "temperature": 1.30,
+        "sha256": "7ea9b6dd397b5affe9962ceea07d83f131d868541d30e9a703cac0af7958d6a8",
+        "size_bytes": 23552,
+        "temperature": 1.3,
         "tau_high": 0.85,
-        "tau_low": 0.50
+        "tau_low": 0.5
       }
     },
     {

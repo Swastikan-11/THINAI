@@ -1,0 +1,31 @@
+{
+  "pack_id": "pack_mango_v1",
+  "crop_id": "mango",
+  "crop_name_en": "Mango",
+  "crop_name_ta": "மாங்காய்",
+  "model_status": "B",
+  "architecture": "MobileNetV2-Quantized-Head",
+  "classes": [
+    "Anthracnose",
+    "Bacterial Canker",
+    "Cutting Weevil",
+    "Die Back",
+    "Gall Midge",
+    "Powdery Mildew",
+    "Sooty Mould",
+    "Healthy",
+    "other_unknown",
+    "not_a_leaf"
+  ],
+  "temperature": 1.3,
+  "tau_high": 0.85,
+  "tau_low": 0.5,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "dataset": "MangoLeafBD: A Comprehensive Image Dataset for Mango Leaf Diseases",
+  "license": "CC BY 4.0"
+}

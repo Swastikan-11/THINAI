@@ -1,0 +1,27 @@
+{
+  "pack_id": "pack_cotton_v1",
+  "crop_id": "cotton",
+  "crop_name_en": "Cotton",
+  "crop_name_ta": "பருத்தி",
+  "model_status": "B",
+  "architecture": "MobileNetV2-Quantized-Head",
+  "classes": [
+    "Bacterial Blight",
+    "Curl Virus",
+    "Fusarium Wilt",
+    "Healthy",
+    "other_unknown",
+    "not_a_leaf"
+  ],
+  "temperature": 1.3,
+  "tau_high": 0.85,
+  "tau_low": 0.5,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "dataset": "CoSEV Cotton Leaf Disease Dataset",
+  "license": "CC BY 4.0"
+}

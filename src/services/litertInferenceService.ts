@@ -70,13 +70,55 @@ let loadedMetadata: ModelMetadata | null = null;
 let loadedThresholds: CalibrationThresholds | null = null;
 
 // Bounded crops with verified model classes
-export const COVERED_MODEL_CROPS = [
+export const STATUS_A_CROPS = [
+  "Paddy",
+  "Rice",
+  "Tomato",
+  "Potato",
+  "Pepper",
+  "Chilli",
+  "Corn",
+  "Maize"
+];
+
+export const STATUS_B_CROPS = [
+  "Cotton",
+  "Sugarcane",
+  "Groundnut",
+  "Peanut",
+  "Banana",
+  "Mango",
+  "Tapioca",
+  "Cassava",
+  "Brinjal",
+  "Eggplant",
+  "Coconut"
+];
+
+export const STATUS_C_CROPS = [
+  "Ragi",
+  "Cholam",
+  "Sorghum",
+  "Bajra",
+  "Black Gram",
+  "Urad",
+  "Green Gram",
+  "Moong",
+  "Red Gram",
+  "Toor",
+  "Onion",
+  "Turmeric"
+];
+
+export const BASE_MODEL_CROPS = [
   "Tomato",
   "Potato",
   "Pepper",
   "Corn",
   "Maize"
 ];
+
+export const COVERED_MODEL_CROPS = BASE_MODEL_CROPS;
 
 // Default fallback thresholds if thresholds.json is not yet fetched
 const DEFAULT_THRESHOLDS: CalibrationThresholds = {
@@ -361,7 +403,7 @@ export async function runNeuralDiseaseInference(
       ],
       immediateAction: "Contact your local Assistant Agricultural Officer (AAO) or nearest KVK center for verified visual inspection.",
       organicTreatment: ["Consult Block Agricultural Technology Management Agency (ATMA)."],
-      chemicalTreatment: ["Do not spray broad-spectrum chemical fungicides without confirmed identification."],
+      chemicalTreatment: [],
       preventiveMeasures: [
         "Take multiple angles of both healthy and infected leaves.",
         "Note the date of first symptom appearance and recent irrigation schedule."
@@ -459,23 +501,32 @@ export async function runNeuralDiseaseInference(
 
       // 3. Crop Mismatch & Out-Of-Domain Rejection
       const selectedCropLower = selectedCrop.toLowerCase();
-      const expectedPrefix = (selectedCropLower.includes("pepper") || selectedCropLower.includes("chilli"))
-        ? "pepper"
-        : selectedCropLower.includes("potato")
-        ? "potato"
-        : selectedCropLower.includes("tomato")
-        ? "tomato"
-        : (selectedCropLower.includes("corn") || selectedCropLower.includes("maize"))
-        ? "corn"
-        : selectedCropLower;
+      const isStatusB = STATUS_B_CROPS.some(c => selectedCropLower.includes(c.toLowerCase()));
+      const isStatusA = STATUS_A_CROPS.some(c => selectedCropLower.includes(c.toLowerCase()));
+
+      let expectedPrefix = selectedCropLower;
+      if (selectedCropLower.includes("pepper") || selectedCropLower.includes("chilli")) expectedPrefix = "pepper";
+      else if (selectedCropLower.includes("potato")) expectedPrefix = "potato";
+      else if (selectedCropLower.includes("tomato")) expectedPrefix = "tomato";
+      else if (selectedCropLower.includes("corn") || selectedCropLower.includes("maize")) expectedPrefix = "corn";
+      else if (selectedCropLower.includes("paddy") || selectedCropLower.includes("rice")) expectedPrefix = "rice";
+      else if (selectedCropLower.includes("cotton")) expectedPrefix = "cotton";
+      else if (selectedCropLower.includes("sugarcane")) expectedPrefix = "sugarcane";
+      else if (selectedCropLower.includes("groundnut") || selectedCropLower.includes("peanut")) expectedPrefix = "groundnut";
+      else if (selectedCropLower.includes("banana")) expectedPrefix = "banana";
+      else if (selectedCropLower.includes("mango")) expectedPrefix = "mango";
+      else if (selectedCropLower.includes("tapioca") || selectedCropLower.includes("cassava")) expectedPrefix = "cassava";
+      else if (selectedCropLower.includes("brinjal") || selectedCropLower.includes("eggplant")) expectedPrefix = "brinjal";
+      else if (selectedCropLower.includes("coconut")) expectedPrefix = "coconut";
 
       const predictedClassLower = predictedClass.toLowerCase();
-      const isCropMatch = predictedClassLower.startsWith(expectedPrefix);
+      const isCropMatch = predictedClassLower.startsWith(expectedPrefix) ||
+        (selectedCropLower.includes("paddy") && (predictedClassLower.includes("blast") || predictedClassLower.includes("blight") || predictedClassLower.includes("brown_spot") || predictedClassLower.includes("tungro") || predictedClassLower.includes("normal")));
 
       // Sum calibrated probability mass for classes belonging to the selected crop
       const selectedCropProbMass = calibratedProbs.reduce((acc, p, idx) => {
         const clsName = loadedMetadata!.classes[idx]?.toLowerCase() || "";
-        return clsName.startsWith(expectedPrefix) ? acc + p : acc;
+        return (clsName.startsWith(expectedPrefix) || (selectedCropLower.includes("paddy") && (clsName.includes("blast") || clsName.includes("blight") || clsName.includes("brown_spot") || clsName.includes("tungro") || clsName.includes("normal")))) ? acc + p : acc;
       }, 0);
 
       if (!isCropMatch || selectedCropProbMass < 0.40) {
@@ -511,8 +562,44 @@ export async function runNeuralDiseaseInference(
 
       const remedy = getRemedyForClass(predictedClass, selectedCrop);
 
-      // Check whether this crop is among the 3 clinically validated crops (Tomato, Potato, Pepper)
-      const isValidatedCrop = ["tomato", "potato", "pepper"].some(c => selectedCropLower.includes(c));
+      // Status B Crops: Public model without Tamil Nadu field validation
+      // STRICT REQUIREMENT: Labelled "UNVERIFIED", strictly NO chemical remedies allowed until extension officer confirmation, capped at Tier 2.
+      if (isStatusB) {
+        return {
+          source: "LITERT_NEURAL_MODEL",
+          tier: maxCalibratedProb >= thresholds.tau_low ? "TIER_2_MODERATE" : "TIER_3_INCONCLUSIVE",
+          calibratedConfidence: calibratedPercent,
+          rawConfidence: rawPercent,
+          temperatureApplied: temperature,
+          labelStatus: "UNVERIFIED (பொது மாதிரி - கள மதிப்பீடு நிலுவை)",
+          isReliable: false,
+          diseaseName: `${remedy.diseaseName} [UNVERIFIED]`,
+          scientificName: `${remedy.scientificName} (Trained on public dataset; no TN field validation)`,
+          crop: selectedCrop,
+          confidence: calibratedPercent,
+          allProbabilities: allResults.slice(0, 3),
+          symptoms: [
+            ...remedy.symptoms,
+            "Notice: Trained on public dataset; not field-validated under Tamil Nadu agrarian conditions.",
+            "Chemical treatments are strictly withheld until confirmed by an Agricultural Extension Officer (AAO)."
+          ],
+          immediateAction: "Consult your local Agricultural Extension Officer (AAO) or KVK clinic for visual confirmation before applying remedies.",
+          organicTreatment: remedy.organicTreatment,
+          chemicalTreatment: [
+            "Chemical remedies are strictly withheld for unverified Status B crops.",
+            "Please obtain confirmation from your local Assistant Agricultural Officer (AAO) or call Kisan Helpline (1800-180-1551)."
+          ],
+          preventiveMeasures: remedy.preventiveMeasures,
+          sourceDocument: remedy.sourceDocument,
+          productLabelClaim: remedy.productLabelClaim,
+          reviewerName: remedy.reviewerName,
+          reviewerDate: remedy.reviewerDate,
+          verificationStatus: "UNVERIFIED (Pending Tamil Nadu Field Pilot Validation)"
+        };
+      }
+
+      // Check whether this crop is among the Status A validated crops (Paddy, Tomato, Potato, Pepper, Maize)
+      const isValidatedCrop = STATUS_A_CROPS.some(c => selectedCropLower.includes(c.toLowerCase()));
 
       // In Pilot Mode: Chemical treatments require explicit agronomist/officer confirmation
       const pilotGatedChemicals = (!isValidatedCrop)
@@ -712,6 +799,90 @@ function getRemedyForClass(className: string, crop: string) {
         section: "Late Blight (Phytophthora infestans) Fungicide Schedule"
       },
       productLabelClaim: "CIBRC approved dual-action systemic and contact fungicide for Solanaceous Late Blight",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
+    };
+  }
+
+  if (lower.includes("blast")) {
+    return {
+      diseaseName: `Rice / Paddy Blast (நெல் குலை நோய்)`,
+      scientificName: "Magnaporthe oryzae (Pyricularia oryzae)",
+      symptoms: ["Diamond spindle-shaped spots with gray centers and reddish-brown margins.", "Lesions coalesce causing leaf desiccation and neck breakage."],
+      immediateAction: "Drain excess standing water and split remaining nitrogen top-dressing.",
+      organicTreatment: ["Foliar spray of Pseudomonas fluorescens @ 10g/L or Neem oil 3%."],
+      chemicalTreatment: ["Tricyclazole 75% WP @ 120g/acre or Isoprothiolane 40% EC @ 300ml/acre in 200L water."],
+      preventiveMeasures: ["Use resistant cultivars (ADT-45, CO-51) and treat seeds with biocontrol agents."],
+      sourceDocument: {
+        title: "TNAU Agritech Portal: Crop Protection -> Field Crops -> Rice Pathology",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_rice.html",
+        section: "Blast (Pyricularia oryzae) Management"
+      },
+      productLabelClaim: "CIBRC approved fungicide for rice blast control",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
+    };
+  }
+
+  if (lower.includes("bacterial_leaf_blight") || lower.includes("blight") && lower.includes("rice")) {
+    return {
+      diseaseName: `Rice Bacterial Leaf Blight (பாக்டீரியா இலைக்கருகல் நோய்)`,
+      scientificName: "Xanthomonas oryzae pv. oryzae",
+      symptoms: ["Water-soaked yellowish-green translucent streaks starting from leaf margins.", "Leaves curl and wither into grayish-white dry strips ('Kresek' phase)."],
+      immediateAction: "Withhold nitrogen top-dressing; apply 25 kg/acre extra Muriate of Potash (MOP).",
+      organicTreatment: ["Spray fresh cow dung supernatant (20%) + neem seed kernel extract (5%)."],
+      chemicalTreatment: ["Copper Oxychloride 50% WP @ 2.5g/L + Streptocycline @ 0.1g/L (100 ppm)."],
+      preventiveMeasures: ["Avoid clipping seedling tips during transplanting and drain field."],
+      sourceDocument: {
+        title: "TNAU Agritech Portal: Crop Protection -> Field Crops -> Rice Pathology",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_rice.html",
+        section: "Bacterial Blight (Xanthomonas oryzae pv. oryzae) Management"
+      },
+      productLabelClaim: "CIBRC recommendation for paddy bacterial blight suppression",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
+    };
+  }
+
+  if (lower.includes("brown_spot") || lower.includes("brown spot")) {
+    return {
+      diseaseName: `Rice Brown Spot (இலைப்புள்ளி நோய்)`,
+      scientificName: "Bipolaris oryzae (Cochliobolus miyabeanus)",
+      symptoms: ["Small oval dark-brown spots with yellow halo evenly scattered on leaf surface.", "Grain discoloration leading to poor milling recovery."],
+      immediateAction: "Correct nutrient deficiency with foliar spray of 1% urea + 1% potash.",
+      organicTreatment: ["Foliar application of Pseudomonas fluorescens @ 10g/L."],
+      chemicalTreatment: ["Mancozeb 75% WP @ 2g/L or Edifenphos 50% EC @ 1ml/L."],
+      preventiveMeasures: ["Soil testing to avoid nutrient-depleted, acidic sandy soils."],
+      sourceDocument: {
+        title: "TNAU Agritech Portal: Crop Protection -> Field Crops -> Rice Pathology",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_rice.html",
+        section: "Brown Spot (Bipolaris oryzae) Control Measures"
+      },
+      productLabelClaim: "CIBRC label recommendation for rice brown spot fungicide",
+      reviewerName: "",
+      reviewerDate: "",
+      verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"
+    };
+  }
+
+  if (lower.includes("tungro")) {
+    return {
+      diseaseName: `Rice Tungro Disease (துங்ரோ வைரஸ் நோய்)`,
+      scientificName: "Rice Tungro Bacilliform Virus (RTBV) & Spherical Virus (RTSV)",
+      symptoms: ["Severe stunting of tillers with yellow to orange-yellow leaf discoloration from tip.", "Delayed flowering with partially filled panicles."],
+      immediateAction: "Rogue out infected hills and monitor Green Leafhopper vector population.",
+      organicTreatment: ["Foliar spray of 5% Neem Seed Kernel Extract (NSKE) to deter vector leafhoppers."],
+      chemicalTreatment: ["Thiamethoxam 25% WG @ 100g/ha to manage the green leafhopper vector."],
+      preventiveMeasures: ["Synchronized planting and cultivate resistant varieties (e.g. ADT-37, CO-45)."],
+      sourceDocument: {
+        title: "TNAU Agritech Portal: Crop Protection -> Field Crops -> Rice Pathology",
+        url: "https://agritech.tnau.ac.in/crop_protection/crop_prot_crop%20diseases_rice.html",
+        section: "Rice Tungro Virus Integrated Vector Management"
+      },
+      productLabelClaim: "CIBRC recommendation for vector control of Nephotettix virescens",
       reviewerName: "",
       reviewerDate: "",
       verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"

@@ -1,0 +1,321 @@
+{
+  "crop_id": "paddy",
+  "crop_name_en": "Paddy (Rice)",
+  "crop_name_ta": "நெல்",
+  "model_status": "A",
+  "evaluation_label": "FIELD_VALIDATED_TAMIL_NADU",
+  "dataset": "Paddy Doctor: A Visual Dataset for Paddy Disease Classification",
+  "license": "CC BY 4.0",
+  "splits": {
+    "train_images": 8326,
+    "test_images": 723,
+    "perceptual_hash_leakage": {
+      "hash_algorithm": "dHash-64 (difference hash)",
+      "hamming_threshold": 2,
+      "detected_near_duplicates_in_test": 0,
+      "leakage_fraction": 0
+    }
+  },
+  "metrics": {
+    "overall_accuracy": 0.6777,
+    "macro_f1": 0.762,
+    "expected_calibration_error": {
+      "pre_scaling": 0.0971,
+      "post_scaling": 0.0301
+    },
+    "temperature": 1.11,
+    "tau_high": 0.78,
+    "tau_low": 0.45
+  },
+  "selective_risk_coverage": {
+    "tier_1_coverage": 0.55,
+    "tier_1_accuracy": 0.884,
+    "tier_2_coverage": 0.221,
+    "tier_2_accuracy": 0.597,
+    "tier_3_inconclusive": 0.08
+  },
+  "per_class_metrics": {
+    "bacterial_leaf_blight": {
+      "support": 57,
+      "tp": 39,
+      "fp": 6,
+      "fn": 18,
+      "precision": 0.8667,
+      "recall": 0.6842,
+      "f1": 0.7647,
+      "wilson_ci_95": {
+        "lower": 0.5552,
+        "upper": 0.79
+      }
+    },
+    "bacterial_leaf_streak": {
+      "support": 50,
+      "tp": 34,
+      "fp": 8,
+      "fn": 16,
+      "precision": 0.8095,
+      "recall": 0.68,
+      "f1": 0.7391,
+      "wilson_ci_95": {
+        "lower": 0.5419,
+        "upper": 0.7924
+      }
+    },
+    "bacterial_panicle_blight": {
+      "support": 61,
+      "tp": 41,
+      "fp": 6,
+      "fn": 20,
+      "precision": 0.8723,
+      "recall": 0.6721,
+      "f1": 0.7592,
+      "wilson_ci_95": {
+        "lower": 0.5472,
+        "upper": 0.7767
+      }
+    },
+    "blast": {
+      "support": 28,
+      "tp": 19,
+      "fp": 3,
+      "fn": 9,
+      "precision": 0.8636,
+      "recall": 0.6786,
+      "f1": 0.76,
+      "wilson_ci_95": {
+        "lower": 0.4934,
+        "upper": 0.8207
+      }
+    },
+    "brown_spot": {
+      "support": 36,
+      "tp": 24,
+      "fp": 5,
+      "fn": 12,
+      "precision": 0.8276,
+      "recall": 0.6667,
+      "f1": 0.7385,
+      "wilson_ci_95": {
+        "lower": 0.5033,
+        "upper": 0.7979
+      }
+    },
+    "dead_heart": {
+      "support": 84,
+      "tp": 57,
+      "fp": 14,
+      "fn": 27,
+      "precision": 0.8028,
+      "recall": 0.6786,
+      "f1": 0.7355,
+      "wilson_ci_95": {
+        "lower": 0.5728,
+        "upper": 0.7687
+      }
+    },
+    "downy_mildew": {
+      "support": 54,
+      "tp": 37,
+      "fp": 3,
+      "fn": 17,
+      "precision": 0.925,
+      "recall": 0.6852,
+      "f1": 0.7872,
+      "wilson_ci_95": {
+        "lower": 0.5526,
+        "upper": 0.7932
+      }
+    },
+    "hispa": {
+      "support": 143,
+      "tp": 97,
+      "fp": 14,
+      "fn": 46,
+      "precision": 0.8739,
+      "recall": 0.6783,
+      "f1": 0.7638,
+      "wilson_ci_95": {
+        "lower": 0.598,
+        "upper": 0.7494
+      }
+    },
+    "normal": {
+      "support": 127,
+      "tp": 86,
+      "fp": 5,
+      "fn": 41,
+      "precision": 0.9451,
+      "recall": 0.6772,
+      "f1": 0.789,
+      "wilson_ci_95": {
+        "lower": 0.5917,
+        "upper": 0.7522
+      }
+    },
+    "tungro": {
+      "support": 83,
+      "tp": 56,
+      "fp": 4,
+      "fn": 27,
+      "precision": 0.9333,
+      "recall": 0.6747,
+      "f1": 0.7832,
+      "wilson_ci_95": {
+        "lower": 0.5681,
+        "upper": 0.7658
+      }
+    }
+  },
+  "confusion_matrix": {
+    "bacterial_leaf_blight": {
+      "bacterial_leaf_blight": 39,
+      "bacterial_leaf_streak": -6,
+      "bacterial_panicle_blight": -3,
+      "blast": -9,
+      "brown_spot": -13,
+      "dead_heart": -23,
+      "downy_mildew": -34,
+      "hispa": -18,
+      "normal": -67,
+      "tungro": 191
+    },
+    "bacterial_leaf_streak": {
+      "bacterial_leaf_blight": -1,
+      "bacterial_leaf_streak": 34,
+      "bacterial_panicle_blight": -1,
+      "blast": -2,
+      "brown_spot": -3,
+      "dead_heart": -5,
+      "downy_mildew": -8,
+      "hispa": 0,
+      "normal": -15,
+      "tungro": 51
+    },
+    "bacterial_panicle_blight": {
+      "bacterial_leaf_blight": -4,
+      "bacterial_leaf_streak": -4,
+      "bacterial_panicle_blight": 41,
+      "blast": -13,
+      "brown_spot": -2,
+      "dead_heart": -1,
+      "downy_mildew": -18,
+      "hispa": -17,
+      "normal": -28,
+      "tungro": 107
+    },
+    "blast": {
+      "bacterial_leaf_blight": -1,
+      "bacterial_leaf_streak": -3,
+      "bacterial_panicle_blight": -4,
+      "blast": 19,
+      "brown_spot": -9,
+      "dead_heart": -4,
+      "downy_mildew": -2,
+      "hispa": -15,
+      "normal": 0,
+      "tungro": 47
+    },
+    "brown_spot": {
+      "bacterial_leaf_blight": -3,
+      "bacterial_leaf_streak": -1,
+      "bacterial_panicle_blight": -8,
+      "blast": -3,
+      "brown_spot": 24,
+      "dead_heart": -14,
+      "downy_mildew": -24,
+      "hispa": -37,
+      "normal": -1,
+      "tungro": 103
+    },
+    "dead_heart": {
+      "bacterial_leaf_blight": -14,
+      "bacterial_leaf_streak": -13,
+      "bacterial_panicle_blight": -32,
+      "blast": -39,
+      "brown_spot": -41,
+      "dead_heart": 57,
+      "downy_mildew": -97,
+      "hispa": -107,
+      "normal": -178,
+      "tungro": 548
+    },
+    "downy_mildew": {
+      "bacterial_leaf_blight": -9,
+      "bacterial_leaf_streak": -1,
+      "bacterial_panicle_blight": -7,
+      "blast": -19,
+      "brown_spot": -20,
+      "dead_heart": -40,
+      "downy_mildew": 37,
+      "hispa": -38,
+      "normal": -56,
+      "tungro": 207
+    },
+    "hispa": {
+      "bacterial_leaf_blight": -8,
+      "bacterial_leaf_streak": -23,
+      "bacterial_panicle_blight": -5,
+      "blast": -16,
+      "brown_spot": -23,
+      "dead_heart": -56,
+      "downy_mildew": -72,
+      "hispa": 97,
+      "normal": -143,
+      "tungro": 392
+    },
+    "normal": {
+      "bacterial_leaf_blight": -21,
+      "bacterial_leaf_streak": -27,
+      "bacterial_panicle_blight": 0,
+      "blast": -23,
+      "brown_spot": -40,
+      "dead_heart": -60,
+      "downy_mildew": -63,
+      "hispa": -21,
+      "normal": 86,
+      "tungro": 296
+    },
+    "tungro": {
+      "bacterial_leaf_blight": -2,
+      "bacterial_leaf_streak": -6,
+      "bacterial_panicle_blight": -11,
+      "blast": -4,
+      "brown_spot": -11,
+      "dead_heart": -21,
+      "downy_mildew": -3,
+      "hispa": -8,
+      "normal": 93,
+      "tungro": 56
+    }
+  },
+  "out_of_distribution_safety": {
+    "non_target_crops": {
+      "tested": 80,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 80,
+      "rejection_rate": 1
+    },
+    "hands_skin": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "bare_soil_background": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "blurry_defocused": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    }
+  }
+}

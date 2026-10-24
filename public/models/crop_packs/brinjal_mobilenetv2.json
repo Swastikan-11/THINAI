@@ -1,0 +1,29 @@
+{
+  "pack_id": "pack_brinjal_v1",
+  "crop_id": "brinjal",
+  "crop_name_en": "Brinjal (Eggplant)",
+  "crop_name_ta": "கத்தரிக்காய்",
+  "model_status": "B",
+  "architecture": "MobileNetV2-Quantized-Head",
+  "classes": [
+    "Alternaria leaf spot",
+    "Cercospora leaf spot",
+    "Downy mildew",
+    "Powdery mildew",
+    "Phomopsis blight",
+    "Healthy",
+    "other_unknown",
+    "not_a_leaf"
+  ],
+  "temperature": 1.3,
+  "tau_high": 0.85,
+  "tau_low": 0.5,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "dataset": "Brinjal Leaf Disease Image Dataset",
+  "license": "CC BY 4.0"
+}

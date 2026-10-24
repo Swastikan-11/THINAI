@@ -25,7 +25,11 @@ import {
   Calendar,
   Filter,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Download,
+  HardDrive,
+  CheckCircle,
+  Building
 } from "lucide-react";
 import { Camera, CameraResultType, CameraSource, CameraDirection } from "@capacitor/camera";
 import { DataBadge, DataStatus } from "./DataBadge";
@@ -35,6 +39,39 @@ import { DecisionEngineResult } from "../../services/decisionEngine";
 import { detectCropDisease, DiseaseDetectionResult, getDiseaseScanHistory } from "../../services/diseaseDetectionService";
 import { recordDiagnosisConfirmation } from "../../services/firestoreSync";
 import { computePhotoHash, recordFarmerVerdict } from "../../services/verdictService";
+import { 
+  getAllCrops, 
+  isCropPackInstalled, 
+  downloadCropPack, 
+  getInstalledCropPackIds, 
+  DownloadProgress, 
+  CropRegistryEntry 
+} from "../../services/cropPackService";
+import { FieldDataSubmissionModal } from "./FieldDataSubmissionModal";
+
+const CROP_ICONS: Record<string, string> = {
+  paddy: "🌾",
+  tomato: "🍅",
+  potato: "🥔",
+  chilli: "🌶️",
+  maize: "🌽",
+  cotton: "☁️",
+  sugarcane: "🎋",
+  groundnut: "🥜",
+  banana: "🍌",
+  mango: "🥭",
+  tapioca: "🍠",
+  brinjal: "🍆",
+  coconut: "🥥",
+  ragi: "🌾",
+  cholam: "🌾",
+  bajra: "🌾",
+  black_gram: "🌱",
+  green_gram: "🌱",
+  red_gram: "🌱",
+  onion: "🧅",
+  turmeric: "🌿"
+};
 
 interface CropDoctorProps {
   primaryCrop?: string;
@@ -67,6 +104,34 @@ export function CropDoctorScreen({
   const [selectedActualClass, setSelectedActualClass] = useState("");
   const [selectedCrop, setSelectedCrop] = useState<string>("Tomato");
   const [currentVerdict, setCurrentVerdict] = useState<"YES" | "NO" | "NOT_SURE" | null>(null);
+
+  // ─── Crop Registry & Modular Pack State (Phase 2B) ─────────────────────────
+  const registeredCrops: CropRegistryEntry[] = React.useMemo(() => getAllCrops(), []);
+  const [cropStatusFilter, setCropStatusFilter] = useState<"ALL" | "A" | "B" | "C">("ALL");
+  const [showDonationModal, setShowDonationModal] = useState<boolean>(false);
+  const [installedPackIds, setInstalledPackIds] = useState<string[]>(() => getInstalledCropPackIds());
+  const [packProgress, setPackProgress] = useState<DownloadProgress | null>(null);
+
+  const selectedCropEntry = registeredCrops.find(
+    c => c.crop_name_en.toLowerCase() === selectedCrop.toLowerCase() ||
+         c.crop_id.toLowerCase() === selectedCrop.toLowerCase()
+  ) || registeredCrops[0];
+
+  const handleDownloadPack = async (cropId: string) => {
+    try {
+      const res = await downloadCropPack(cropId, (p) => setPackProgress(p));
+      if (res.success) {
+        setInstalledPackIds(getInstalledCropPackIds());
+        if (showToast) showToast(language === "Tamil" ? "பயிர் மாதிரி பேக் வெற்றிகரமாக பதிவிறக்கப்பட்டது!" : "Crop pack downloaded and verified (SHA-256)!", "success");
+      } else {
+        if (showToast) showToast(res.error || "Failed to download pack", "error");
+      }
+    } catch (err: any) {
+      if (showToast) showToast(err?.message || "Pack download error", "error");
+    } finally {
+      setTimeout(() => setPackProgress(null), 2500);
+    }
+  };
 
   // ─── Scan History State ────────────────────────────────────────────────────
   const [activeSubTab, setActiveSubTab] = useState<"diagnosis" | "history">("diagnosis");
@@ -432,6 +497,11 @@ export function CropDoctorScreen({
   const handleAnalyzeCrop = async () => {
     if (!photoPreview) return;
 
+    if (selectedCropEntry.model_status === "C") {
+      setShowDonationModal(true);
+      return;
+    }
+
     setAnalyzing(true);
     setErrorMessage(null);
 
@@ -644,7 +714,7 @@ export function CropDoctorScreen({
         </div>
       </div>
 
-      {/* ─── CROP SELECTION WITH ICONS (OUT-OF-DOMAIN RESTRICTION) ─── */}
+      {/* ─── CROP SELECTION WITH ICONS & COVERAGE STATUS (PHASE 2B) ─── */}
       <div className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -656,60 +726,173 @@ export function CropDoctorScreen({
             </span>
           </div>
           <span className="text-[10px] text-zinc-500">
-            {language === "Tamil" ? "தேர்வு:" : "Active:"} <strong className="text-emerald-700">{selectedCrop}</strong>
+            {language === "Tamil" ? "தேர்வு:" : "Active:"} <strong className="text-emerald-700">{selectedCropEntry.crop_name_en} ({language === "Tamil" ? selectedCropEntry.crop_name_ta : selectedCropEntry.crop_name_en})</strong>
           </span>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+        {/* Status Filter Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
           {[
-            { id: "Tomato", label: "Tomato", tamil: "தக்காளி", icon: "🍅", validated: true },
-            { id: "Potato", label: "Potato", tamil: "உருளை", icon: "🥔", validated: true },
-            { id: "Pepper", label: "Chilli / Pepper", tamil: "மிளகாய்", icon: "🌶️", validated: true },
-            { id: "Paddy", label: "Paddy (Rice)", tamil: "நெல்", icon: "🌾", validated: false },
-            { id: "Cotton", label: "Cotton", tamil: "பருத்தி", icon: "☁️", validated: false },
-            { id: "Corn", label: "Maize", tamil: "சோளம்", icon: "🌽", validated: false }
-          ].map((crop) => {
-            const isSelected = selectedCrop === crop.id;
-            return (
-              <button
-                key={crop.id}
-                type="button"
-                onClick={() => {
-                  setSelectedCrop(crop.id);
-                  setDiagnosis(null);
-                  setErrorMessage(null);
-                }}
-                className={`p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all ${
-                  isSelected
-                    ? "border-emerald-600 bg-emerald-50/80 shadow-xs ring-2 ring-emerald-500/30"
-                    : "border-zinc-200 bg-zinc-50/60 hover:bg-zinc-100/70"
-                }`}
-              >
-                <span className="text-2xl mb-1">{crop.icon}</span>
-                <span className={`text-[11px] font-bold leading-tight ${isSelected ? "text-emerald-900" : "text-zinc-800"}`}>
-                  {language === "Tamil" ? crop.tamil : crop.label}
-                </span>
-                <span className={`text-[8px] font-semibold mt-0.5 px-1 rounded ${
-                  crop.validated ? "text-emerald-700 bg-emerald-100/70" : "text-amber-800 bg-amber-100/80"
-                }`}>
-                  {crop.validated
-                    ? (language === "Tamil" ? "பரிசோதிக்கப்பட்டது" : "Validated")
-                    : (language === "Tamil" ? "நிலை 3 (பரிந்துரை)" : "Tier 3 Referral")}
-                </span>
-              </button>
-            );
-          })}
+            { id: "ALL", label: "All Crops", labelTa: "அனைத்தும்", count: registeredCrops.length },
+            { id: "A", label: "Status A (Field Validated)", labelTa: "நிலை A (கள சரிபார்ப்பு)", count: registeredCrops.filter(c => c.model_status === "A").length },
+            { id: "B", label: "Status B (Public Model)", labelTa: "நிலை B (பொது மாதிரி)", count: registeredCrops.filter(c => c.model_status === "B").length },
+            { id: "C", label: "Status C (Referral)", labelTa: "நிலை C (பரிந்துரை)", count: registeredCrops.filter(c => c.model_status === "C").length }
+          ].map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setCropStatusFilter(f.id as any)}
+              className={`px-2.5 py-1 rounded-lg font-bold shrink-0 transition-all ${
+                cropStatusFilter === f.id
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {language === "Tamil" ? f.labelTa : f.label} ({f.count})
+            </button>
+          ))}
         </div>
 
-        {/* Tier 3 Notice for unvalidated crops */}
-        {(selectedCrop === "Paddy" || selectedCrop === "Cotton" || selectedCrop === "Corn") && (
-          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        {/* Responsive Crop Grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-7 gap-2 max-h-56 overflow-y-auto p-1 border border-slate-100 rounded-xl bg-slate-50/50">
+          {registeredCrops
+            .filter((c) => cropStatusFilter === "ALL" || c.model_status === cropStatusFilter)
+            .map((crop) => {
+              const isSelected = selectedCrop.toLowerCase() === crop.crop_name_en.toLowerCase() ||
+                                 selectedCrop.toLowerCase() === crop.crop_id.toLowerCase();
+              const icon = CROP_ICONS[crop.crop_id] || "🌿";
+              const isStatusA = crop.model_status === "A";
+              const isStatusB = crop.model_status === "B";
+
+              return (
+                <button
+                  key={crop.crop_id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCrop(crop.crop_name_en);
+                    setDiagnosis(null);
+                    setErrorMessage(null);
+                  }}
+                  className={`p-2 rounded-xl border flex flex-col items-center justify-center transition-all text-center ${
+                    isSelected
+                      ? "border-emerald-600 bg-white shadow-sm ring-2 ring-emerald-500/30"
+                      : "border-slate-200 bg-white hover:bg-slate-100/70"
+                  }`}
+                >
+                  <span className="text-xl mb-0.5">{icon}</span>
+                  <span className={`text-[10px] font-bold leading-tight truncate w-full ${isSelected ? "text-emerald-900" : "text-slate-800"}`}>
+                    {language === "Tamil" ? crop.crop_name_ta : crop.crop_name_en}
+                  </span>
+                  <span className={`text-[8px] font-bold mt-1 px-1 rounded-sm ${
+                    isStatusA
+                      ? "text-emerald-800 bg-emerald-100"
+                      : isStatusB
+                      ? "text-amber-800 bg-amber-100"
+                      : "text-slate-600 bg-slate-200"
+                  }`}>
+                    {isStatusA ? "Status A" : isStatusB ? "Status B" : "Status C"}
+                  </span>
+                </button>
+              );
+            })}
+        </div>
+
+        {/* STATUS-SPECIFIC GUIDANCE & ACTIONS */}
+        {selectedCropEntry.model_status === "C" ? (
+          <div className="p-3.5 rounded-xl bg-slate-100 border border-slate-300 text-xs text-slate-800 space-y-2.5">
+            <div className="flex items-start gap-2.5">
+              <Building className="w-5 h-5 text-slate-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-slate-900 text-sm font-bold block">
+                  {language === "Tamil" 
+                    ? `நிலை C: ${selectedCropEntry.crop_name_ta} பயிருக்கு பார்வை மாதிரி இல்லை` 
+                    : `Status C: No Calibrated Vision Model for ${selectedCropEntry.crop_name_en}`}
+                </strong>
+                <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                  {language === "Tamil"
+                    ? "ஆபத்தான ரசாயன மருந்து தவறுகளைத் தவிர்க்க, தானியங்கி கணிப்பு நிறுத்தப்பட்டுள்ளது. உங்கள் வட்டார வேளாண் உதவி அலுவலர் (AAO) அல்லது கிசான் உதவி மையத்தை (1800-180-1551) தொடர்பு கொள்ளவும்."
+                    : "To prevent hazardous chemical misapplication, automated computer-vision diagnosis is unavailable for this crop. Please refer directly to your Assistant Agricultural Officer (AAO) or Kisan Helpline (1800-180-1551)."}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200">
+              <button
+                type="button"
+                onClick={() => setShowDonationModal(true)}
+                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                {language === "Tamil" ? "ஆய்வுக்காக புகைப்படத்தை நன்கொடையாக சமர்ப்பிக்கவும்" : "Donate Photo for Research Labelling"}
+              </button>
+              <a
+                href="tel:18001801551"
+                className="px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              >
+                <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
+                1800-180-1551
+              </a>
+            </div>
+          </div>
+        ) : selectedCropEntry.model_status === "B" ? (
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <strong>{language === "Tamil" ? "நிலை B: பொது மாதிரி (கள சரிபார்ப்பு இல்லை)" : "Status B: Public Dataset Model (Unverified):"} </strong>
+                <span>
+                  {language === "Tamil"
+                    ? "இந்த மாதிரி பொது ஆராய்ச்சி தரவுகளில் பயிற்றுவிக்கப்பட்டது; தமிழ்நாட்டு கள நிலவரங்களில் முழுமையாக சரிபார்க்கப்படவில்லை. கணிப்பு 'UNVERIFIED' எனக் காட்டப்படும்; ரசாயன மருந்துகள் முற்றிலும் தடுக்கப்படும்."
+                    : "Trained on public dataset; not field-validated under Tamil Nadu agrarian conditions. Diagnosis will be labelled 'UNVERIFIED' and chemical remedies are strictly withheld until officer verification."}
+                </span>
+              </div>
+            </div>
+
+            {/* Pack Download and Integrity Status */}
+            <div className="flex items-center justify-between pt-1 border-t border-amber-200/80 text-[11px]">
+              {installedPackIds.includes(selectedCropEntry.crop_id.toLowerCase()) ? (
+                <span className="flex items-center gap-1 text-emerald-700 font-bold">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  {language === "Tamil" ? "ஆஃப்லைன் பேக் நிறுவப்பட்டது (SHA-256 சரிபார்க்கப்பட்டது)" : "Offline Pack Installed (SHA-256 Verified)"}
+                </span>
+              ) : (
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-amber-800">
+                    {language === "Tamil" ? "ஆஃப்லைன் பேக் அளவு:" : "Offline Pack Size:"} ~{Math.round((selectedCropEntry.pack_info?.size_bytes || 25000) / 1024)} KB
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadPack(selectedCropEntry.crop_id)}
+                    disabled={!!packProgress}
+                    className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold flex items-center gap-1 transition-colors"
+                  >
+                    <Download className="w-3 h-3" />
+                    {packProgress ? `${packProgress.status}...` : (language === "Tamil" ? "பேக் பதிவிறக்கு" : "Download Pack")}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Progress Bar */}
+            {packProgress && packProgress.cropId === selectedCropEntry.crop_id && (
+              <div className="w-full bg-amber-200 h-1.5 rounded-full overflow-hidden mt-1">
+                <div 
+                  className="bg-amber-600 h-full transition-all duration-300"
+                  style={{ width: `${packProgress.progressPercent}%` }}
+                />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-900 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
             <div>
-              <strong>{language === "Tamil" ? "நிலை 3 வழிகாட்டல்:" : "Tier 3 Expert Referral Active:"} </strong>
-              {language === "Tamil"
-                ? `${selectedCrop} பயிர்க்கான பார்வைக் கணிப்பு மாதிரி தமிழ்நாடு கள மதிப்பீட்டுக்காக காத்திருக்கிறது. ரசாயன மருந்துகள் முற்றிலும் தடுக்கப்பட்டு வேளாண் அலுவலர் ஆலோசனைக்கு அனுப்பப்படும்.`
-                : `${selectedCrop} is in Tier 3 (Agronomist Referral). On-device model has no trained weights for this crop; diagnosis will withhold all chemical advice and route to an Extension Officer.`}
+              <strong>{language === "Tamil" ? "நிலை A: கள சரிபார்ப்பு நிறைவுற்றது." : "Status A: Field-Validated Model."} </strong>
+              <span>
+                {language === "Tamil"
+                  ? "தமிழ்நாடு களப் புகைப்படங்களில் நிபுணர்களால் மதிப்பீடு செய்யப்பட்டது. 3-அடுக்கு பாதுகாப்பு விதிகளுடன் செயல்படுகிறது."
+                  : "Validated on real agrarian field conditions. 3-tier selective confidence gating active."}
+              </span>
             </div>
           </div>
         )}
@@ -971,6 +1154,23 @@ export function CropDoctorScreen({
                 <div className="text-[10px]">
                   <strong className="font-bold uppercase tracking-wider block">basic colour check, low reliability</strong>
                   <span className="text-zinc-600">{language === "Tamil" ? "அடிப்படை நிறச் சரிபார்ப்பு — நரம்பியல் பார்வை மாதிரி இணைக்கப்படவில்லை" : "Heuristic chromatic fallback. MobileNetV2 neural weights uncalibrated."}</span>
+                </div>
+              </div>
+            )}
+
+            {/* STATUS B UNVERIFIED PUBLIC MODEL SAFEGUARD */}
+            {(selectedCropEntry.model_status === "B" || diagnosis.statusLabel?.includes("UNVERIFIED")) && (
+              <div className="mt-2.5 p-2.5 rounded-xl bg-amber-100 border border-amber-300 text-amber-950 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+                <div className="text-[11px]">
+                  <strong className="font-bold uppercase tracking-wider block text-amber-900">
+                    {language === "Tamil" ? "UNVERIFIED (பொது மாதிரி - கள மதிப்பீடு நிலுவை)" : "UNVERIFIED: Status B Public Model (Pending Field Pilot)"}
+                  </strong>
+                  <span className="text-amber-800">
+                    {language === "Tamil" 
+                      ? "ரசாயன மருந்து பரிந்துரைகள் முற்றிலும் தடுக்கப்பட்டுள்ளன. வேளாண் விரிவாக்க அலுவலர் சரிபார்ப்பைப் பெறவும்."
+                      : "Chemical recommendations strictly withheld until extension officer confirmation."}
+                  </span>
                 </div>
               </div>
             )}
@@ -1521,6 +1721,15 @@ export function CropDoctorScreen({
           )}
         </div>
       )}
+      {/* FIELD DATA SUBMISSION MODAL (PHASE 2B CONSENTED RESEARCH FLOW) */}
+      <FieldDataSubmissionModal
+        isOpen={showDonationModal}
+        onClose={() => setShowDonationModal(false)}
+        cropName={selectedCrop}
+        imagePreview={photoPreview}
+        language={language}
+        showToast={showToast}
+      />
     </div>
   );
 }

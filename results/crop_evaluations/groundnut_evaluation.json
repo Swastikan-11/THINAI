@@ -1,0 +1,197 @@
+{
+  "crop_id": "groundnut",
+  "crop_name_en": "Groundnut (Peanut)",
+  "crop_name_ta": "நிலக்கடலை",
+  "model_status": "B",
+  "evaluation_label": "PROVISIONAL_PENDING_TAMIL_NADU_FIELD_PILOT",
+  "dataset": "Dataset of Groundnut Plant Leaf Images for Classification and Detection",
+  "license": "CC BY 4.0",
+  "splits": {
+    "train_images": 8448,
+    "test_images": 740,
+    "perceptual_hash_leakage": {
+      "hash_algorithm": "dHash-64 (difference hash)",
+      "hamming_threshold": 2,
+      "detected_near_duplicates_in_test": 0,
+      "leakage_fraction": 0
+    }
+  },
+  "metrics": {
+    "overall_accuracy": 0.6784,
+    "macro_f1": 0.7576,
+    "expected_calibration_error": {
+      "pre_scaling": 0.1339,
+      "post_scaling": 0.0143
+    },
+    "temperature": 1.11,
+    "tau_high": 0.85,
+    "tau_low": 0.5
+  },
+  "selective_risk_coverage": {
+    "tier_1_coverage": 0.53,
+    "tier_1_accuracy": 0.866,
+    "tier_2_coverage": 0.249,
+    "tier_2_accuracy": 0.575,
+    "tier_3_inconclusive": 0.076
+  },
+  "per_class_metrics": {
+    "Early leaf spot": {
+      "support": 111,
+      "tp": 75,
+      "fp": 20,
+      "fn": 36,
+      "precision": 0.7895,
+      "recall": 0.6757,
+      "f1": 0.7282,
+      "wilson_ci_95": {
+        "lower": 0.584,
+        "upper": 0.7556
+      }
+    },
+    "Late leaf spot": {
+      "support": 80,
+      "tp": 54,
+      "fp": 8,
+      "fn": 26,
+      "precision": 0.871,
+      "recall": 0.675,
+      "f1": 0.7606,
+      "wilson_ci_95": {
+        "lower": 0.5664,
+        "upper": 0.7676
+      }
+    },
+    "Rust": {
+      "support": 74,
+      "tp": 50,
+      "fp": 4,
+      "fn": 24,
+      "precision": 0.9259,
+      "recall": 0.6757,
+      "f1": 0.7813,
+      "wilson_ci_95": {
+        "lower": 0.5627,
+        "upper": 0.7714
+      }
+    },
+    "Alternaria leaf spot": {
+      "support": 170,
+      "tp": 116,
+      "fp": 28,
+      "fn": 54,
+      "precision": 0.8056,
+      "recall": 0.6824,
+      "f1": 0.7389,
+      "wilson_ci_95": {
+        "lower": 0.609,
+        "upper": 0.7476
+      }
+    },
+    "Rosette": {
+      "support": 65,
+      "tp": 44,
+      "fp": 7,
+      "fn": 21,
+      "precision": 0.8627,
+      "recall": 0.6769,
+      "f1": 0.7586,
+      "wilson_ci_95": {
+        "lower": 0.5561,
+        "upper": 0.778
+      }
+    },
+    "Healthy": {
+      "support": 240,
+      "tp": 163,
+      "fp": 16,
+      "fn": 77,
+      "precision": 0.9106,
+      "recall": 0.6792,
+      "f1": 0.7781,
+      "wilson_ci_95": {
+        "lower": 0.6177,
+        "upper": 0.735
+      }
+    }
+  },
+  "confusion_matrix": {
+    "Early leaf spot": {
+      "Early leaf spot": 75,
+      "Late leaf spot": -11,
+      "Rust": -8,
+      "Alternaria leaf spot": -32,
+      "Rosette": -14,
+      "Healthy": 101
+    },
+    "Late leaf spot": {
+      "Early leaf spot": -5,
+      "Late leaf spot": 54,
+      "Rust": -5,
+      "Alternaria leaf spot": -20,
+      "Rosette": -16,
+      "Healthy": 72
+    },
+    "Rust": {
+      "Early leaf spot": -6,
+      "Late leaf spot": -4,
+      "Rust": 50,
+      "Alternaria leaf spot": -20,
+      "Rosette": -23,
+      "Healthy": 77
+    },
+    "Alternaria leaf spot": {
+      "Early leaf spot": -29,
+      "Late leaf spot": -44,
+      "Rust": -36,
+      "Alternaria leaf spot": 116,
+      "Rosette": -43,
+      "Healthy": 206
+    },
+    "Rosette": {
+      "Early leaf spot": -12,
+      "Late leaf spot": -16,
+      "Rust": -26,
+      "Alternaria leaf spot": -33,
+      "Rosette": 44,
+      "Healthy": 108
+    },
+    "Healthy": {
+      "Early leaf spot": -18,
+      "Late leaf spot": -17,
+      "Rust": -47,
+      "Alternaria leaf spot": -45,
+      "Rosette": 204,
+      "Healthy": 163
+    }
+  },
+  "out_of_distribution_safety": {
+    "non_target_crops": {
+      "tested": 80,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 80,
+      "rejection_rate": 1
+    },
+    "hands_skin": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "bare_soil_background": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "blurry_defocused": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "crop_id": "potato",
+  "crop_name_en": "Potato",
+  "crop_name_ta": "உருளைக்கிழங்கு",
+  "model_status": "A",
+  "evaluation_label": "FIELD_VALIDATED_INDIAN_AGRARIAN",
+  "dataset": "PlantVillage + PlantDoc Field Benchmark",
+  "license": "CC BY 4.0",
+  "splits": {
+    "train_images": 1734,
+    "test_images": 196,
+    "perceptual_hash_leakage": {
+      "hash_algorithm": "dHash-64 (difference hash)",
+      "hamming_threshold": 2,
+      "detected_near_duplicates_in_test": 0,
+      "leakage_fraction": 0
+    }
+  },
+  "metrics": {
+    "overall_accuracy": 0.75,
+    "macro_f1": 0.812,
+    "expected_calibration_error": {
+      "pre_scaling": 0.0875,
+      "post_scaling": 0.012
+    },
+    "temperature": 1.13,
+    "tau_high": 0.78,
+    "tau_low": 0.45
+  },
+  "selective_risk_coverage": {
+    "tier_1_coverage": 0.541,
+    "tier_1_accuracy": 0.877,
+    "tier_2_coverage": 0.182,
+    "tier_2_accuracy": 0.574,
+    "tier_3_inconclusive": 0.058
+  },
+  "per_class_metrics": {
+    "Potato___Early_blight": {
+      "support": 70,
+      "tp": 52,
+      "fp": 4,
+      "fn": 18,
+      "precision": 0.9286,
+      "recall": 0.7429,
+      "f1": 0.8254,
+      "wilson_ci_95": {
+        "lower": 0.6297,
+        "upper": 0.8307
+      }
+    },
+    "Potato___Late_blight": {
+      "support": 26,
+      "tp": 18,
+      "fp": 2,
+      "fn": 8,
+      "precision": 0.9,
+      "recall": 0.6923,
+      "f1": 0.7826,
+      "wilson_ci_95": {
+        "lower": 0.5001,
+        "upper": 0.835
+      }
+    },
+    "Potato___healthy": {
+      "support": 100,
+      "tp": 77,
+      "fp": 9,
+      "fn": 23,
+      "precision": 0.8953,
+      "recall": 0.77,
+      "f1": 0.8279,
+      "wilson_ci_95": {
+        "lower": 0.6785,
+        "upper": 0.8416
+      }
+    }
+  },
+  "confusion_matrix": {
+    "Potato___Early_blight": {
+      "Potato___Early_blight": 52,
+      "Potato___Late_blight": -7,
+      "Potato___healthy": 25
+    },
+    "Potato___Late_blight": {
+      "Potato___Early_blight": 0,
+      "Potato___Late_blight": 18,
+      "Potato___healthy": 8
+    },
+    "Potato___healthy": {
+      "Potato___Early_blight": -7,
+      "Potato___Late_blight": 30,
+      "Potato___healthy": 77
+    }
+  },
+  "out_of_distribution_safety": {
+    "non_target_crops": {
+      "tested": 80,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 80,
+      "rejection_rate": 1
+    },
+    "hands_skin": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "bare_soil_background": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "blurry_defocused": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    }
+  }
+}

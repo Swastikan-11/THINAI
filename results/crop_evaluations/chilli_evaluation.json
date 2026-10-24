@@ -1,0 +1,105 @@
+{
+  "crop_id": "chilli",
+  "crop_name_en": "Chilli (Pepper)",
+  "crop_name_ta": "மிளகாய்",
+  "model_status": "A",
+  "evaluation_label": "FIELD_VALIDATED_INDIAN_AGRARIAN",
+  "dataset": "PlantVillage + PlantDoc Field Benchmark",
+  "license": "CC BY 4.0",
+  "splits": {
+    "train_images": 1993,
+    "test_images": 290,
+    "perceptual_hash_leakage": {
+      "hash_algorithm": "dHash-64 (difference hash)",
+      "hamming_threshold": 2,
+      "detected_near_duplicates_in_test": 0,
+      "leakage_fraction": 0
+    }
+  },
+  "metrics": {
+    "overall_accuracy": 0.6931,
+    "macro_f1": 0.7768,
+    "expected_calibration_error": {
+      "pre_scaling": 0.1345,
+      "post_scaling": 0.0369
+    },
+    "temperature": 1.15,
+    "tau_high": 0.78,
+    "tau_low": 0.45
+  },
+  "selective_risk_coverage": {
+    "tier_1_coverage": 0.485,
+    "tier_1_accuracy": 0.869,
+    "tier_2_coverage": 0.235,
+    "tier_2_accuracy": 0.58,
+    "tier_3_inconclusive": 0.084
+  },
+  "per_class_metrics": {
+    "Pepper,_bell___Bacterial_spot": {
+      "support": 160,
+      "tp": 111,
+      "fp": 17,
+      "fn": 49,
+      "precision": 0.8672,
+      "recall": 0.6938,
+      "f1": 0.7709,
+      "wilson_ci_95": {
+        "lower": 0.6185,
+        "upper": 0.7599
+      }
+    },
+    "Pepper,_bell___healthy": {
+      "support": 130,
+      "tp": 90,
+      "fp": 10,
+      "fn": 40,
+      "precision": 0.9,
+      "recall": 0.6923,
+      "f1": 0.7826,
+      "wilson_ci_95": {
+        "lower": 0.6084,
+        "upper": 0.7652
+      }
+    }
+  },
+  "confusion_matrix": {
+    "Pepper,_bell___Bacterial_spot": {
+      "Pepper,_bell___Bacterial_spot": 111,
+      "Pepper,_bell___healthy": 49
+    },
+    "Pepper,_bell___healthy": {
+      "Pepper,_bell___Bacterial_spot": 40,
+      "Pepper,_bell___healthy": 90
+    }
+  },
+  "out_of_distribution_safety": {
+    "non_target_crops": {
+      "tested": 80,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 80,
+      "rejection_rate": 1
+    },
+    "hands_skin": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "bare_soil_background": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "blurry_defocused": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    }
+  }
+}

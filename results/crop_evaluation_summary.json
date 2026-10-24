@@ -1,0 +1,132 @@
+[
+  {
+    "crop_id": "paddy",
+    "name": "Paddy (Rice)",
+    "status": "A",
+    "accuracy": 0.6777,
+    "macro_f1": 0.762,
+    "ece": 0.0301,
+    "test_samples": 723,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "tomato",
+    "name": "Tomato",
+    "status": "A",
+    "accuracy": 0.9182,
+    "macro_f1": 0.9271,
+    "ece": 0.0581,
+    "test_samples": 3556,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "potato",
+    "name": "Potato",
+    "status": "A",
+    "accuracy": 0.75,
+    "macro_f1": 0.812,
+    "ece": 0.012,
+    "test_samples": 196,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "chilli",
+    "name": "Chilli (Pepper)",
+    "status": "A",
+    "accuracy": 0.6931,
+    "macro_f1": 0.7768,
+    "ece": 0.0369,
+    "test_samples": 290,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "maize",
+    "name": "Maize (Corn)",
+    "status": "A",
+    "accuracy": 0.7174,
+    "macro_f1": 0.7832,
+    "ece": 0.0225,
+    "test_samples": 184,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "cotton",
+    "name": "Cotton",
+    "status": "B",
+    "accuracy": 0.6809,
+    "macro_f1": 0.7634,
+    "ece": 0.012,
+    "test_samples": 235,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "sugarcane",
+    "name": "Sugarcane",
+    "status": "B",
+    "accuracy": 0.7128,
+    "macro_f1": 0.7934,
+    "ece": 0.0315,
+    "test_samples": 188,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "groundnut",
+    "name": "Groundnut (Peanut)",
+    "status": "B",
+    "accuracy": 0.6784,
+    "macro_f1": 0.7576,
+    "ece": 0.0143,
+    "test_samples": 740,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "banana",
+    "name": "Banana",
+    "status": "B",
+    "accuracy": 0.6929,
+    "macro_f1": 0.7612,
+    "ece": 0.0278,
+    "test_samples": 140,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "mango",
+    "name": "Mango",
+    "status": "B",
+    "accuracy": 0.6957,
+    "macro_f1": 0.7772,
+    "ece": 0.0192,
+    "test_samples": 414,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "tapioca",
+    "name": "Tapioca (Cassava)",
+    "status": "B",
+    "accuracy": 0.682,
+    "macro_f1": 0.7608,
+    "ece": 0.0303,
+    "test_samples": 261,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "brinjal",
+    "name": "Brinjal (Eggplant)",
+    "status": "B",
+    "accuracy": 0.8366,
+    "macro_f1": 0.8463,
+    "ece": 0.0544,
+    "test_samples": 557,
+    "ood_rejection": "100.0%"
+  },
+  {
+    "crop_id": "coconut",
+    "name": "Coconut",
+    "status": "B",
+    "accuracy": 0.9075,
+    "macro_f1": 0.9131,
+    "ece": 0.0612,
+    "test_samples": 1243,
+    "ood_rejection": "100.0%"
+  }
+]

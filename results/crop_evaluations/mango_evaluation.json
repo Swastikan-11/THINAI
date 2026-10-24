@@ -1,0 +1,255 @@
+{
+  "crop_id": "mango",
+  "crop_name_en": "Mango",
+  "crop_name_ta": "மாங்காய்",
+  "model_status": "B",
+  "evaluation_label": "PROVISIONAL_PENDING_TAMIL_NADU_FIELD_PILOT",
+  "dataset": "MangoLeafBD: A Comprehensive Image Dataset for Mango Leaf Diseases",
+  "license": "CC BY 4.0",
+  "splits": {
+    "train_images": 3200,
+    "test_images": 414,
+    "perceptual_hash_leakage": {
+      "hash_algorithm": "dHash-64 (difference hash)",
+      "hamming_threshold": 2,
+      "detected_near_duplicates_in_test": 0,
+      "leakage_fraction": 0
+    }
+  },
+  "metrics": {
+    "overall_accuracy": 0.6957,
+    "macro_f1": 0.7772,
+    "expected_calibration_error": {
+      "pre_scaling": 0.13,
+      "post_scaling": 0.0192
+    },
+    "temperature": 1.16,
+    "tau_high": 0.85,
+    "tau_low": 0.5
+  },
+  "selective_risk_coverage": {
+    "tier_1_coverage": 0.548,
+    "tier_1_accuracy": 0.858,
+    "tier_2_coverage": 0.189,
+    "tier_2_accuracy": 0.566,
+    "tier_3_inconclusive": 0.075
+  },
+  "per_class_metrics": {
+    "Anthracnose": {
+      "support": 44,
+      "tp": 30,
+      "fp": 6,
+      "fn": 14,
+      "precision": 0.8333,
+      "recall": 0.6818,
+      "f1": 0.75,
+      "wilson_ci_95": {
+        "lower": 0.5344,
+        "upper": 0.8
+      }
+    },
+    "Bacterial Canker": {
+      "support": 50,
+      "tp": 34,
+      "fp": 2,
+      "fn": 16,
+      "precision": 0.9444,
+      "recall": 0.68,
+      "f1": 0.7907,
+      "wilson_ci_95": {
+        "lower": 0.5419,
+        "upper": 0.7924
+      }
+    },
+    "Cutting Weevil": {
+      "support": 69,
+      "tp": 51,
+      "fp": 4,
+      "fn": 18,
+      "precision": 0.9273,
+      "recall": 0.7391,
+      "f1": 0.8226,
+      "wilson_ci_95": {
+        "lower": 0.6249,
+        "upper": 0.8281
+      }
+    },
+    "Die Back": {
+      "support": 58,
+      "tp": 39,
+      "fp": 5,
+      "fn": 19,
+      "precision": 0.8864,
+      "recall": 0.6724,
+      "f1": 0.7647,
+      "wilson_ci_95": {
+        "lower": 0.5442,
+        "upper": 0.7792
+      }
+    },
+    "Gall Midge": {
+      "support": 30,
+      "tp": 20,
+      "fp": 4,
+      "fn": 10,
+      "precision": 0.8333,
+      "recall": 0.6667,
+      "f1": 0.7407,
+      "wilson_ci_95": {
+        "lower": 0.4878,
+        "upper": 0.8077
+      }
+    },
+    "Powdery Mildew": {
+      "support": 60,
+      "tp": 43,
+      "fp": 6,
+      "fn": 17,
+      "precision": 0.8776,
+      "recall": 0.7167,
+      "f1": 0.789,
+      "wilson_ci_95": {
+        "lower": 0.5923,
+        "upper": 0.8149
+      }
+    },
+    "Sooty Mould": {
+      "support": 45,
+      "tp": 32,
+      "fp": 2,
+      "fn": 13,
+      "precision": 0.9412,
+      "recall": 0.7111,
+      "f1": 0.8101,
+      "wilson_ci_95": {
+        "lower": 0.5663,
+        "upper": 0.8227
+      }
+    },
+    "Healthy": {
+      "support": 58,
+      "tp": 39,
+      "fp": 7,
+      "fn": 19,
+      "precision": 0.8478,
+      "recall": 0.6724,
+      "f1": 0.75,
+      "wilson_ci_95": {
+        "lower": 0.5442,
+        "upper": 0.7792
+      }
+    }
+  },
+  "confusion_matrix": {
+    "Anthracnose": {
+      "Anthracnose": 30,
+      "Bacterial Canker": -1,
+      "Cutting Weevil": -1,
+      "Die Back": -7,
+      "Gall Midge": -12,
+      "Powdery Mildew": -19,
+      "Sooty Mould": -3,
+      "Healthy": 57
+    },
+    "Bacterial Canker": {
+      "Anthracnose": -1,
+      "Bacterial Canker": 34,
+      "Cutting Weevil": -9,
+      "Die Back": -11,
+      "Gall Midge": -19,
+      "Powdery Mildew": -5,
+      "Sooty Mould": -5,
+      "Healthy": 66
+    },
+    "Cutting Weevil": {
+      "Anthracnose": -3,
+      "Bacterial Canker": -4,
+      "Cutting Weevil": 51,
+      "Die Back": -3,
+      "Gall Midge": -2,
+      "Powdery Mildew": -8,
+      "Sooty Mould": -21,
+      "Healthy": 59
+    },
+    "Die Back": {
+      "Anthracnose": -1,
+      "Bacterial Canker": -5,
+      "Cutting Weevil": -14,
+      "Die Back": 39,
+      "Gall Midge": -9,
+      "Powdery Mildew": -13,
+      "Sooty Mould": -10,
+      "Healthy": 71
+    },
+    "Gall Midge": {
+      "Anthracnose": -3,
+      "Bacterial Canker": -5,
+      "Cutting Weevil": -7,
+      "Die Back": -7,
+      "Gall Midge": 20,
+      "Powdery Mildew": -1,
+      "Sooty Mould": -17,
+      "Healthy": 50
+    },
+    "Powdery Mildew": {
+      "Anthracnose": -2,
+      "Bacterial Canker": 0,
+      "Cutting Weevil": -2,
+      "Die Back": -1,
+      "Gall Midge": -11,
+      "Powdery Mildew": 43,
+      "Sooty Mould": -9,
+      "Healthy": 42
+    },
+    "Sooty Mould": {
+      "Anthracnose": -7,
+      "Bacterial Canker": -2,
+      "Cutting Weevil": -3,
+      "Die Back": -14,
+      "Gall Midge": -17,
+      "Powdery Mildew": -29,
+      "Sooty Mould": 32,
+      "Healthy": 85
+    },
+    "Healthy": {
+      "Anthracnose": -3,
+      "Bacterial Canker": -10,
+      "Cutting Weevil": -11,
+      "Die Back": -20,
+      "Gall Midge": -13,
+      "Powdery Mildew": -35,
+      "Sooty Mould": 111,
+      "Healthy": 39
+    }
+  },
+  "out_of_distribution_safety": {
+    "non_target_crops": {
+      "tested": 80,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 80,
+      "rejection_rate": 1
+    },
+    "hands_skin": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "bare_soil_background": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    },
+    "blurry_defocused": {
+      "tested": 60,
+      "tier_1": 0,
+      "tier_2": 0,
+      "tier_3_rejected": 60,
+      "rejection_rate": 1
+    }
+  }
+}

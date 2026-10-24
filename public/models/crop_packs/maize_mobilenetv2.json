@@ -1,0 +1,27 @@
+{
+  "pack_id": "pack_maize_v1",
+  "crop_id": "maize",
+  "crop_name_en": "Maize (Corn)",
+  "crop_name_ta": "மக்காச்சோளம்",
+  "model_status": "A",
+  "architecture": "MobileNetV2-Quantized-Head",
+  "classes": [
+    "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+    "Corn___Common_rust",
+    "Corn___Northern_Leaf_Blight",
+    "Corn___healthy",
+    "other_unknown",
+    "not_a_leaf"
+  ],
+  "temperature": 1.28,
+  "tau_high": 0.78,
+  "tau_low": 0.45,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "dataset": "PlantVillage + PlantDoc Field Benchmark",
+  "license": "CC BY 4.0"
+}
