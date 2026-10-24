@@ -2962,7 +2962,7 @@ export default function App() {
       {screen !== "splash" && <OfflineActiveBanner onOpenPendingSync={() => setShowPendingSyncModal(true)} />}
 
       {/* Screen Router */}
-      <div className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden" role="main">
         {screen === "splash" && (
           <div className="h-full flex flex-col items-center justify-center p-6 text-center select-none"
             style={{ background: `linear-gradient(160deg, ${PD} 0%, ${P} 100%)` }}>
@@ -3238,7 +3238,7 @@ export default function App() {
             showToast={showToast}
           />
         )}
-      </div>
+      </main>
 
       {/* Persistent Bottom Navigation */}
       {["home", "community", "mycrop", "doctor", "disease", "library", "calculator", "schemes", "services", "ai", "market", "profile", "records"].includes(screen) && (
