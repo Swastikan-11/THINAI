@@ -4,7 +4,7 @@ import { evaluateSpraySafety, WeatherData } from "../src/services/weatherService
 import { calculateWilsonScore, evaluateFieldAccuracy } from "../src/services/verdictService";
 import { generateContextualResponse } from "../src/services/aiAssistantService";
 import { t, I18N_DICTIONARY, AppLanguage } from "../src/services/i18n";
-import { OFFICIAL_MSP_BENCHMARKS, getMarketIntelligence } from "../src/services/marketService";
+import { COMMODITY_KEYS, getDashboardMarketPrice } from "../src/services/marketService";
 import { FarmerVerdictRecord } from "../src/services/db";
 import { ARFI_CONFIG } from "../src/config/arfiConfig";
 
@@ -178,22 +178,21 @@ describe("Phase O2 — Offline Verification Test Matrix (S1, S2, S3, S4)", () =>
     });
   });
 
-  // ─── 4. MARKET PRICES & PROVENANCE ───
-  describe("Feature: Market Prices & Static MSP Benchmark Provenance", () => {
-    it("S2/Offline: delivers official MSP benchmarks without network calls", () => {
-      const paddyMsp = OFFICIAL_MSP_BENCHMARKS.paddy;
-      expect(paddyMsp).toBeDefined();
-      expect(paddyMsp.mspPricePerQuintal).toBe(2300);
-      expect(paddyMsp.status).toBe("STATIC REFERENCE");
-      expect(paddyMsp.source).toContain("Cabinet Committee on Economic Affairs");
+  // ─── 4. MARKET PRICES & HONEST PROVENANCE ───
+  describe("Feature: Market Prices & Honest Provenance", () => {
+    it("S2/Offline: provides commodity metadata without fabricated numbers", () => {
+      const paddyKey = COMMODITY_KEYS.find(c => c.id === "paddy");
+      expect(paddyKey).toBeDefined();
+      expect(paddyKey?.agmarknetName).toBe("Paddy(Dhan)(Common)");
+      expect(paddyKey?.labelTa).toBe("நெல்");
     });
 
-    it("S2/Offline: provides benchmark market commodity intelligence with verified date", () => {
-      const intelligence = getMarketIntelligence("paddy");
-      expect(intelligence).toBeDefined();
-      expect(intelligence.currentPrice).toBe(2840);
-      expect(intelligence.lastVerifiedDate).toBeDefined();
-      expect(intelligence.source).toContain("APMC");
+    it("S2/Offline: dashboard price defaults to honest unavailable state without fake fallback", () => {
+      const dashboard = getDashboardMarketPrice("Paddy", "Coimbatore");
+      expect(dashboard).toBeDefined();
+      expect(dashboard.isAvailable).toBe(false);
+      expect(dashboard.pricePerQuintal).toBeUndefined();
+      expect(dashboard.status).toBe("PRICE_UNAVAILABLE");
     });
   });
 
@@ -255,7 +254,7 @@ describe("Phase O2 — Offline Verification Test Matrix (S1, S2, S3, S4)", () =>
       });
 
       expect(response).toContain("Leaf Yellowing");
-      expect(response).toContain("Drain stagnant surface water");
+      expect(response).toContain("surface water is completely drained");
     });
   });
 
