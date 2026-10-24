@@ -107,8 +107,11 @@ export async function fetchOfficerDiagnoses(filter?: {
 
     return records;
   } catch (err) {
-    // Return sample offline demonstration data if network is offline
-    return getOfflineOfficerFallbackRecords();
+    if (import.meta.env.DEV) {
+      return getOfflineOfficerFallbackRecords();
+    }
+    // Honest empty state in production when network is offline
+    return [];
   }
 }
 

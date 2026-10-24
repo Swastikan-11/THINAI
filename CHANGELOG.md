@@ -78,3 +78,20 @@ All notable changes to the THINAI application across Rework Phases 1 through 7 a
 - Re-verified all test suites: `tsc` exits 0, Vite build exits 0, 120 Vitest unit tests pass (23 suites), 26 Playwright E2E tests pass.
 - Updated `README.md`, `CHANGELOG.md`, `REMOVED.md`, and regenerated `THINAI_STATUS_FOR_CLAUDE.md`.
 - Consolidated release deliverables with cryptographic SHA-256 checksums.
+
+### Phase 2B: Crop Coverage Expansion & Registry
+- **Crop Registry Infrastructure**:
+  - Authored `data/crop_registry.json` covering 21 major Indian crops with botanical, English, and Tamil names, pathology classes, and dataset licenses.
+  - Established formal audit taxonomy: Status A (Field-validated), Status B (Trained on public dataset; no field validation), and Status C (No model; immediate AAO referral).
+  - Built `src/services/cropPackService.ts` for modular on-demand neural weights packaging with SHA-256 integrity checks and storage quota verification.
+  - Added dedicated test suite `tests/crop_coverage_phase2b.test.ts` (10 tests).
+
+### Multilingual Release Candidate (All 22 Scheduled Languages + English)
+- **23-Language Universal Architecture**:
+  - Expanded advisory language support from English and Tamil to English plus all 22 Eighth Schedule languages of India: Assamese, Bengali, Bodo, Dogri, Gujarati, Hindi, Kannada, Kashmiri, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Odia, Punjabi, Sanskrit, Santali, Sindhi, Tamil, Telugu, and Urdu.
+  - Generated bundled offline locale files (`locales/<codeRef>.json`) ensuring 100% offline availability without runtime chunk downloads.
+  - Implemented dynamic RTL layout (`dir="rtl"`) for Urdu, Kashmiri, and Sindhi with mirrored layouts in `public/fonts/fonts.css`.
+  - Added open-licence (OFL 1.1) Noto font stacks for 12 Indian script families to guarantee zero tofu characters (`□`).
+  - Enforced strict remedy safety gating: remedy names, dosages, and chemical advice appear strictly in `REVIEWED` languages (English). In all `MACHINE-DRAFT` languages, advice is displayed in English with a mandatory native warning.
+  - Implemented `LanguageDropdown` combobox and `TranslationErrorReportModal` with local Dexie queue and Firestore `/translation_reports` storage.
+  - Authored `docs/LANGUAGES.md`, `docs/FEATURE_MATRIX.md`, and automated parity/switch test suites (`tests/multilingual_parity.test.ts`, `e2e/multilingual_switch.spec.ts`).

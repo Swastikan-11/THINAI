@@ -1,6 +1,6 @@
 import { getCurrentAuthToken } from "./authService";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api.thinai.com/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export async function apiRequest<T = any>(
   endpoint: string,
@@ -49,8 +49,9 @@ export async function apiRequest<T = any>(
 export const apiClient = {
   // System Health
   async checkHealth(): Promise<boolean> {
+    if (!API_BASE_URL) return false;
     try {
-      const res = await fetch("https://api.thinai.com/health", {
+      const res = await fetch(`${API_BASE_URL}/health`, {
         method: "GET",
         signal: AbortSignal.timeout(5000)
       });

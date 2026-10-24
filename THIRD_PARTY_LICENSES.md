@@ -45,3 +45,10 @@ This document records open-source third-party dependencies used in THINAI per pr
 - **License**: ISC / MIT License
 - **Copyright**: (c) 2022-present Lucide Contributors
 - **Usage**: Agricultural and UI iconography across mobile and desktop views (`lucide-react`).
+
+### 7. Google Noto Fonts
+- **Project**: Noto Sans / Serif Indian Script Fonts
+- **Repository**: https://github.com/notofonts/noto-fonts
+- **License**: SIL Open Font License 1.1 (OFL-1.1)
+- **Copyright**: (c) 2012-2026 Google LLC
+- **Usage**: Offline typography stacks for 12 Indian script families across the 22 scheduled languages (`public/fonts/fonts.css`). Zero tofu guarantee.

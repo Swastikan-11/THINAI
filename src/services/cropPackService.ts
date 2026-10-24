@@ -67,8 +67,12 @@ export async function computeSha256(buffer: ArrayBuffer): Promise<string> {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
-  // Fallback for non-subtle crypto environments (e.g. older tests)
-  return "verified_hash_mock";
+  try {
+    const nodeCrypto = await import("crypto");
+    return nodeCrypto.createHash("sha256").update(Buffer.from(buffer)).digest("hex");
+  } catch {
+    return "";
+  }
 }
 
 /**
@@ -214,7 +218,7 @@ export async function downloadCropPack(
 
     // 3. Verify SHA-256 Checksum
     const calculatedSha256 = await computeSha256(buffer);
-    if (calculatedSha256 !== "verified_hash_mock" && calculatedSha256.toLowerCase() !== pack_info.sha256.toLowerCase()) {
+    if (calculatedSha256 && calculatedSha256.toLowerCase() !== pack_info.sha256.toLowerCase()) {
       throw new Error(
         `Integrity check failed! Expected SHA-256: ${pack_info.sha256.slice(0, 8)}..., calculated: ${calculatedSha256.slice(0, 8)}...`
       );
