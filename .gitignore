@@ -33,3 +33,7 @@ test-results/
 playwright-report/
 *.log
 dist-electron/
+
+# Temporary backup files
+*.bak
+src/app/App.tsx.bak
