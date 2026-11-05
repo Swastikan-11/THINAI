@@ -578,8 +578,7 @@ function HomeScreen({
 }) {
   const primaryRec = decisionResult.primaryRecommendation;
   const lang = user.language;
-  const [showAlternative, setShowAlternative] = useState(false);
-  const [whyExpanded, setWhyExpanded] = useState(true);
+
   const [showARFIDrawer, setShowARFIDrawer] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [diagnosisConfirmed, setDiagnosisConfirmed] = useState(false);
@@ -1254,115 +1253,6 @@ function HomeScreen({
             <span>Updated: {weather.updatedAt}</span>
           </div>
         </Card>
-
-        {/* ─── 4. NEXT BEST ACTION (PRIORITY 3 & PRIORITY 8: STEP 4) ─── */}
-        <div className="rounded-3xl p-4.5 relative overflow-hidden"
-          style={{
-            background: "linear-gradient(145deg, #1B5E20, #2E7D32)",
-            boxShadow: "0 8px 28px rgba(27,94,32,0.35)",
-            border: "2px solid rgba(255,255,255,0.2)"
-          }}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-amber-400 text-black shadow-xs">
-                <Sparkles size={18} />
-              </div>
-              <div>
-                <span className="text-[10px] font-black tracking-wider text-amber-300 uppercase block">
-                  THINAI CORE ENGINE
-                </span>
-                <span className="font-black text-sm text-white">{t("nextBestAction", lang)}</span>
-              </div>
-            </div>
-            <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-red-500 text-white shadow-xs">
-              {primaryRec.priority.toUpperCase()} PRIORITY
-            </span>
-          </div>
-
-          {/* CONCRETE ACTION STATEMENT */}
-          <div className="bg-black/25 p-3 rounded-2xl border border-white/15 mt-2">
-            <span className="text-[10px] font-bold text-amber-300 block mb-1">ACTION STATEMENT:</span>
-            <p className="font-extrabold text-sm text-white leading-snug">
-              👉 {primaryRec.action}
-            </p>
-          </div>
-
-          <div className="mt-2.5 flex items-center justify-between text-[11px] text-white/90">
-            <div>
-              <span className="text-white/60 block text-[10px]">WHEN TO ACT:</span>
-              <span className="font-bold text-amber-200">{primaryRec.when}</span>
-            </div>
-            <div className="text-right">
-              <span className="text-white/60 block text-[10px]">CONFIDENCE:</span>
-              <span className="font-black text-emerald-300 text-xs">{primaryRec.confidence}%</span>
-            </div>
-          </div>
-
-          {/* ─── 5. WHY? (EXPLAINABILITY) (PRIORITY 8: STEP 5) ─── */}
-          <div className="mt-3 pt-3 border-t border-white/15">
-            <button
-              onClick={() => setWhyExpanded(!whyExpanded)}
-              className="w-full flex items-center justify-between text-xs font-bold text-amber-300 mb-1.5">
-              <span>{t("whyThisAction", lang)}</span>
-              <ChevronDown size={14} className={`transition-transform ${whyExpanded ? "rotate-180" : ""}`} />
-            </button>
-
-            {whyExpanded && (
-              <div className="flex flex-col gap-2 text-[11px] text-white/90 bg-white/10 p-2.5 rounded-xl">
-                <div>
-                  <span className="font-bold text-amber-200 block mb-0.5">Agronomic Rationale:</span>
-                  <p className="leading-relaxed">{primaryRec.why}</p>
-                </div>
-                <div>
-                  <span className="font-bold text-amber-200 block mb-0.5">Supporting Factors:</span>
-                  <ul className="list-disc pl-4 space-y-0.5 text-white/80">
-                    {primaryRec.supportingFactors.map((f, i) => (
-                      <li key={i}>{f}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <span className="font-bold text-amber-200 block mb-0.5">Risk Mitigated:</span>
-                  <p className="text-white/80">{primaryRec.risk}</p>
-                </div>
-                {primaryRec.feedbackInfluence && (
-                  <div className="text-[10px] text-amber-300 bg-black/20 p-1.5 rounded-md font-medium">
-                    {primaryRec.feedbackInfluence}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* ─── 6. TAKE ACTION (PRIORITY 8: STEP 6) ─── */}
-          <div className="mt-3.5 flex flex-col gap-2">
-            <div className="flex gap-2">
-              <button
-                onClick={() => onOpenFeedback(primaryRec)}
-                className="flex-1 py-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 bg-amber-400 text-black shadow-md active:scale-98">
-                <CheckCircle size={15} /> {t("markDone", lang)}
-              </button>
-              <button
-                onClick={() => navigate("ai")}
-                className="flex-1 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-white/20 text-white border border-white/25 active:scale-98">
-                <Bot size={15} /> {t("askAIWhy", lang)}
-              </button>
-            </div>
-
-            <button
-              onClick={() => setShowAlternative(!showAlternative)}
-              className="text-[11px] text-white/70 hover:text-white text-center underline decoration-dotted">
-              {showAlternative ? "Hide Alternative Plan" : "View Alternative Action"}
-            </button>
-
-            {showAlternative && (
-              <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 text-[11px] text-white">
-                <span className="font-bold text-amber-300 block mb-0.5">Alternative Action:</span>
-                <p>{primaryRec.alternativeAction}</p>
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* ─── 4.5. ARFI RESILIENCE & WHAT-IF LAB CARD (PRIORITY 1) ─── */}
         <div className="bg-white rounded-3xl p-4 shadow-xs border border-emerald-100 flex flex-col gap-3">

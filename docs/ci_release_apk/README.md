@@ -51,16 +51,16 @@ apksigner verify --verbose --print-certs app-release.apk
 
 ## 4. Latest Synchronized APK Build (Local Regeneration)
 
-* **Build Date / Time**: 2026-11-05 11:07:14 IST
-* **Features Included**: Removed artificial top status bar (09:41/5G) and top risk alert card from dashboard, updated Vite production assets.
-* **Web Bundle Assets**: Synced from production Vite build (`dist/assets/index-B9Xk_4Yk.js`, `dist/assets/index-B-ui9_qB.css`) via `npx cap copy android`.
+* **Build Date / Time**: 2026-11-05 11:30:38 IST
+* **Features Included**: Completely removed Core Engine action card from dashboard view, clean agronomic feed, updated Vite production assets.
+* **Web Bundle Assets**: Synced from production Vite build (`dist/assets/index-Dt74HXVp.js`, `dist/assets/index-baKnxN7L.css`) via `npx cap copy android`.
 * **Output Artifacts**:
   * Release APK: `android/app/build/outputs/apk/release/app-release.apk`
   * Debug APK: `android/app/build/outputs/apk/debug/app-debug.apk`
   * Cached in `ci-artifacts/release/app-release.apk`
 * **Release APK Local SHA-256**:
   ```
-  553CDDB0EE91DE80C9CB5EEB2AAC7FAB3124D5A1C42D6E8660F9B417477F103B
+  DB8101BF057731E4B62EC26C65BB9659B497CD0A6DCCF1BD11E0593880F51BB2
   ```
 
 
