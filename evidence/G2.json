@@ -1,15 +1,15 @@
 {
-  "gate": "G2",
-  "name": "Automated Test Suites",
-  "sha": "5c74517053e7f66bb7818cdecc503918af7fc4a9",
-  "command": "npx vitest run && node scripts/test_firestore_rules.mjs",
-  "timestamp": "2026-10-24T14:16:43Z",
-  "metrics": {
-    "vitest_suites_passed": 25,
-    "vitest_tests_passed": 137,
-    "vitest_failed": 0,
-    "firestore_emulator_passed": 23,
-    "firestore_emulator_failed": 0
-  },
-  "result": "PASS"
+    "gate":  "G2",
+    "name":  "Automated Test Suites",
+    "sha":  "cde89aa930127fe1c7afa708aae4ed6d18a5af57",
+    "command":  "npx vitest run \u0026\u0026 node scripts/test_firestore_rules.mjs",
+    "timestamp":  "2026-10-24T14:16:43Z",
+    "metrics":  {
+                    "vitest_suites_passed":  25,
+                    "vitest_tests_passed":  137,
+                    "vitest_failed":  0,
+                    "firestore_emulator_passed":  23,
+                    "firestore_emulator_failed":  0
+                },
+    "result":  "PASS"
 }

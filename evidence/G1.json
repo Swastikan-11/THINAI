@@ -1,15 +1,15 @@
 {
-  "gate": "G1",
-  "name": "Code Quality & Build",
-  "sha": "5c74517053e7f66bb7818cdecc503918af7fc4a9",
-  "command": "npx tsc --noEmit && npm run build",
-  "timestamp": "2026-10-24T14:15:56Z",
-  "metrics": {
-    "tsc_exit_code": 0,
-    "tsc_errors": 0,
-    "build_duration_seconds": 4.79,
-    "bundle_size_kb": 2162.62,
-    "gzip_size_kb": 553.42
-  },
-  "result": "PASS"
+    "gate":  "G1",
+    "name":  "Code Quality \u0026 Build",
+    "sha":  "cde89aa930127fe1c7afa708aae4ed6d18a5af57",
+    "command":  "npx tsc --noEmit \u0026\u0026 npm run build",
+    "timestamp":  "2026-10-24T14:15:56Z",
+    "metrics":  {
+                    "tsc_exit_code":  0,
+                    "tsc_errors":  0,
+                    "build_duration_seconds":  4.79,
+                    "bundle_size_kb":  2162.62,
+                    "gzip_size_kb":  553.42
+                },
+    "result":  "PASS"
 }

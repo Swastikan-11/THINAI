@@ -1,14 +1,14 @@
 {
-  "gate": "G8",
-  "name": "Live Network Services & Transparent Fallbacks",
-  "sha": "5c74517053e7f66bb7818cdecc503918af7fc4a9",
-  "command": "npx vitest run tests/weather_spray_irrigation.test.ts tests/market_agmarknet.test.ts tests/ai_assistant_retrieval.test.ts",
-  "timestamp": "2026-10-24T14:22:47Z",
-  "metrics": {
-    "open_meteo_live_latency_ms": 135,
-    "agmarknet_fallback_labeled": true,
-    "assistant_curated_retrieval": true,
-    "unverified_refusal_tested": true
-  },
-  "result": "PASS"
+    "gate":  "G8",
+    "name":  "Live Network Services \u0026 Transparent Fallbacks",
+    "sha":  "cde89aa930127fe1c7afa708aae4ed6d18a5af57",
+    "command":  "npx vitest run tests/weather_spray_irrigation.test.ts tests/market_agmarknet.test.ts tests/ai_assistant_retrieval.test.ts",
+    "timestamp":  "2026-10-24T14:22:47Z",
+    "metrics":  {
+                    "open_meteo_live_latency_ms":  135,
+                    "agmarknet_fallback_labeled":  true,
+                    "assistant_curated_retrieval":  true,
+                    "unverified_refusal_tested":  true
+                },
+    "result":  "PASS"
 }
