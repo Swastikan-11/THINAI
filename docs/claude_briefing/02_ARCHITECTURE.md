@@ -1,7 +1,7 @@
 # THINAI System Architecture & Technical Specifications
 
 **Document Target**: Complete Technical Stack, Component Topologies & Data Flows  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `package.json`, `firestore.rules`, `.github/workflows/build-apk.yml`, `src/services/`  
 
 ---
@@ -214,3 +214,4 @@ Only variable names are documented. No secret keys or credentials are listed:
   * `ANDROID_KEYSTORE_PASSWORD`
   * `ANDROID_KEY_ALIAS`
   * `ANDROID_KEY_PASSWORD`
+

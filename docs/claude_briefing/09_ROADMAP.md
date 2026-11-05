@@ -1,7 +1,7 @@
 # THINAI Strategic Engineering & Research Roadmap
 
 **Document Target**: Structured Technical Roadmap & Phased Execution Plan  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `BUGS.md`, `PILOT_PROTOCOL.md`, `docs/GATE_CHANGE_PROPOSAL.md`, `docs/MODEL_IMPROVEMENT_PLAN.md`  
 
 ---
@@ -64,3 +64,4 @@ Strategic and research frontiers for academic publication, institutional scale-u
    * *Why*: 25.60% field accuracy is the single largest technical vulnerability of the system. Fine-tuning with heavy background noise augmentation will lift empirical accuracy and make Tier 1 chemical advice safe to activate.
 5. **Engage TNAU Agronomist for Tamil Translation & Remedy Sign-Off (2–3 weeks)**:
    * *Why*: Human verification of Tamil text and the 11 remedy handlers is required to safely provide native chemical guidance to Tamil smallholders.
+

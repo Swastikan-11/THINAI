@@ -1,7 +1,7 @@
 # THINAI Product Overview, Personas & User Journeys
 
 **Document Target**: Product Specification & Operational Workflows  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `docs/FEATURE_MATRIX.md`, `src/app/App.tsx`, `docs/screenshots/`  
 
 ---
@@ -112,3 +112,4 @@ As a technical backronym, **THINAI** stands for **Technology for Holistic Intell
 | **Unreviewed Language Active** | In any of the 22 non-English languages, remedy recommendations display in English accompanied by a notice: *"This advice is shown in English until a language expert has checked the translation. Ask your extension officer if unsure."* | Prevents dangerous chemical mistranslation (e.g. confusing insecticide with herbicide or misquoting chemical dilution ratios). |
 | **Market Mandi API Offline** | Card title: *"Live Mandi Price Unavailable"*. Subtext: *"Showing benchmark price from historical Agmarknet records as of [Date]."* | No pseudo-random or fabricated pricing curves. |
 | **Interrupted Scan / Low Storage** | If browser IndexedDB throws `QuotaExceededError`, UI logs emergency cache purge notice, drops transient cached thumbnails, and retains critical transaction records. | Graceful recovery without application crash (`tests/reconnect_sync.test.ts`). |
+

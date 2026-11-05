@@ -3,7 +3,7 @@
 **Document Target**: External Auditor / Reviewer Knowledge Packet  
 **Target Audience**: Claude (AI Reviewer without repository access or runtime execution capability)  
 **Date Generated**: 2026-11-04  
-**Tested Repository Head Commit**: `861aacad70f7e17f72a68c1e840d9f9dee500970` (`861aaca`)  
+**Tested Repository Head Commit**: `cde89aa930127fe1c7afa708aae4ed6d18a5af57` (`cde89aa`)  
 **Verified Evidence Anchor Commit**: `5c74517053e7f66bb7818cdecc503918af7fc4a9` (`5c74517`)  
 **Repository URL**: `https://github.com/Swastikan-11/THINAI.git`  
 **Repository Visibility**: Public (`"private": false`)  
@@ -46,3 +46,4 @@ In compliance with standing instructions, every claim lacking verifiable proof i
 3. **Physical Smartphone Native Performance**: Any claim that THINAI executes at native 60fps on physical low-end Android hardware is UNVERIFIED. Testing was performed on an Android 16 (API 36) Google APIs x86_64 emulator via WHPX; physical phone testing is recorded as `NOT TESTED` in `evidence/G7.json`.
 4. **Agronomist Chemical Sign-Off**: Any claim of an officially endorsed chemical fungicide or insecticide prescription is UNVERIFIED. All 11 entries in `src/services/litertInferenceService.ts` and `src/services/diseaseDetectionService.ts` have `verificationStatus: "UNVERIFIED (Awaiting Agronomist Sign-Off)"` with empty `reviewerName`.
 5. **ARFI Live Production Training on Crop Yields**: As stated in `ARFI.md` and `docs/FEATURE_MATRIX.md`, ARFI is an analytical heuristic stress-simulation metric; claims of training on empirical harvest loss data are UNVERIFIED.
+

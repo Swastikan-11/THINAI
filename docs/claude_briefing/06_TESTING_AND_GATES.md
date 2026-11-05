@@ -1,7 +1,7 @@
 # THINAI Quality Gates, Verification Evidence & Bug Registry
 
 **Document Target**: Verification Scorecard, Automated Test Counts, Android/Desktop Artifacts & Defect Log  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `READINESS_CRITERIA.md`, `scripts/verify_gates.mjs`, `evidence/G*.json`, `BUGS.md`, `docs/GATE_CHANGE_PROPOSAL.md`  
 
 ---
@@ -169,3 +169,4 @@ Audited from `BUGS.md`:
 3. **Multi-User Production Concurrency on Firebase Spark**: Concurrency and read quotas tested on local Firestore emulator; simultaneous multi-officer field usage has not been run against live Firebase Spark production quotas.
 4. **Longitudinal Smallholder Farm Economic Trials**: Zero seasonal harvest trials measuring yield difference or chemical cost reduction.
 5. **iOS / Apple Device Execution**: No iOS build or testing has been performed.
+

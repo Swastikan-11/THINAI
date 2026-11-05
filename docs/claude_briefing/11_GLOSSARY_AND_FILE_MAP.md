@@ -1,7 +1,7 @@
 # THINAI Technical Glossary & Comprehensive File Map
 
 **Document Target**: Definitive Terminology Glossary & Architectural Concept-to-File Index  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 
 ---
 
@@ -62,3 +62,4 @@
 | **Windows Desktop Wrapper (Electron)** | `electron/main.cjs` | `package.json` | `dist-electron/THINAI Setup 0.0.1.exe` |
 | **Pruned Prototype Dead Code** | `docs/REMOVED.md` | `src/app/App.tsx` | `tests/dead_routes_pruned.test.ts` (4/4 pass) |
 | **Automated Gate Verification Script** | `scripts/verify_gates.mjs` | `evidence/G*.json` | `node scripts/verify_gates.mjs` |
+

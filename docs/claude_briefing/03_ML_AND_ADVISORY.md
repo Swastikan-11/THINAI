@@ -1,7 +1,7 @@
 # THINAI Machine Learning Models, Calibration & Agronomic Advisory Specifications
 
 **Document Target**: Comprehensive ML Architecture, Calibration, Safety Invariants & Metric Traceability  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `public/models/`, `data/crop_registry.json`, `src/services/litertInferenceService.ts`, `evidence/G4.json`, `results/real_field_evaluation.json`  
 
 ---
@@ -191,3 +191,4 @@ The model cannot distinguish complex background clutter from disease spots, caus
 | **Daily Read Cost Estimate** | $500\text{ reads/day}$ | `PILOT_PROTOCOL.md` | Mathematical projection based on 5 officers checking 4x daily. |
 | **Thumbnail Base64 Size** | $\approx 25\text{ KB}$ | `PILOT_PROTOCOL.md` | Empirical average based on $300\times 300$ JPEG compression. |
 | **ARFI Soil Reliability Weights**| $0.50 + 0.20 + 0.15 + 0.15$ | `backend/app/services/arfi_service.py` | Analytical heuristic formulation, not empirically regression-fitted. |
+

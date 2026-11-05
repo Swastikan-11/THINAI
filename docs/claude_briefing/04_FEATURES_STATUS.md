@@ -1,7 +1,7 @@
 # THINAI Comprehensive Features & Implementation Status Matrix
 
 **Document Target**: Exhaustive Feature Audit, Offline Verification & Defect Status  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `docs/FEATURE_MATRIX.md`, `tests/`, `e2e/`, `docs/REMOVED.md`, `BUGS.md`  
 
 ---
@@ -37,3 +37,4 @@
 | **Windows Desktop Build** | Unpacked executable and standalone NSIS installer | `electron/main.cjs`, `package.json`, `dist-electron/` | YES | YES | Electron 45.0.0 wrapper loading local dist files | Execution of `THINAI Setup 0.0.1.exe` on Windows x64 | English, Tamil, all 23 | **WORKING (Unsigned)** | Installer is unsigned (no commercial EV Code Signing certificate); Windows SmartScreen shows standard warning on install. |
 | **Backend & ARFI Engine** | Microservice calculating recommendation fragility under stress | `backend/app/main.py`, `backend/app/services/arfi_service.py` | YES | NO | FastAPI, SQLite/PostgreSQL, scikit-learn models | `pytest backend/app/tests` (16 passed in 17.40s) | English | **WORKING (Microservice)** | Deployed as independent FastAPI service. When backend is unreachable, frontend operates in autonomous client-side heuristic mode (`ARFI.md`). |
 | **Prototype Dead Routes** | Fake reports, placeholder settings, fabricated weather charts | `src/app/App.tsx` | N/A | N/A | N/A | `tests/dead_routes_pruned.test.ts` | N/A | **REMOVED** | Formally pruned in Phase 3. Recorded in `docs/REMOVED.md`. Dead enum values eliminated. |
+

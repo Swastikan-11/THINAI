@@ -1,7 +1,7 @@
 # THINAI Multilingual Architecture, Typography & Translation Governance
 
 **Document Target**: 23-Language Registry, Typography Specifications & Safety Invariants  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `locales/status.json`, `locales/*.json`, `public/fonts/fonts.css`, `docs/LANGUAGES.md`, `tests/multilingual_parity.test.ts`  
 
 ---
@@ -86,3 +86,4 @@ To prevent these harms, `src/services/i18n.ts` enforces the **Remedy Safety Guar
 3. Instead, the chemical formulation is presented in verified **English**, preceded by an alert box:
    > *"This advice is shown in English until a language expert has checked the translation. Ask your extension officer if unsure."*
 4. Organic and cultural practices (e.g. crop rotation, weed clearing, neem oil foliar spray) are permitted in machine-draft languages because they carry negligible phytotoxicity risk.
+

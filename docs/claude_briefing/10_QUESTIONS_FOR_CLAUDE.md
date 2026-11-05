@@ -1,7 +1,7 @@
 # Key Strategic & Architectural Questions for Claude
 
 **Document Target**: Decisions & Unknowns Requiring External Architectural & Agronomic Review  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 
 ---
 
@@ -50,3 +50,4 @@
   1. *Option A (Git Restore)*: Discard unstaged changes via `git checkout -- src/app/App.tsx src/app/components/AuthScreens.tsx`, instantly restoring clean compilation and 137 passing tests.
   2. *Option B (Surgical Re-Alignment)*: Preserve newly added UI features in `App.tsx` (such as offline auth buttons and telemetry cards) while adding the missing TypeScript imports and accessibility attributes to satisfy the regression suites.
 * **Our Recommendation**: **Option B**. The working-tree modifications add valuable user-requested features (e.g., explicit offline login bypass). A surgical re-alignment satisfies both functional goals and compiler/test invariants.
+

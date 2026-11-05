@@ -1,7 +1,7 @@
 # THINAI Security, Privacy & Legal Due Diligence
 
 **Document Target**: Secrets Audit, Vulnerability Scans, DPDP Act Measures & Licensing Manifest  
-**Context**: Evaluated on commit `861aaca` (`C:\Users\cswas\Documents\THINAI`)  
+**Context**: Evaluated on commit `cde89aa` (`C:\Users\cswas\Documents\THINAI`)  
 **Evidence Files**: `firestore.rules`, `THIRD_PARTY_LICENSES.md`, `DATASETS.md`, `docs/DATASET_DUE_DILIGENCE.md`  
 
 ---
@@ -108,3 +108,4 @@ Audited from `DATASETS.md` and `data/crop_registry.json`:
 | **Lucide Icons** | Lucide Contributors | ISC / MIT | Permissive; iconography |
 | **Electron** | OpenJS Foundation | MIT | Permissive; desktop wrapper |
 | **Noto Fonts** | Google LLC | SIL OFL 1.1 | Free distribution with software; font sale prohibited |
+
