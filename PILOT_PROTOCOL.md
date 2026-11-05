@@ -32,20 +32,47 @@
 
 ---
 
-## 2. Machine Learning Thresholds (STATUS: PROPOSED-BY-AGENT)
+## 2. Threshold Architecture & Governance Separation
+
+To prevent conflating normative deployment criteria with model-specific empirical tuning, thresholds in THINAI are strictly partitioned into two independent tiers:
+
+### 2.1 Acceptance Thresholds (OWNER-GOVERNED ACCEPTANCE CRITERIA)
+
+> [!IMPORTANT]
+> **GOVERNANCE STATUS: PENDING OWNER SPECIFICATION (TEMPLATE)**
+> These are the minimum statistical quality criteria that the project owner and agronomic advisors require before any crop model is promoted to active field service. These thresholds are defined normatively by the owner—NOT by the agent or model.
+>
+> Fill out and commit these thresholds prior to initiating field deployment:
+
+| Criterion | Metric / Mathematical Definition | Owner-Approved Value | Rationale & Regulatory Minimum | Sign-off Status |
+|---|:---:|:---:|---|:---:|
+| **Minimum Overall Field Accuracy** | $\text{Acc}_{\text{overall}} \ge X\%$ | `[ OWNER TO FILL: e.g. 70% ]` | Field viability floor | `PENDING_OWNER_SIGN_OFF` |
+| **Minimum Per-Crop Accuracy** | $\min_{c \in \text{Crops}} \text{Acc}_c \ge X\%$ | `[ OWNER TO FILL: e.g. 60% ]` | Prevents uneven crop performance | `PENDING_OWNER_SIGN_OFF` |
+| **Wilson 95% Score Lower Bound** | $W_{\text{lower}}(\text{Acc}) \ge X\%$ | `[ OWNER TO FILL: e.g. 55% ]` | Conservative finite-sample floor | `PENDING_OWNER_SIGN_OFF` |
+| **Maximum Permissible Field ECE** | $\text{ECE}_{\text{field}} \le X\%$ | `[ OWNER TO FILL: e.g. 15% ]` | Maximum allowed confidence distortion | `PENDING_OWNER_SIGN_OFF` |
+| **Minimum Labelled Field Images** | $N_{\text{eval}} \ge X$ images/crop | `[ OWNER TO FILL: e.g. 50 ]` | Statistical sample size requirement | `PENDING_OWNER_SIGN_OFF` |
+| **Per-Class Sensitivity Floor** | $\min_{k} \text{Recall}_k \ge X\%$ | `[ OWNER TO FILL: e.g. 40% ]` | Avoids zero-detection blindspots | `PENDING_OWNER_SIGN_OFF` |
+| **Maximum Permissible Harmful Advice Rate** | $\text{HAR}_{\max} \le X\%$ | `[ OWNER TO FILL: e.g. 2.0% ]` | Agronomic safety ceiling for Tier 1 | `PENDING_OWNER_SIGN_OFF` |
+
+---
+
+### 2.2 Operational Gating Cut-offs (EMPIRICAL STATISTICAL TUNING)
 
 > [!WARNING]
-> **GOVERNANCE STATUS: PROPOSED-BY-AGENT**
-> The values below were derived from laboratory PlantVillage validation calibration (`ml/train_calibrated_model.py`) and are marked **PROPOSED-BY-AGENT**. They remain provisional proposals until the repository owner reviews, validates, and formally signs off on them in a dedicated commit prior to pilot enrollment. Once approved by the owner, they freeze and cannot be altered.
+> **GOVERNANCE STATUS: TECHNICAL RE-ESTIMATION REQUIRED (CURRENT FIELD ECE = 40.49%)**
+> The operational cut-offs below ($\tau_{\text{high}}, \tau_{\text{low}}, T^*$) govern the runtime 3-tier routing:
+> - $\tau_{\text{high}}$: High-confidence threshold for Tier 1 (chemical treatments unlocked).
+> - $\tau_{\text{low}}$: Moderate-confidence floor for Tier 2 (cultural/organic remedies only; chemical sprays withheld).
+> - Below $\tau_{\text{low}}$: Routed strictly to Tier 3 (inconclusive; expert referral only).
+>
+> **Mandatory Invariant**: The repository owner must NOT be asked to approve these cut-offs while empirical field calibration error remains at 40.49%. These cut-offs were fitted on laboratory PlantVillage data ($T^* = 1.28$). Under genuine field domain shift, they must be mathematically refitted on an independent, held-out field calibration split that is strictly disjoint from the 125 field evaluation images. Until such refitting occurs on held-out field data, Tier 1 chemical recommendations remain disabled by default in production.
 
-| Parameter | Symbol | Proposed Value | Origin & Data Source | Governance Status |
-|---|:---:|:---:|---|:---:|
-| **Optimal Temperature Scaling Parameter** | $T^*$ | **$1.28$** | Fitted by NLL minimization on PlantVillage lab validation set | **PROPOSED-BY-AGENT** |
-| **Tier 1 High-Confidence Threshold** | $\tau_{\text{high}}$ | **$0.78$** | Lab risk-coverage curve target ($\text{HAR} \le 2.1\%$) | **PROPOSED-BY-AGENT** |
-| **Tier 2 Moderate-Confidence Threshold** | $\tau_{\text{low}}$ | **$0.45$** | Minimum selective coverage boundary | **PROPOSED-BY-AGENT** |
-| **Minimum Sample Guard for Wilson Interval** | $N_{\min}$ | **$10$** | Statistical stability threshold | **PROPOSED-BY-AGENT** |
-| **Calibration Drift Trigger Delta** | $\Delta\text{ECE}_{\text{alarm}}$ | **$\ge 0.05$** ($5.0\%$) | Operational tripwire | **PROPOSED-BY-AGENT** |
-| **Maximum Permissible Harmful Advice Rate** | $\text{HAR}_{\max}$ | **$2.50\%$** | Agronomic safety ceiling | **PROPOSED-BY-AGENT** |
+| Operational Parameter | Symbol | Laboratory Provisional Value | Status on Field Data | Technical Requirement for Freezing |
+|---|:---:|:---:|---|---|
+| **Temperature Scaling Parameter** | $T^*$ | $1.28$ | **UNALIGNED** (ECE = 40.49%) | Fit NLL minimization on held-out field calibration split ($N \ge 150$) |
+| **Tier 1 Selective High Cut-off** | $\tau_{\text{high}}$ | $0.78$ | **PROVISIONAL** | Derive from empirical field risk-coverage curve targeting $\text{HAR} \le \text{HAR}_{\max}$ |
+| **Tier 2 Selective Moderate Cut-off** | $\tau_{\text{low}}$ | $0.45$ | **PROVISIONAL** | Boundary ensuring Tier 3 captures unconfident and out-of-domain scans |
+| **Minimum Sample Guard for Wilson Interval** | $N_{\min}$ | $10$ | **ACTIVE** | Prevents displaying uncalibrated percentage estimates for small cohorts |
 
 ---
 

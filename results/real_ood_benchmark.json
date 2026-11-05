@@ -1,0 +1,2061 @@
+{
+  "timestamp": "2026-11-05T02:51:35Z",
+  "model": "thinai_disease_model.tflite (MobileNetV2, 39 classes)",
+  "temperature": 1.28,
+  "tau_high": 0.78,
+  "tau_low": 0.45,
+  "summary": {
+    "Paddy": {
+      "total_images": 30,
+      "tier1_pct": 0.0,
+      "tier2_pct": 0.0,
+      "tier3_pct": 100.0,
+      "confidence_distribution": {
+        "mean": 0.7024,
+        "std": 0.2587,
+        "min": 0.3137,
+        "max": 0.9982
+      },
+      "rejection_reasons": {
+        "UNSUPPORTED_CROP_BOUNDARY": 30
+      }
+    },
+    "Cotton": {
+      "total_images": 30,
+      "tier1_pct": 0.0,
+      "tier2_pct": 0.0,
+      "tier3_pct": 100.0,
+      "confidence_distribution": {
+        "mean": 0.669,
+        "std": 0.2303,
+        "min": 0.225,
+        "max": 0.9861
+      },
+      "rejection_reasons": {
+        "UNSUPPORTED_CROP_BOUNDARY": 30
+      }
+    },
+    "Sugarcane": {
+      "total_images": 30,
+      "tier1_pct": 0.0,
+      "tier2_pct": 0.0,
+      "tier3_pct": 100.0,
+      "confidence_distribution": {
+        "mean": 0.7978,
+        "std": 0.2295,
+        "min": 0.2313,
+        "max": 0.999
+      },
+      "rejection_reasons": {
+        "UNSUPPORTED_CROP_BOUNDARY": 30
+      }
+    },
+    "Banana": {
+      "total_images": 30,
+      "tier1_pct": 0.0,
+      "tier2_pct": 0.0,
+      "tier3_pct": 100.0,
+      "confidence_distribution": {
+        "mean": 0.7349,
+        "std": 0.2751,
+        "min": 0.1926,
+        "max": 0.9997
+      },
+      "rejection_reasons": {
+        "UNSUPPORTED_CROP_BOUNDARY": 30
+      }
+    },
+    "Other Leaves": {
+      "total_images": 30,
+      "tier1_pct": 10.0,
+      "tier2_pct": 26.67,
+      "tier3_pct": 63.33,
+      "confidence_distribution": {
+        "mean": 0.6801,
+        "std": 0.2374,
+        "min": 0.2506,
+        "max": 0.9999
+      },
+      "rejection_reasons": {
+        "MODERATE_CONFIDENCE_NO_CHEMICALS": 8,
+        "LOW_CONFIDENCE_SUB_TAU_LOW": 5,
+        "BACKGROUND_NON_VEGETATION": 14,
+        "TIER_1_OVERCONFIDENT_ESCAPE": 3
+      }
+    },
+    "Hands": {
+      "total_images": 30,
+      "tier1_pct": 3.33,
+      "tier2_pct": 20.0,
+      "tier3_pct": 76.67,
+      "confidence_distribution": {
+        "mean": 0.7464,
+        "std": 0.212,
+        "min": 0.3361,
+        "max": 0.9998
+      },
+      "rejection_reasons": {
+        "BACKGROUND_NON_VEGETATION": 23,
+        "MODERATE_CONFIDENCE_NO_CHEMICALS": 6,
+        "TIER_1_OVERCONFIDENT_ESCAPE": 1
+      }
+    },
+    "Soil": {
+      "total_images": 30,
+      "tier1_pct": 3.33,
+      "tier2_pct": 3.33,
+      "tier3_pct": 93.33,
+      "confidence_distribution": {
+        "mean": 0.9448,
+        "std": 0.1008,
+        "min": 0.5923,
+        "max": 0.9999
+      },
+      "rejection_reasons": {
+        "BACKGROUND_NON_VEGETATION": 28,
+        "MODERATE_CONFIDENCE_NO_CHEMICALS": 1,
+        "TIER_1_OVERCONFIDENT_ESCAPE": 1
+      }
+    },
+    "Packaging": {
+      "total_images": 30,
+      "tier1_pct": 0.0,
+      "tier2_pct": 3.33,
+      "tier3_pct": 96.67,
+      "confidence_distribution": {
+        "mean": 0.8768,
+        "std": 0.199,
+        "min": 0.3548,
+        "max": 0.9999
+      },
+      "rejection_reasons": {
+        "BACKGROUND_NON_VEGETATION": 27,
+        "LOW_CONFIDENCE_SUB_TAU_LOW": 2,
+        "MODERATE_CONFIDENCE_NO_CHEMICALS": 1
+      }
+    }
+  },
+  "total_evaluated": 240,
+  "detailed_predictions": [
+    {
+      "category": "Paddy",
+      "filename": "paddy_01.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9905,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_02.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.977,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_03.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.3919,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_04.jpg",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "calibrated_confidence": 0.3137,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_05.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.996,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_06.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9738,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_07.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9889,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_08.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8268,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_09.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.657,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_10.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.377,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_11.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9982,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_12.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9905,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.977,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_14.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.3919,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_15.jpg",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "calibrated_confidence": 0.3137,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.996,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_17.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9738,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_18.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.7691,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_19.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.6616,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_20.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.5139,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_21.jpg",
+      "predicted_class": "Grape___Black_rot",
+      "calibrated_confidence": 0.5392,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_22.jpg",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "calibrated_confidence": 0.348,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_23.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.4164,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_24.jpg",
+      "predicted_class": "Grape___Black_rot",
+      "calibrated_confidence": 0.4814,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_25.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.519,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_26.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9889,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_27.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8268,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_28.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.657,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_29.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.377,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Paddy",
+      "filename": "paddy_30.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.841,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_01.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.5206,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_02.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.5661,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_03.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9711,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_04.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.8514,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_05.jpg",
+      "predicted_class": "Soybean___healthy",
+      "calibrated_confidence": 0.4121,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_06.jpg",
+      "predicted_class": "Corn___Common_rust",
+      "calibrated_confidence": 0.3087,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_07.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.7692,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_08.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.5174,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_09.jpg",
+      "predicted_class": "Orange___Haunglongbing_(Citrus_greening)",
+      "calibrated_confidence": 0.5352,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_10.jpg",
+      "predicted_class": "Potato___Late_blight",
+      "calibrated_confidence": 0.225,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_11.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9567,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_12.jpg",
+      "predicted_class": "Squash___Powdery_mildew",
+      "calibrated_confidence": 0.8241,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_13.jpg",
+      "predicted_class": "Squash___Powdery_mildew",
+      "calibrated_confidence": 0.3704,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_14.jpg",
+      "predicted_class": "Squash___Powdery_mildew",
+      "calibrated_confidence": 0.9504,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_15.jpg",
+      "predicted_class": "Squash___Powdery_mildew",
+      "calibrated_confidence": 0.9419,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7613,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_17.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.5065,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_18.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9861,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_19.jpg",
+      "predicted_class": "Cherry___Powdery_mildew",
+      "calibrated_confidence": 0.3371,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_20.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.761,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_21.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9199,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_22.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9479,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_23.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.426,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_24.jpg",
+      "predicted_class": "Apple___Black_rot",
+      "calibrated_confidence": 0.6444,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_25.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5461,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_26.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7844,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_27.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6328,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_28.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.6926,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_29.jpg",
+      "predicted_class": "Grape___Black_rot",
+      "calibrated_confidence": 0.4249,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Cotton",
+      "filename": "cotton_30.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9782,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_01.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6647,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_02.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.549,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_03.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.485,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_04.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9862,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_05.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9926,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_06.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.8272,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_07.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9784,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_08.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9312,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_09.jpg",
+      "predicted_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "calibrated_confidence": 0.7555,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_10.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5606,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_11.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9816,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_12.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9866,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_14.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_15.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6647,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.549,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_17.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.485,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_18.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9862,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_19.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9926,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_20.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.8272,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_21.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9784,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_22.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9312,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_23.jpg",
+      "predicted_class": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+      "calibrated_confidence": 0.7555,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_24.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5606,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_25.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9816,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_26.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9866,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_27.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_28.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_29.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.3101,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Sugarcane",
+      "filename": "sugarcane_30.jpg",
+      "predicted_class": "Cherry___healthy",
+      "calibrated_confidence": 0.2313,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_01.jpg",
+      "predicted_class": "Orange___Haunglongbing_(Citrus_greening)",
+      "calibrated_confidence": 0.9965,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_02.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.9842,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_03.jpg",
+      "predicted_class": "Peach___Bacterial_spot",
+      "calibrated_confidence": 0.2094,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_04.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7791,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_05.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.6768,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_06.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7943,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_07.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.2838,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_08.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.9996,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_09.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8475,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_10.jpg",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "calibrated_confidence": 0.5369,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_11.jpg",
+      "predicted_class": "Peach___Bacterial_spot",
+      "calibrated_confidence": 0.742,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_12.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9876,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9394,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_14.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.9984,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_15.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.9997,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_16.jpg",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "calibrated_confidence": 0.5311,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_17.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.3401,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_18.jpg",
+      "predicted_class": "Peach___Bacterial_spot",
+      "calibrated_confidence": 0.1926,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_19.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9635,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_20.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.93,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_21.jpg",
+      "predicted_class": "Orange___Haunglongbing_(Citrus_greening)",
+      "calibrated_confidence": 0.9965,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_22.jpg",
+      "predicted_class": "Peach___Bacterial_spot",
+      "calibrated_confidence": 0.2094,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_23.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.9842,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_24.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7791,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_25.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7943,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_26.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.6768,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_27.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.2838,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_28.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.9996,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_29.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8475,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Banana",
+      "filename": "banana_30.jpg",
+      "predicted_class": "Peach___Bacterial_spot",
+      "calibrated_confidence": 0.742,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "UNSUPPORTED_CROP_BOUNDARY"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_01.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.506,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_02.jpg",
+      "predicted_class": "Orange___Haunglongbing_(Citrus_greening)",
+      "calibrated_confidence": 0.2506,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_03.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.4963,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_04.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5208,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_05.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6842,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_06.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.3712,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_07.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.6247,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_08.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9351,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_09.jpg",
+      "predicted_class": "Blueberry___healthy",
+      "calibrated_confidence": 0.6916,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_10.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5863,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_11.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.9385,
+      "assigned_tier": "TIER_1_CONFIDENT",
+      "rejection_reason": "TIER_1_OVERCONFIDENT_ESCAPE"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_12.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.2686,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8754,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_14.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8339,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_15.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9931,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_17.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7461,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_18.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.7027,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_19.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9997,
+      "assigned_tier": "TIER_1_CONFIDENT",
+      "rejection_reason": "TIER_1_OVERCONFIDENT_ESCAPE"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_20.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.7478,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_21.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5506,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_22.jpg",
+      "predicted_class": "Orange___Haunglongbing_(Citrus_greening)",
+      "calibrated_confidence": 0.9728,
+      "assigned_tier": "TIER_1_CONFIDENT",
+      "rejection_reason": "TIER_1_OVERCONFIDENT_ESCAPE"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_23.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6906,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_24.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9983,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_25.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.7368,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_26.jpg",
+      "predicted_class": "Pepper,_bell___Bacterial_spot",
+      "calibrated_confidence": 0.3406,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_27.jpg",
+      "predicted_class": "Tomato___healthy",
+      "calibrated_confidence": 0.3095,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_28.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.3574,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_29.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9413,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Other Leaves",
+      "filename": "other_leaves_30.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.732,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_01.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5605,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_02.jpg",
+      "predicted_class": "Soybean___healthy",
+      "calibrated_confidence": 0.7634,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_03.jpg",
+      "predicted_class": "Corn___Northern_Leaf_Blight",
+      "calibrated_confidence": 0.4836,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_04.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6814,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_05.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9823,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_06.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7573,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_07.jpg",
+      "predicted_class": "Cherry___Powdery_mildew",
+      "calibrated_confidence": 0.779,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_08.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9308,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_09.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9264,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_10.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9983,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_11.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9915,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_12.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9998,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9927,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_14.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6963,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_15.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9988,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8333,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_17.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5395,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_18.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.4894,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_19.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.352,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_20.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.3807,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_21.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6747,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_22.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.6977,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_23.jpg",
+      "predicted_class": "Apple___healthy",
+      "calibrated_confidence": 0.4765,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_24.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9025,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_25.jpg",
+      "predicted_class": "Corn___healthy",
+      "calibrated_confidence": 0.7605,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_26.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8565,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_27.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9949,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_28.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.625,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_29.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.3361,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Hands",
+      "filename": "hands_30.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9307,
+      "assigned_tier": "TIER_1_CONFIDENT",
+      "rejection_reason": "TIER_1_OVERCONFIDENT_ESCAPE"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_01.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9984,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_02.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9762,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_03.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.5923,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_04.jpg",
+      "predicted_class": "Strawberry___Leaf_scorch",
+      "calibrated_confidence": 0.9867,
+      "assigned_tier": "TIER_1_CONFIDENT",
+      "rejection_reason": "TIER_1_OVERCONFIDENT_ESCAPE"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_05.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9998,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_06.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9987,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_07.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9957,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_08.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9852,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_09.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9991,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_10.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8425,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_11.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7227,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_12.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8517,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9756,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_14.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9916,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_15.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9994,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9929,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_17.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.936,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_18.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9996,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_19.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9989,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_20.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9773,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_21.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9651,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_22.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6949,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_23.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_24.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_25.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9995,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_26.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9859,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_27.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9989,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_28.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9738,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_29.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9722,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Soil",
+      "filename": "soil_30.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.935,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_01.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9974,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_02.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9999,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_03.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9893,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_04.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9991,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_05.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9987,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_06.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9982,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_07.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9992,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_08.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9969,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_09.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.4449,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_10.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.5368,
+      "assigned_tier": "TIER_2_MODERATE",
+      "rejection_reason": "MODERATE_CONFIDENCE_NO_CHEMICALS"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_11.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.3946,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_12.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.5935,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_13.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.6807,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_14.jpg",
+      "predicted_class": "Tomato___Late_blight",
+      "calibrated_confidence": 0.3548,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "LOW_CONFIDENCE_SUB_TAU_LOW"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_15.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9972,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_16.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9913,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_17.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.8931,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_18.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.7922,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_19.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9441,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_20.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9384,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_21.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9955,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_22.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9522,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_23.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9889,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_24.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9887,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_25.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9734,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_26.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9486,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_27.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.971,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_28.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9526,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_29.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9993,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    },
+    {
+      "category": "Packaging",
+      "filename": "packaging_30.jpg",
+      "predicted_class": "Background_without_leaves",
+      "calibrated_confidence": 0.9947,
+      "assigned_tier": "TIER_3_INCONCLUSIVE",
+      "rejection_reason": "BACKGROUND_NON_VEGETATION"
+    }
+  ]
+}

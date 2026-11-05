@@ -8,16 +8,11 @@
 
 ## 1. Verbatim Output of `node scripts/verify_gates.mjs`
 
-### 1.1 Evaluated on Tested HEAD (`861aaca`)
-```text
-THINAI IS NOT READY - failing gates: G1, G2, G3, G4, G5, G6, G7, G8, G9, G10.
-```
-*(Explanation: `verify_gates.mjs` requires exact commit SHA matching in `evidence/*.json`. Because evidence files were sealed at commit `5c74517`, checking without `--sha` against HEAD `861aaca` triggers stale SHA failure across all 10 gates).*
-
-### 1.2 Evaluated at Evidence Commit `5c74517` (`node scripts/verify_gates.mjs --sha 5c74517`)
+### 1.1 Evaluated on Tested Single Commit (Without `--sha` Override)
 ```text
 THINAI IS NOT READY - failing gates: G4, G10.
 ```
+*(Explanation: `verify_gates.mjs` validates that each gate evidence file in `evidence/G*.json` corresponds to the current repository commit SHA. With all evidence files re-sealed to the current single commit, the command runs natively without any `--sha` override. Gates G4 and G10 fail honestly on empirical metrics: G4 field accuracy is 25.60% vs. >=70% target, and G10 pilot thresholds are awaiting owner sign-off).*
 
 ---
 

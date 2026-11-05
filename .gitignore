@@ -37,3 +37,7 @@ dist-electron/
 # Temporary backup files
 *.bak
 src/app/App.tsx.bak
+
+docs/ci_release_apk/*.apk
+
+firestore-debug.log

@@ -11,7 +11,7 @@
     {
       "crop_id": "paddy",
       "crop_name_en": "Paddy (Rice)",
-      "crop_name_ta": "நெல்",
+      "crop_name_ta": "\u0ba8\u0bc6\u0bb2\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Bacterial leaf blight (Xanthomonas oryzae pv. oryzae)",
         "Blast (Magnaporthe oryzae)",
@@ -24,14 +24,19 @@
       "datasets_found": [
         {
           "name": "Paddy Doctor: A Visual Dataset for Paddy Disease Classification",
+          "arxiv_id": "arXiv:2205.11108 [cs.CV]",
+          "website": "https://paddydoc.github.io",
           "doi": "10.17632/n8jpkpfz5p.1",
-          "publisher": "Mendeley Data / MSU Tirunelveli",
-          "authors": "P. Selvaraj et al.",
+          "publisher": "Mendeley Data / Manonmaniam Sundaranar University (MSU), Tirunelveli",
+          "authors": "P. Selvaraj, S. Murugan et al.",
           "year": 2022,
           "source_url": "https://data.mendeley.com/datasets/n8jpkpfz5p/1",
-          "license": "CC BY 4.0",
-          "collection_location": "Tirunelveli, Tamil Nadu, India",
-          "collection_type": "Field (100% natural agrarian field acquisition)"
+          "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+          "license_terms_quote": "You are free to: Share \u2014 copy and redistribute the material in any medium or format; Adapt \u2014 remix, transform, and build upon the material for any purpose, even commercially. Under the following terms: Attribution \u2014 You must give appropriate credit, provide a link to the license, and indicate if changes were made.",
+          "thinai_use_allowed": true,
+          "thinai_usage_note": "THINAI commercial and academic use is explicitly permitted under CC BY 4.0 terms with appropriate scholarly citation. No model training or weight compilation has taken place; retained strictly as a candidate dataset pending pilot calibration protocols.",
+          "collection_location": "Tirunelveli District, Tamil Nadu, India",
+          "collection_type": "Field (100% natural agrarian field acquisition across 13 paddy cultivars)"
         }
       ],
       "dataset_license": "CC BY 4.0",
@@ -52,24 +57,18 @@
       ],
       "collection_country": "India (Tamil Nadu)",
       "collection_type": "Field",
-      "source_url": "https://data.mendeley.com/datasets/n8jpkpfz5p/1",
-      "model_status": "A",
-      "validation_evidence_file": "results/paddy_field_validation.json",
-      "pack_info": {
-        "pack_id": "pack_paddy_v1",
-        "model_file": "/models/crop_packs/paddy_mobilenetv2.json",
-        "weights_file": "/models/crop_packs/paddy_mobilenetv2.bin",
-        "sha256": "19925013fb222f6b0591bae8f2f9a68d49abc9913ff5761c18b11b633d7f00f2",
-        "size_bytes": 28672,
-        "temperature": 1.25,
-        "tau_high": 0.78,
-        "tau_low": 0.45
-      }
+      "source_url": "https://paddydoc.github.io",
+      "model_status": "CANDIDATE",
+      "candidate_status": "CANDIDATE_ONLY",
+      "training_status": "NOT_TRAINED",
+      "candidate_audit_date": "2026-11-04T20:45:00.000Z",
+      "pack_info": null,
+      "validation_evidence_file": null
     },
     {
       "crop_id": "tomato",
       "crop_name_en": "Tomato",
-      "crop_name_ta": "தக்காளி",
+      "crop_name_ta": "\u0ba4\u0b95\u0bcd\u0b95\u0bbe\u0bb3\u0bbf",
       "major_diseases_pests_tamil_nadu": [
         "Early blight (Alternaria solani)",
         "Late blight (Phytophthora infestans)",
@@ -126,7 +125,7 @@
     {
       "crop_id": "potato",
       "crop_name_en": "Potato",
-      "crop_name_ta": "உருளைக்கிழங்கு",
+      "crop_name_ta": "\u0b89\u0bb0\u0bc1\u0bb3\u0bc8\u0b95\u0bcd\u0b95\u0bbf\u0bb4\u0b99\u0bcd\u0b95\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Early blight (Alternaria solani)",
         "Late blight (Phytophthora infestans)",
@@ -174,7 +173,7 @@
     {
       "crop_id": "chilli",
       "crop_name_en": "Chilli (Pepper)",
-      "crop_name_ta": "மிளகாய்",
+      "crop_name_ta": "\u0bae\u0bbf\u0bb3\u0b95\u0bbe\u0baf\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Anthracnose / Fruit rot (Colletotrichum capsici)",
         "Bacterial leaf spot (Xanthomonas campestris pv. vesicatoria)",
@@ -221,7 +220,7 @@
     {
       "crop_id": "maize",
       "crop_name_en": "Maize (Corn)",
-      "crop_name_ta": "மக்காச்சோளம்",
+      "crop_name_ta": "\u0bae\u0b95\u0bcd\u0b95\u0bbe\u0b9a\u0bcd\u0b9a\u0bcb\u0bb3\u0bae\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Fall armyworm (Spodoptera frugiperda)",
         "Northern corn leaf blight (Exserohilum turcicum)",
@@ -270,7 +269,7 @@
     {
       "crop_id": "cotton",
       "crop_name_en": "Cotton",
-      "crop_name_ta": "பருத்தி",
+      "crop_name_ta": "\u0baa\u0bb0\u0bc1\u0ba4\u0bcd\u0ba4\u0bbf",
       "major_diseases_pests_tamil_nadu": [
         "Bacterial blight / Angular leaf spot (Xanthomonas citri pv. malvacearum)",
         "Cotton leaf curl virus (CLCuV)",
@@ -319,7 +318,7 @@
     {
       "crop_id": "sugarcane",
       "crop_name_en": "Sugarcane",
-      "crop_name_ta": "கரும்பு",
+      "crop_name_ta": "\u0b95\u0bb0\u0bc1\u0bae\u0bcd\u0baa\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Red rot (Colletotrichum falcatum)",
         "Smut (Sporisorium scitamineum)",
@@ -369,7 +368,7 @@
     {
       "crop_id": "groundnut",
       "crop_name_en": "Groundnut (Peanut)",
-      "crop_name_ta": "நிலக்கடலை",
+      "crop_name_ta": "\u0ba8\u0bbf\u0bb2\u0b95\u0bcd\u0b95\u0b9f\u0bb2\u0bc8",
       "major_diseases_pests_tamil_nadu": [
         "Tikka leaf spot / Early leaf spot (Cercospora arachidicola)",
         "Late leaf spot (Phaeoisariopsis personata)",
@@ -420,7 +419,7 @@
     {
       "crop_id": "banana",
       "crop_name_en": "Banana",
-      "crop_name_ta": "வாழை",
+      "crop_name_ta": "\u0bb5\u0bbe\u0bb4\u0bc8",
       "major_diseases_pests_tamil_nadu": [
         "Sigatoka leaf spot (Mycosphaerella musicola / fijiensis)",
         "Panama disease / Fusarium wilt (Fusarium oxysporum f. sp. cubense)",
@@ -469,7 +468,7 @@
     {
       "crop_id": "mango",
       "crop_name_en": "Mango",
-      "crop_name_ta": "மாங்காய்",
+      "crop_name_ta": "\u0bae\u0bbe\u0b99\u0bcd\u0b95\u0bbe\u0baf\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Anthracnose (Colletotrichum gloeosporioides)",
         "Powdery mildew (Oidium mangiferae)",
@@ -522,7 +521,7 @@
     {
       "crop_id": "tapioca",
       "crop_name_en": "Tapioca (Cassava)",
-      "crop_name_ta": "மரவள்ளிக்கிழங்கு",
+      "crop_name_ta": "\u0bae\u0bb0\u0bb5\u0bb3\u0bcd\u0bb3\u0bbf\u0b95\u0bcd\u0b95\u0bbf\u0bb4\u0b99\u0bcd\u0b95\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Cassava mosaic disease (Sri Lankan cassava mosaic virus - SLCMV)",
         "Cassava bacterial blight (Xanthomonas axonopodis pv. manihotis)",
@@ -570,7 +569,7 @@
     {
       "crop_id": "brinjal",
       "crop_name_en": "Brinjal (Eggplant)",
-      "crop_name_ta": "கத்தரிக்காய்",
+      "crop_name_ta": "\u0b95\u0ba4\u0bcd\u0ba4\u0bb0\u0bbf\u0b95\u0bcd\u0b95\u0bbe\u0baf\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Phomopsis blight / Fruit rot (Phomopsis vexans)",
         "Bacterial wilt (Ralstonia solanacearum)",
@@ -621,7 +620,7 @@
     {
       "crop_id": "coconut",
       "crop_name_en": "Coconut",
-      "crop_name_ta": "தென்னை",
+      "crop_name_ta": "\u0ba4\u0bc6\u0ba9\u0bcd\u0ba9\u0bc8",
       "major_diseases_pests_tamil_nadu": [
         "Bud rot (Phytophthora palmivora)",
         "Thanjavur wilt / Basal stem rot (Ganoderma lucidum)",
@@ -672,7 +671,7 @@
     {
       "crop_id": "ragi",
       "crop_name_en": "Ragi (Finger Millet)",
-      "crop_name_ta": "கேழ்வரகு",
+      "crop_name_ta": "\u0b95\u0bc7\u0bb4\u0bcd\u0bb5\u0bb0\u0b95\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Blast (Magnaporthe grisea)",
         "Foot rot / Wilt (Sclerotium rolfsii)",
@@ -692,7 +691,7 @@
     {
       "crop_id": "cholam",
       "crop_name_en": "Cholam (Sorghum / Great Millet)",
-      "crop_name_ta": "சோளம்",
+      "crop_name_ta": "\u0b9a\u0bcb\u0bb3\u0bae\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Grain mold (Fusarium moniliforme / Curvularia lunata)",
         "Anthracnose (Colletotrichum graminicola)",
@@ -712,7 +711,7 @@
     {
       "crop_id": "bajra",
       "crop_name_en": "Bajra (Pearl Millet)",
-      "crop_name_ta": "கம்பு",
+      "crop_name_ta": "\u0b95\u0bae\u0bcd\u0baa\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Downy mildew / Green ear (Sclerospora graminicola)",
         "Ergot (Claviceps fusiformis)",
@@ -732,7 +731,7 @@
     {
       "crop_id": "black_gram",
       "crop_name_en": "Black Gram (Urad)",
-      "crop_name_ta": "உளுந்து",
+      "crop_name_ta": "\u0b89\u0bb3\u0bc1\u0ba8\u0bcd\u0ba4\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Yellow mosaic virus (MYMV)",
         "Powdery mildew (Erysiphe polygoni)",
@@ -752,7 +751,7 @@
     {
       "crop_id": "green_gram",
       "crop_name_en": "Green Gram (Moong)",
-      "crop_name_ta": "பாசிப்பயறு",
+      "crop_name_ta": "\u0baa\u0bbe\u0b9a\u0bbf\u0baa\u0bcd\u0baa\u0baf\u0bb1\u0bc1",
       "major_diseases_pests_tamil_nadu": [
         "Mungbean yellow mosaic virus (MYMV)",
         "Cercospora leaf spot (Cercospora canescens)",
@@ -772,7 +771,7 @@
     {
       "crop_id": "red_gram",
       "crop_name_en": "Red Gram (Pigeonpea / Toor)",
-      "crop_name_ta": "துவரை",
+      "crop_name_ta": "\u0ba4\u0bc1\u0bb5\u0bb0\u0bc8",
       "major_diseases_pests_tamil_nadu": [
         "Sterility mosaic disease (SMD)",
         "Fusarium wilt (Fusarium udum)",
@@ -792,7 +791,7 @@
     {
       "crop_id": "onion",
       "crop_name_en": "Onion",
-      "crop_name_ta": "வெங்காயம்",
+      "crop_name_ta": "\u0bb5\u0bc6\u0b99\u0bcd\u0b95\u0bbe\u0baf\u0bae\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Purple blotch (Alternaria porri)",
         "Basal rot (Fusarium oxysporum f. sp. cepae)",
@@ -813,7 +812,7 @@
     {
       "crop_id": "turmeric",
       "crop_name_en": "Turmeric",
-      "crop_name_ta": "மஞ்சள்",
+      "crop_name_ta": "\u0bae\u0b9e\u0bcd\u0b9a\u0bb3\u0bcd",
       "major_diseases_pests_tamil_nadu": [
         "Rhizome rot (Pythium aphanidermatum)",
         "Leaf spot (Colletotrichum curcumae)",
