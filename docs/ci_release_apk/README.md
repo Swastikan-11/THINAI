@@ -9,7 +9,7 @@ The large Android binary (`app-release.apk`, ~25.2 MB) has been removed from git
 * **Artifact Name**: `app-release.apk`
 * **Release Download URL**: [https://github.com/Swastikan-11/THINAI/releases/tag/v1.0.0-rc1](https://github.com/Swastikan-11/THINAI/releases/tag/v1.0.0-rc1)
 * **CI Workflow Run**: [GitHub Actions Workflow #40104107409](https://github.com/Swastikan-11/THINAI/actions/runs/40104107409)
-* **File Size**: `25,232,210` bytes (24.06 MB)
+* **File Size**: `25,232,166` bytes (24.06 MB)
 * **Package Identifier**: `org.thinai.app`
 * **Target SDK / Min SDK**: Android 34 / Android 24 (Nougat 7.0+)
 
@@ -19,7 +19,7 @@ The large Android binary (`app-release.apk`, ~25.2 MB) has been removed from git
 
 * **Binary SHA-256**:
   ```
-  4BB7C6DFBE26A3B514FA91CE29AB20511D6369BD5D43F7200A29C07A9223E691
+  DB8101BF057731E4B62EC26C65BB9659B497CD0A6DCCF1BD11E0593880F51BB2
   ```
 * **Signing Keystore Status**: `PRODUCTION_KEYSTORE_VERIFIED`
 * **Signer Distinguished Name (DN)**:
