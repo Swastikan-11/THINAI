@@ -51,14 +51,16 @@ apksigner verify --verbose --print-certs app-release.apk
 
 ## 4. Latest Synchronized APK Build (Local Regeneration)
 
-* **Build Date / Time**: 2026-11-05 09:49:03 IST
-* **Web Bundle Assets**: Synced from production Vite build (`dist/assets/index-CbSXnVXR.js`, `dist/assets/index-DoDV8skK.css`) via `npx cap copy android`.
+* **Build Date / Time**: 2026-11-05 10:36:03 IST
+* **Features Included**: Guest login flow ("Continue as Guest") for new farmers, offline instant access, updated Vite production assets.
+* **Web Bundle Assets**: Synced from production Vite build (`dist/assets/index-DfUvxiEa.js`, `dist/assets/index--GrXwdOL.css`) via `npx cap copy android`.
 * **Output Artifacts**:
-  * Release APK: `android/app/build/outputs/apk/release/app-release.apk` (25,232,714 bytes)
-  * Debug APK: `android/app/build/outputs/apk/debug/app-debug.apk` (30,222,617 bytes)
+  * Release APK: `android/app/build/outputs/apk/release/app-release.apk`
+  * Debug APK: `android/app/build/outputs/apk/debug/app-debug.apk`
   * Cached in `ci-artifacts/release/app-release.apk`
 * **Release APK Local SHA-256**:
   ```
-  8B3BDF269C587C0AEAFD758A57E47C9B44639B94DD73271B3E0629BAF65C2239
+  CC7AC6383589063A6A4D8BE34958CFB6ED021755A8AE30700C3B2DC9875C2B9C
   ```
+
 

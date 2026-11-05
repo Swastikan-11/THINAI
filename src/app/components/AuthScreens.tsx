@@ -269,6 +269,54 @@ export function LoginScreen({
     }
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      const guestUid = "guest_" + Date.now();
+      const guestProfile: UserState = {
+        name: language === "Tamil" ? "விருந்தினர் விவசாயி" : "Guest Farmer",
+        phone: "",
+        email: "guest@thinai.app",
+        village: "Kinathukadavu",
+        district: "Coimbatore",
+        stateName: "Tamil Nadu",
+        farmSize: "2.0",
+        soilType: "Clay Loam",
+        soilMoistureStatus: "optimal",
+        primaryCrop: "Paddy (Rice)",
+        cropVariety: "Ponni (CO 51)",
+        cropStage: "Tillering Stage",
+        sowingDate: new Date().toISOString().split("T")[0],
+        irrigationType: "Canal + Borewell",
+        farmingMethod: "Integrated Nutrient Management",
+        waterSource: "Canal + Borewell",
+        mainCrops: "Paddy, Pulses",
+        language: language || "English"
+      };
+
+      try {
+        await db.profiles.put({
+          id: `profile-${guestUid}`,
+          userId: guestUid,
+          data: guestProfile as any,
+          updatedAt: new Date().toISOString(),
+          synced: false
+        });
+      } catch (err) {
+        console.warn("Could not cache guest profile in Dexie:", err);
+      }
+
+      showToast(
+        language === "Tamil"
+          ? "விருந்தினராக உள்நுழைந்துள்ளீர்கள்! • Logged in as Guest"
+          : "Logged in as Guest! Welcome to THINAI.",
+        "success"
+      );
+      onSuccess(guestProfile);
+    } catch (err: any) {
+      showToast("Failed to continue as guest: " + err.message, "error");
+    }
+  };
+
   return (
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
       {/* Invisible container for phone auth recaptcha */}
@@ -484,6 +532,17 @@ export function LoginScreen({
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
+        {/* Continue as Guest Button */}
+        <button
+          type="button"
+          onClick={handleGuestLogin}
+          disabled={loading}
+          className="w-full py-3 px-4 bg-emerald-700 text-white hover:bg-emerald-800 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all mb-1.5">
+          <User size={16} className="text-emerald-100" />
+          <span>{tAuth("continueAsGuest", language)}</span>
+          <span className="text-[10px] bg-emerald-800/90 text-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold ml-1">Instant</span>
+        </button>
+
         {/* Google Sign-In Button */}
         <button
           type="button"
@@ -612,6 +671,54 @@ export function RegisterScreen({
     }
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      const guestUid = "guest_" + Date.now();
+      const guestProfile: UserState = {
+        name: language === "Tamil" ? "விருந்தினர் விவசாயி" : "Guest Farmer",
+        phone: "",
+        email: "guest@thinai.app",
+        village: "Kinathukadavu",
+        district: "Coimbatore",
+        stateName: "Tamil Nadu",
+        farmSize: "2.0",
+        soilType: "Clay Loam",
+        soilMoistureStatus: "optimal",
+        primaryCrop: "Paddy (Rice)",
+        cropVariety: "Ponni (CO 51)",
+        cropStage: "Tillering Stage",
+        sowingDate: new Date().toISOString().split("T")[0],
+        irrigationType: "Canal + Borewell",
+        farmingMethod: "Integrated Nutrient Management",
+        waterSource: "Canal + Borewell",
+        mainCrops: "Paddy, Pulses",
+        language: language || "English"
+      };
+
+      try {
+        await db.profiles.put({
+          id: `profile-${guestUid}`,
+          userId: guestUid,
+          data: guestProfile as any,
+          updatedAt: new Date().toISOString(),
+          synced: false
+        });
+      } catch (err) {
+        console.warn("Could not cache guest profile in Dexie:", err);
+      }
+
+      showToast(
+        language === "Tamil"
+          ? "விருந்தினராக உள்நுழைந்துள்ளீர்கள்! • Logged in as Guest"
+          : "Logged in as Guest! Welcome to THINAI.",
+        "success"
+      );
+      onSuccess(guestProfile);
+    } catch (err: any) {
+      showToast("Failed to continue as guest: " + err.message, "error");
+    }
+  };
+
   return (
     <div className="flex flex-col h-full select-none" style={{ background: BG }}>
       <div
@@ -711,6 +818,22 @@ export function RegisterScreen({
             </div>
           )}
         </form>
+
+        <div className="flex items-center gap-3 my-2">
+          <div className="flex-1 h-px bg-gray-200"></div>
+          <span className="text-[11px] font-semibold text-gray-500 uppercase">{tAuth("orContinueWith", language)}</span>
+          <div className="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGuestLogin}
+          disabled={loading}
+          className="w-full py-3 px-4 bg-emerald-700 text-white hover:bg-emerald-800 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all mb-1">
+          <User size={16} className="text-emerald-100" />
+          <span>{tAuth("continueAsGuest", language)}</span>
+          <span className="text-[10px] bg-emerald-800/90 text-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold ml-1">Instant</span>
+        </button>
 
         <p className="text-xs text-center text-gray-700 mt-2">
           {tAuth("alreadyAccount", language)}{" "}

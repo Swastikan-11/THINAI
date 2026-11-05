@@ -2954,7 +2954,7 @@ export default function App() {
     if (urlScreen) return;
     if (screen === "splash" && authChecked) {
       const t = setTimeout(() => {
-        if (!firebaseUser) {
+        if (!firebaseUser && !user.name) {
           setScreen("login");
         } else if (!user.name) {
           setScreen("onboarding");
@@ -3387,3 +3387,4 @@ export default function App() {
     </div>
   );
 }
+
