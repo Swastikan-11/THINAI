@@ -118,6 +118,7 @@ export interface UserState {
   name: string;
   phone: string;
   email: string;
+  isGuest?: boolean;
   password?: string;
   village: string;
   district: string;
@@ -2796,7 +2797,18 @@ export default function App() {
         }
       } else {
         (window as any)._currentFirebaseUid = null;
-        if (screen !== "splash" && screen !== "register") {
+        let isGuestUser = false;
+        try {
+          const saved = localStorage.getItem("thinai_farmer_profile");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.isGuest || parsed.email === "guest@thinai.app" || parsed.name === "Guest Farmer" || parsed.name === "விருந்தினர் விவசாயி") {
+              isGuestUser = true;
+            }
+          }
+        } catch {}
+
+        if (!isGuestUser && screen !== "splash" && screen !== "register") {
           setScreen("login");
         }
       }

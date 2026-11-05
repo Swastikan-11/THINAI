@@ -305,6 +305,11 @@ export function LoginScreen({
         console.warn("Could not cache guest profile in Dexie:", err);
       }
 
+      guestProfile.isGuest = true;
+      try {
+        localStorage.setItem("thinai_farmer_profile", JSON.stringify(guestProfile));
+      } catch {}
+
       showToast(
         language === "Tamil"
           ? "விருந்தினராக உள்நுழைந்துள்ளீர்கள்! • Logged in as Guest"
@@ -706,6 +711,11 @@ export function RegisterScreen({
       } catch (err) {
         console.warn("Could not cache guest profile in Dexie:", err);
       }
+
+      guestProfile.isGuest = true;
+      try {
+        localStorage.setItem("thinai_farmer_profile", JSON.stringify(guestProfile));
+      } catch {}
 
       showToast(
         language === "Tamil"
