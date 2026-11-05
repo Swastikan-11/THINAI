@@ -178,19 +178,7 @@ const BR = "#E5E7EB"; // Border Gray
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function SBar({ light = false }: { light?: boolean }) {
-  return (
-    <div className="flex justify-between items-center px-4 pt-2 pb-1 select-none text-[11px] font-semibold"
-      style={{ color: light ? "rgba(255,255,255,0.85)" : MU }}>
-      <span>09:41</span>
-      <div className="flex items-center gap-1.5">
-        <Wifi size={12} />
-        <span>5G</span>
-        <div className="w-4 h-2 border rounded-sm border-current flex items-center p-0.5">
-          <div className="w-full h-full bg-current rounded-xs" />
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 function BkHdr({
@@ -1266,35 +1254,6 @@ function HomeScreen({
             <span>Updated: {weather.updatedAt}</span>
           </div>
         </Card>
-
-        {/* ─── 3. TOP RISK ALERT (PRIORITY 8: STEP 3) ─── */}
-        <div className="rounded-2xl p-3.5 border border-red-200 bg-red-50/90 flex flex-col gap-1.5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-red-800 font-black text-xs">
-              <ShieldAlert size={16} />
-              <span>{t("topRisk", lang)}</span>
-            </div>
-            <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-red-600 text-white">
-              {decisionResult.riskAnalysis.overallRisk} RISK
-            </span>
-          </div>
-          <p className="text-xs text-red-900 font-semibold leading-snug">
-            {decisionResult.riskAnalysis.overallRisk === "High"
-              ? (user.soilMoistureStatus === "wet"
-                  ? `⚠️ Waterlogging & Hypoxia Alert: Saturated soil (Wet) + forecasted ${weather.rainfallMmExpected}mm rain risks root zone suffocation.`
-                  : `⚠️ Weather Risk Alert: High forecasted rainfall (${weather.rainfallMmExpected}mm) will impact field operations.`)
-              : (user.soilMoistureStatus === "dry"
-                  ? `ℹ️ Moisture Alert: Soil is currently dry. Rain forecasted: ${weather.rainfallMmExpected}mm.`
-                  : `✅ Balanced Conditions: Soil moisture is optimal; no severe flood or drought hazard detected.`)}
-          </p>
-          <div className="flex gap-2 mt-1">
-            {decisionResult.riskAnalysis.factors.map((f, i) => (
-              <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-white/80 border border-red-200 text-red-800 font-medium">
-                {f.name}: {f.level}
-              </span>
-            ))}
-          </div>
-        </div>
 
         {/* ─── 4. NEXT BEST ACTION (PRIORITY 3 & PRIORITY 8: STEP 4) ─── */}
         <div className="rounded-3xl p-4.5 relative overflow-hidden"
