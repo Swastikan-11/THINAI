@@ -184,7 +184,9 @@
     "unreviewedAdviceNotice": "This advice is shown in English until a native language expert has checked the translation. Ask your extension officer if unsure.",
     "machineDraftBadge": "മലയാളം - Machine Draft",
     "reportErrorBtn": "Report Translation Error",
-    "remedyReviewStatus": "Remedy Review Status:"
+    "remedyReviewStatus": "Remedy Review Status:",
+    "safetyVerifiedBadge": "Safety Verified",
+    "unverifiedSafetyNotice": "Safety-critical instructions are available in English/Tamil. Please contact an extension officer before using any pesticide."
   },
   "feedback": {
     "modalTitle": "Report a Translation Error",
@@ -226,5 +228,33 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "notAvailable": "Not Available"
+  },
+  "_translationMeta": {
+    "status": "MACHINE_DRAFT",
+    "reviewer": "UNREVIEWED_MACHINE_GENERATED",
+    "safetyVerified": "false",
+    "note": "Machine-drafted translation. Chemical advice and dosages are withheld until human expert verification."
+  },
+  "consent": {
+    "title": "ഫോട്ടോ പങ്കിടലും സ്വകാര്യതാ സമ്മതവും",
+    "subtitle": "ഓഫീസറുമായി ഫോട്ടോ എങ്ങനെ പങ്കിടണമെന്ന് തിരഞ്ഞെടുക്കുക",
+    "full": "മുഴുവൻ ഫോട്ടോയും പങ്കിടുക",
+    "cropped": "മുറിച്ച ഇലയുടെ ഭാഗം മാത്രം പങ്കിടുക",
+    "blurred": "മങ്ങിയ പശ്ചാത്തലത്തോടെ പങ്കിടുക",
+    "metadataOnly": "വിവരങ്ങൾ മാത്രം പങ്കിടുക (ഫോട്ടോ വേണ്ട)",
+    "doNotShare": "ഫോട്ടോ പങ്കിടരുത്",
+    "withdraw": "സമ്മതം പിൻവലിക്കുക",
+    "gpsPrompt": "കീടനിയന്ത്രണ മാപ്പിംഗിനായി ജിപിഎസ് ലൊക്കേഷൻ ഉൾപ്പെടുത്തണോ?"
+  },
+  "symptom": {
+    "clarificationTitle": "രോഗലക്ഷണ വ്യക്തത",
+    "clarificationSubtitle": "ഉപദേശം മെച്ചപ്പെടുത്താൻ 3 ലളിതമായ ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകുക",
+    "submitAnswers": "ഉത്തരങ്ങൾ സ്ഥിരീകരിക്കുക",
+    "skip": "ചോദ്യങ്ങൾ ഒഴിവാക്കുക"
+  },
+  "lowLiteracy": {
+    "audioGuide": "ഓഡിയോ നിർദ്ദേശം കേൾക്കുക",
+    "callOfficer": "സഹായം വേണോ? ഓഫീസറെ വിളിക്കുക",
+    "plainLanguageDisclaimer": "കർഷകർക്ക് എളുപ്പത്തിൽ മനസ്സിലാക്കാൻ ലളിതമായ ചിത്രങ്ങളും വലിയ ബട്ടണുകളും നൽകിയിരിക്കുന്നു."
   }
 }

@@ -184,7 +184,9 @@
     "unreviewedAdviceNotice": "This advice is shown in English until a native language expert has checked the translation. Ask your extension officer if unsure.",
     "machineDraftBadge": "తెలుగు - Machine Draft",
     "reportErrorBtn": "Report Translation Error",
-    "remedyReviewStatus": "Remedy Review Status:"
+    "remedyReviewStatus": "Remedy Review Status:",
+    "safetyVerifiedBadge": "Safety Verified",
+    "unverifiedSafetyNotice": "Safety-critical instructions are available in English/Tamil. Please contact an extension officer before using any pesticide."
   },
   "feedback": {
     "modalTitle": "Report a Translation Error",
@@ -226,5 +228,33 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "notAvailable": "Not Available"
+  },
+  "_translationMeta": {
+    "status": "MACHINE_DRAFT",
+    "reviewer": "UNREVIEWED_MACHINE_GENERATED",
+    "safetyVerified": "false",
+    "note": "Machine-drafted translation. Chemical advice and dosages are withheld until human expert verification."
+  },
+  "consent": {
+    "title": "ఫోటో షేరింగ్ మరియు గోప్యతా సమ్మతి",
+    "subtitle": "అధికారితో ఫోటోను ఎలా పంచుకోవాలో ఎంచుకోండి",
+    "full": "పూర్తి ఫోటోను భాగస్వామ్యం చేయండి",
+    "cropped": "కత్తిరించిన ఆకు భాగాన్ని మాత్రమే పంచుకోండి",
+    "blurred": "మసకబారిన నేపథ్యంతో పంచుకోండి",
+    "metadataOnly": "వివరాలను మాత్రమే పంచుకోండి (ఫోటో వద్దు)",
+    "doNotShare": "ఫోటోను పంచుకోవద్దు",
+    "withdraw": "సమ్మతిని ఉపసంహరించుకోండి",
+    "gpsPrompt": "తెగుళ్ల మ్యాపింగ్ కోసం జీపీఎస్ స్థానాన్ని చేర్చాలా?"
+  },
+  "symptom": {
+    "clarificationTitle": "లక్షణాల స్పష్టత",
+    "clarificationSubtitle": "సలహాను మెరుగుపరచడానికి 3 ప్రశ్నలకు సమాధానం ఇవ్వండి",
+    "submitAnswers": "సమాధానాలను నిర్ధారించండి",
+    "skip": "ప్రశ్నలను దాటవేయి"
+  },
+  "lowLiteracy": {
+    "audioGuide": "ఆడియో సలహాను వినండి",
+    "callOfficer": "సహాయం కావాలా? అధికారికి కాల్ చేయండి",
+    "plainLanguageDisclaimer": "రైతులందరి సౌలభ్యం కోసం సాధారణ చిత్రాలు మరియు పెద్ద బటన్లు అందించబడ్డాయి."
   }
 }

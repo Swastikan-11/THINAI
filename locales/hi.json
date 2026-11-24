@@ -184,7 +184,9 @@
     "unreviewedAdviceNotice": "भाषा विशेषज्ञ द्वारा समीक्षा होने तक यह सलाह अंग्रेजी में दिखाई जा रही है। संशय होने पर कृषि अधिकारी से पूछें।",
     "machineDraftBadge": "मशीन अनुवादित प्रारूप",
     "reportErrorBtn": "अनुवाद त्रुटि रिपोर्ट करें",
-    "remedyReviewStatus": "उपचार समीक्षा स्थिति:"
+    "remedyReviewStatus": "उपचार समीक्षा स्थिति:",
+    "safetyVerifiedBadge": "Safety Verified",
+    "unverifiedSafetyNotice": "Safety-critical instructions are available in English/Tamil. Please contact an extension officer before using any pesticide."
   },
   "feedback": {
     "modalTitle": "अनुवाद त्रुटि रिपोर्ट करें",
@@ -226,5 +228,33 @@
     "loading": "लोड हो रहा है...",
     "error": "त्रुटि हुई",
     "notAvailable": "उपलब्ध नहीं"
+  },
+  "_translationMeta": {
+    "status": "MACHINE_DRAFT",
+    "reviewer": "UNREVIEWED_MACHINE_GENERATED",
+    "safetyVerified": "false",
+    "note": "Machine-drafted translation. Chemical advice and dosages are withheld until human expert verification."
+  },
+  "consent": {
+    "title": "फोटो साझाकरण व गोपनीयता सहमति",
+    "subtitle": "अधिकारी के साथ फोटो साझा करने का तरीका चुनें",
+    "full": "पूरी फोटो साझा करें",
+    "cropped": "केवल पत्ती का भाग साझा करें",
+    "blurred": "धुंधली पृष्ठभूमि के साथ साझा करें",
+    "metadataOnly": "केवल विवरण साझा करें (फोटो नहीं)",
+    "doNotShare": "फोटो साझा न करें",
+    "withdraw": "सहमति वापस लें",
+    "gpsPrompt": "कीट मानचित्रण हेतु जीपीएस स्थान शामिल करें?"
+  },
+  "symptom": {
+    "clarificationTitle": "लक्षण स्पष्टीकरण",
+    "clarificationSubtitle": "सटीक सलाह के लिए 3 सरल प्रश्नों के उत्तर दें",
+    "submitAnswers": "उत्तर की पुष्टि करें",
+    "skip": "प्रश्न छोड़ें"
+  },
+  "lowLiteracy": {
+    "audioGuide": "ऑडियो सलाह सुनें",
+    "callOfficer": "मदद चाहिए? अधिकारी को फोन करें",
+    "plainLanguageDisclaimer": "सभी किसानों की सुविधा हेतु सरल चित्र व बड़े बटन प्रदान किए गए हैं।"
   }
 }

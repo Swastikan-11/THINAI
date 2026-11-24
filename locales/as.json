@@ -184,7 +184,9 @@
     "unreviewedAdviceNotice": "This advice is shown in English until a native language expert has checked the translation. Ask your extension officer if unsure.",
     "machineDraftBadge": "অসমীয়া - Machine Draft",
     "reportErrorBtn": "Report Translation Error",
-    "remedyReviewStatus": "Remedy Review Status:"
+    "remedyReviewStatus": "Remedy Review Status:",
+    "safetyVerifiedBadge": "Safety Verified",
+    "unverifiedSafetyNotice": "Safety-critical instructions are available in English/Tamil. Please contact an extension officer before using any pesticide."
   },
   "feedback": {
     "modalTitle": "Report a Translation Error",
@@ -226,5 +228,33 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "notAvailable": "Not Available"
+  },
+  "_translationMeta": {
+    "status": "MACHINE_DRAFT",
+    "reviewer": "UNREVIEWED_MACHINE_GENERATED",
+    "safetyVerified": "false",
+    "note": "Machine-drafted translation for as. Chemical advice withheld until human verification."
+  },
+  "consent": {
+    "title": "Photo Sharing & Privacy Consent",
+    "subtitle": "Choose how your photo is shared with the extension officer",
+    "full": "Share Full Photo",
+    "cropped": "Share Cropped Leaf Only",
+    "blurred": "Share Blurred Background",
+    "metadataOnly": "Share Metadata Only (No Photo)",
+    "doNotShare": "Do Not Share Photo",
+    "withdraw": "Withdraw Consent",
+    "gpsPrompt": "Include field GPS coordinates for local pest mapping?"
+  },
+  "symptom": {
+    "clarificationTitle": "Symptom Clarification",
+    "clarificationSubtitle": "Answer up to 3 quick questions to help refine advice",
+    "submitAnswers": "Confirm Answers",
+    "skip": "Skip Questions"
+  },
+  "lowLiteracy": {
+    "audioGuide": "Listen to Audio Advice",
+    "callOfficer": "Need Help? Call Officer",
+    "plainLanguageDisclaimer": "Simple pictures and large buttons are provided to help every farmer understand advice safely."
   }
 }

@@ -184,7 +184,9 @@
     "unreviewedAdviceNotice": "This advice is shown in English until a native language expert has checked the translation. Ask your extension officer if unsure.",
     "machineDraftBadge": "ಕನ್ನಡ - Machine Draft",
     "reportErrorBtn": "Report Translation Error",
-    "remedyReviewStatus": "Remedy Review Status:"
+    "remedyReviewStatus": "Remedy Review Status:",
+    "safetyVerifiedBadge": "Safety Verified",
+    "unverifiedSafetyNotice": "Safety-critical instructions are available in English/Tamil. Please contact an extension officer before using any pesticide."
   },
   "feedback": {
     "modalTitle": "Report a Translation Error",
@@ -226,5 +228,33 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "notAvailable": "Not Available"
+  },
+  "_translationMeta": {
+    "status": "MACHINE_DRAFT",
+    "reviewer": "UNREVIEWED_MACHINE_GENERATED",
+    "safetyVerified": "false",
+    "note": "Machine-drafted translation. Chemical advice and dosages are withheld until human expert verification."
+  },
+  "consent": {
+    "title": "ಫೋಟೋ ಹಂಚಿಕೆ ಮತ್ತು ಗೌಪ್ಯತೆ ಸಮ್ಮತಿ",
+    "subtitle": "ಅಧಿಕಾರಿಯೊಂದಿಗೆ ಫೋಟೋವನ್ನು ಹೇಗೆ ಹಂಚಿಕೊಳ್ಳಬೇಕೆಂದು ಆಯ್ಕೆಮಾಡಿ",
+    "full": "ಸಂಪೂರ್ಣ ಫೋಟೋ ಹಂಚಿಕೊಳ್ಳಿ",
+    "cropped": "ಕತ್ತರಿಸಿದ ಎಲೆಯ ಭಾಗವನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಿ",
+    "blurred": "ಮಸುಕಾದ ಹಿನ್ನೆಲೆಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ",
+    "metadataOnly": "ಮಾಹಿತಿಯನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಿ (ಫೋಟೋ ಬೇಡ)",
+    "doNotShare": "ಫೋಟೋ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ",
+    "withdraw": "ಸಮ್ಮತಿಯನ್ನು ಹಿಂಪಡೆಯಿರಿ",
+    "gpsPrompt": "ಕೀಟ ಮ್ಯಾಪಿಂಗ್‌ಗಾಗಿ ಜಿಪಿಎಸ್ ಸ್ಥಳವನ್ನು ಸೇರಿಸಬೇಕೆ?"
+  },
+  "symptom": {
+    "clarificationTitle": "ರೋಗಲಕ್ಷಣಗಳ ಸ್ಪಷ್ಟನೆ",
+    "clarificationSubtitle": "ಸಲಹೆಯನ್ನು ಸುಧಾರಿಸಲು 3 ಸರಳ ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಿಸಿ",
+    "submitAnswers": "ಉತ್ತರಗಳನ್ನು ದೃಢೀಕರಿಸಿ",
+    "skip": "ಪ್ರಶ್ನೆಗಳನ್ನು ಬಿಟ್ಟುಬಿಡಿ"
+  },
+  "lowLiteracy": {
+    "audioGuide": "ಆಡಿಯೋ ಸಲಹೆಯನ್ನು ಆಲಿಸಿ",
+    "callOfficer": "ಸಹಾಯ ಬೇಕೇ? ಅಧಿಕಾರಿಗೆ ಕರೆ ಮಾಡಿ",
+    "plainLanguageDisclaimer": "ಎಲ್ಲಾ ರೈತರ ಅನುಕೂಲಕ್ಕಾಗಿ ಸರಳ ಚಿತ್ರಗಳು ಮತ್ತು ದೊಡ್ಡ ಗುಂಡಿಗಳನ್ನು ಒದಗಿಸಲಾಗಿದೆ."
   }
 }
