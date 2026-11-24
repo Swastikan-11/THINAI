@@ -107,32 +107,73 @@ npm run build
 # TypeScript compiler validation (0 errors)
 npx tsc --noEmit
 
-# Unit & regression test suite (25 suites, 136 tests)
+# Unit & regression test suite (33 test files, 216 tests passing)
 npx vitest run
 
-# Playwright E2E & multilingual switch test suite (28 tests)
+# Playwright E2E & multilingual switch test suite
 npx playwright test
 
-# Firestore emulator security rules suite (23 tests)
+# Firestore emulator security rules suite
 node scripts/test_firestore_rules.mjs
 ```
 
 ### 3. Android Installation & Execution
 ```bash
 # Sync web assets to Android Capacitor project
-npx cap sync android
+npx cap copy android
 
-# Run on connected physical device or running emulator
-npx cap run android
+# Compile Android Release APK
+cd android && .\gradlew.bat assembleRelease --no-daemon
 ```
-- To install the signed CI release APK directly:
+- Direct APK artifact output: `android/app/build/outputs/apk/release/app-release.apk`
+- To install on a physical phone via ADB:
   ```bash
-  adb install -r path/to/app-release.apk
+  adb install -r android/app/build/outputs/apk/release/app-release.apk
   ```
 
 ---
 
-## 7. Third-Party Licenses & Attributions
+## 7. Safety-Gated Advisory & Governance Upgrades
+
+THINAI implements an enterprise-grade safety architecture ensuring smallholder farmers are protected against out-of-distribution model errors:
+
+1. **Evidence-Graded Crop Coverage Registry (`src/data/cropEvidenceRegistry.json`)**:
+   - Machine-readable registry tracking 24 crop-disease entries with `FIELD_VALIDATED`, `LAB_ONLY`, and `UNSUPPORTED` evidence levels.
+   - Strictly enforces allowed advice tiers at runtime; UI never hardcodes permissions.
+2. **Confidence & Uncertainty Gating (`src/config/advicePolicy.ts`, `src/services/uncertaintyService.ts`)**:
+   - Combines calibrated confidence with Shannon entropy and margin uncertainty.
+   - Demotes uncertain cases ($U > 0.65$ or margin $< 0.15$) to Tier 3 officer referral regardless of raw top-1 score.
+3. **Priority-Budgeted Officer Review Queue (`src/services/officerQueueService.ts`)**:
+   - Computes weighted triage priority based on model uncertainty, farmer disagreement, unsupported crops, image quality, and disease outbreak score.
+   - Provides officer label actions: Confirm Diagnosis, Correct Diagnosis, Mark Image Unusable, Needs More Information.
+4. **Weak Feedback Signal Guard (`src/services/weakFeedbackService.ts`)**:
+   - Treats farmer yes/no responses strictly as weak usability signals to prioritize officer triage.
+   - Invariant guard ensures farmer feedback is never automatically used as ground-truth training data.
+5. **Language Safety Gating (`src/data/languageReviewStatus.json`, `src/services/languageSafetyService.ts`)**:
+   - Restricts chemical dosages, PPE, and waiting periods strictly to human-verified languages (English & Tamil).
+   - Other 21 Scheduled languages automatically fall back to verified English/Tamil with prominent warning badges.
+6. **Symptom Clarification Question Flow (`src/services/symptomQuestionService.ts`)**:
+   - Up to 3 crop-specific offline questions for low-confidence or `LAB_ONLY` cases to refine advisory context.
+7. **Offline Weather & Spray Window Advisory (`src/services/cropWeatherAdvisoryService.ts`)**:
+   - Conservative agrometeorological rule engine evaluating disease incubation and spray conditions (wind drift, rain wash-off, temperature).
+   - Mandatory disclaimer: Weather data alone never confirms disease presence.
+8. **Privacy-Preserving Photo Sharing Consent (`src/services/photoConsentService.ts`)**:
+   - 5 explicit consent choices (full photo, cropped leaf, blurred background, metadata only, do not share).
+   - Separate GPS opt-in and support for instant consent withdrawal.
+9. **Extension Officer Dashboard & Audit Trail (`src/app/components/OfficerDashboardScreen.tsx`, `src/services/officerAuditService.ts`)**:
+   - Complete officer portal with priority review queue, crop coverage viewer, language review status, and CSV audit export.
+10. **Localisation & Low-Literacy Support (`src/app/translations.ts`, `src/services/voiceAssistant.ts`)**:
+    - Machine-drafted markings across all 23 translation files, large accessible buttons, and audio prompts using strictly approved safety templates.
+
+Full documentation:
+- [System Architecture](file:///c:/Users/cswas/Documents/THINAI/docs/ARCHITECTURE.md)
+- [Safety Policy & Invariants](file:///c:/Users/cswas/Documents/THINAI/docs/SAFETY_POLICY.md)
+- [Evaluation Plan & Protocol](file:///c:/Users/cswas/Documents/THINAI/docs/EVALUATION_PLAN.md)
+- [Safety Baseline Audit](file:///c:/Users/cswas/Documents/THINAI/docs/SAFETY_BASELINE.md)
+
+---
+
+## 8. Third-Party Licenses & Attributions
 
 THINAI integrates open-source dependencies under **MIT**, **Apache-2.0**, or **SIL Open Font License 1.1**. Full notices are maintained in [`THIRD_PARTY_LICENSES.md`](file:///c:/Users/cswas/Documents/THINAI/THIRD_PARTY_LICENSES.md).
 

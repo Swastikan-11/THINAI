@@ -1,6 +1,64 @@
 # Changelog (`CHANGELOG.md`)
 
-All notable changes to the THINAI application across Rework Phases 1 through 7 are documented herein, adhering strictly to empirical verification standards without fabricated claims.
+All notable changes to the THINAI application across all engineering phases are documented herein, adhering strictly to empirical verification standards without fabricated claims.
+
+---
+
+## [1.1.0] - 2026-11-24: Safety-Gated Advisory, Officer Review, Privacy & Localisation
+
+### Phase 1: Safety Baseline and Architecture Audit
+- Created `docs/SAFETY_BASELINE.md` cataloging existing gating (`IS_G4_FIELD_VALIDATED = false`), 3-tier gating structure, crop boundary enforcement, and established test suite baseline (31 suites, 126 tests).
+
+### Phase 2: Evidence Registry and Advice-Tier Engine
+- Created machine-readable `src/data/cropEvidenceRegistry.json` tracking 24 crop-disease entries with `FIELD_VALIDATED`, `LAB_ONLY`, and `UNSUPPORTED` evidence levels.
+- Created `src/config/advicePolicy.ts` defining conservative thresholds (`CONFIDENCE_HIGH: 0.78`, `CONFIDENCE_MEDIUM: 0.45`, `ALLOW_CHEMICAL_ADVICE: false`, `MINIMUM_FIELD_SAMPLE_COUNT: 50`).
+- Implemented `src/services/evidenceTierEngine.ts` to determine advice tiers dynamically at runtime without hardcoded component permissions.
+- Added comprehensive unit tests in `tests/evidence_tier_engine.test.ts` (22 tests passing).
+
+### Phase 3: Confidence, Uncertainty, and Referral Policy
+- Created `src/services/uncertaintyService.ts` implementing normalized Shannon entropy, margin uncertainty, and combined uncertainty scoring.
+- Integrated uncertainty gating into `src/services/litertInferenceService.ts` and `src/services/diseaseDetectionService.ts`, automatically demoting high-uncertainty ($U > 0.65$) diagnoses to Tier 3 officer referral.
+- Added unit tests in `tests/uncertainty_scoring.test.ts` (12 tests passing).
+
+### Phase 4: Officer Review Queue and Weak Feedback
+- Implemented `src/services/weakFeedbackService.ts` treating farmer yes/no responses as weak signals for triage priority rather than ground-truth training labels (`canBeUsedForModelTraining: false` invariant guard).
+- Implemented `src/services/officerQueueService.ts` computing a 5-weight review priority score ($w_1 \cdot \text{uncertainty} + w_2 \cdot \text{disagreement} + w_3 \cdot \text{unsupportedCrop} + w_4 \cdot \text{imageQuality} + w_5 \cdot \text{urgency}$).
+- Implemented officer triage actions: Confirm Diagnosis, Correct Diagnosis, Mark Image Unusable, Needs More Information.
+- Added unit tests in `tests/officer_queue_feedback.test.ts` (9 tests passing).
+
+### Phase 5: Language Safety Gating
+- Created `src/data/languageReviewStatus.json` registering all 23 Scheduled Indian languages; English and Tamil designated `HUMAN_VERIFIED` (`safetyContentVerified: true`), while the other 21 languages are marked `MACHINE_DRAFT`.
+- Implemented `src/services/languageSafetyService.ts` to gate safety-critical chemical dosages, PPE, and waiting periods, automatically falling back to verified English/Tamil with prominent warnings.
+- Added unit tests in `tests/language_safety_gating.test.ts` (9 tests passing).
+
+### Phase 6: Symptom Question Flow and Offline Weather Advisory
+- Created `src/data/symptomQuestions.json` providing up to 3 crop-specific offline clarifying questions in English and Tamil for Tomato, Potato, Pepper, Corn, and Paddy.
+- Implemented `src/services/symptomQuestionService.ts` to evaluate structured farmer answers and adjust diagnostic confidence or route to an officer.
+- Created `src/data/cropWeatherRules.json` with crop-specific fungal incubation and CIBRC spray drift / TNAU wash-off thresholds.
+- Implemented `src/services/cropWeatherAdvisoryService.ts` evaluating 4 standardized agro-meteorological states with mandatory disclaimers.
+- Added unit tests in `tests/symptom_questions_weather_rules.test.ts` (10 tests passing).
+
+### Phase 7: Privacy-Preserving Photo Sharing
+- Created `src/services/photoConsentService.ts` supporting 5 explicit sharing options: Full photo, Cropped leaf only, Blurred background, Metadata only, and Do not share.
+- Enforced explicit consent capture with timestamp, purpose, retention period, separate GPS opt-in, and instant consent revocation.
+- Added unit tests in `tests/photo_consent_privacy.test.ts` (6 tests passing).
+
+### Phase 8: Officer Dashboard and Audit Logging
+- Implemented `src/services/officerAuditService.ts` logging all advice shown, officer referrals, and officer decisions locally and to Cloud Firestore, with CSV export capability.
+- Enhanced `src/app/components/OfficerDashboardScreen.tsx` with Priority Queue triage, Crop Coverage viewer, Language Safety viewer, and Audit Log explorer.
+- Added unit tests in `tests/officer_audit_dashboard.test.ts` (5 tests passing).
+
+### Phase 9: Localisation, Language Draft Marking, and Low-Literacy Support
+- Added safety, consent, symptom question, and low-literacy keys to `src/app/translations.ts` across English, Tamil, Hindi, Telugu, Kannada, and Malayalam.
+- Synchronized all 23 locale JSON files in `locales/` with explicit `_translationMeta` markings for machine drafts.
+- Enhanced `src/services/voiceAssistant.ts` with static approved safety speech templates (`APPROVED_SAFETY_SPEECH_TEMPLATES` and `speakApprovedSafetyPrompt`), restricting voice instructions strictly to verified English and Tamil templates.
+- Added unit tests in `tests/localisation_low_literacy.test.ts` (6 tests passing).
+
+### Phase 10: Documentation, Evaluation Protocol, and Android Release Compilation
+- Authored comprehensive architecture and governance documents: `docs/ARCHITECTURE.md`, `docs/SAFETY_POLICY.md`, and `docs/EVALUATION_PLAN.md`.
+- Documented the empirical lab-to-field performance drop ($94.2\%$ lab vs $25.6\%$ field on $N=125$ PlantDoc images) and established the 4-gate criteria for future field validation.
+- Validated complete test suite: 33 test files, 216 tests passing, 0 TypeScript errors.
+- Compiled native Android Release APK (`android/app/build/outputs/apk/release/app-release.apk`).
 
 ---
 
