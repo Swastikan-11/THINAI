@@ -1,0 +1,209 @@
+[
+  {
+    "languageCode": "en",
+    "languageName": "English",
+    "translationStatus": "HUMAN_VERIFIED",
+    "safetyContentVerified": true,
+    "reviewer": "THINAI Core Development & Agronomy Team",
+    "lastReviewedDate": "2026-11-20",
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "ta",
+    "languageName": "Tamil",
+    "translationStatus": "HUMAN_VERIFIED",
+    "safetyContentVerified": true,
+    "reviewer": "TNAU Regional Agronomist & Extension Translator",
+    "lastReviewedDate": "2026-11-20",
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "hi",
+    "languageName": "Hindi",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "te",
+    "languageName": "Telugu",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "kn",
+    "languageName": "Kannada",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "ml",
+    "languageName": "Malayalam",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "as",
+    "languageName": "Assamese",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "bn",
+    "languageName": "Bengali",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "brx",
+    "languageName": "Bodo",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "doi",
+    "languageName": "Dogri",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "gu",
+    "languageName": "Gujarati",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "ks",
+    "languageName": "Kashmiri",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "kok",
+    "languageName": "Konkani",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "mai",
+    "languageName": "Maithili",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "mni",
+    "languageName": "Manipuri",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "mr",
+    "languageName": "Marathi",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "ne",
+    "languageName": "Nepali",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "or",
+    "languageName": "Odia",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "pa",
+    "languageName": "Punjabi",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "sa",
+    "languageName": "Sanskrit",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "sat",
+    "languageName": "Santali",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "sd",
+    "languageName": "Sindhi",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  },
+  {
+    "languageCode": "ur",
+    "languageName": "Urdu",
+    "translationStatus": "MACHINE_DRAFT",
+    "safetyContentVerified": false,
+    "reviewer": null,
+    "lastReviewedDate": null,
+    "fallbackLanguage": "en"
+  }
+]
