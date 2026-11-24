@@ -48,6 +48,11 @@ export interface DiseaseDetectionResult {
   reviewerName?: string;
   reviewerDate?: string;
   verificationStatus?: string;
+  uncertaintyScore?: number;
+  entropyScore?: number;
+  marginUncertainty?: number;
+  evidenceLevel?: string;
+  advicePolicyReason?: string;
 }
 
 const STORAGE_KEY = "thinai_disease_history";
@@ -379,7 +384,12 @@ export async function detectCropDisease(
       tier: "TIER_3_INCONCLUSIVE",
       calibratedConfidence: neuralResult.calibratedConfidence,
       rawConfidence: neuralResult.rawConfidence,
-      temperatureApplied: neuralResult.temperatureApplied
+      temperatureApplied: neuralResult.temperatureApplied,
+      uncertaintyScore: neuralResult.uncertaintyScore,
+      entropyScore: neuralResult.entropyScore,
+      marginUncertainty: neuralResult.marginUncertainty,
+      evidenceLevel: neuralResult.evidenceLevel,
+      advicePolicyReason: neuralResult.advicePolicyReason
     };
     saveDiseaseScanToHistory(lowResult);
     return lowResult;
@@ -419,7 +429,12 @@ export async function detectCropDisease(
       productLabelClaim: neuralResult.productLabelClaim,
       reviewerName: neuralResult.reviewerName,
       reviewerDate: neuralResult.reviewerDate,
-      verificationStatus: neuralResult.verificationStatus
+      verificationStatus: neuralResult.verificationStatus,
+      uncertaintyScore: neuralResult.uncertaintyScore,
+      entropyScore: neuralResult.entropyScore,
+      marginUncertainty: neuralResult.marginUncertainty,
+      evidenceLevel: neuralResult.evidenceLevel,
+      advicePolicyReason: neuralResult.advicePolicyReason
     };
     saveDiseaseScanToHistory(modelResult);
     return modelResult;

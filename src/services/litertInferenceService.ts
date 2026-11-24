@@ -4,6 +4,8 @@
 // Enforces strict crop boundaries and selective risk thresholds (tau_low, tau_high).
 
 import { loadLiteRt, loadAndCompile, CompiledModel, Tensor } from "@litertjs/core";
+import { determineAdviceTier } from "./evidenceTierEngine";
+import { assessUncertainty, applyUncertaintyDemotion } from "./uncertaintyService";
 
 export interface ModelMetadata {
   model_name: string;
@@ -63,6 +65,11 @@ export interface NeuralInferenceResult {
   reviewerName?: string;
   reviewerDate?: string;
   verificationStatus?: string;
+  uncertaintyScore?: number;
+  entropyScore?: number;
+  marginUncertainty?: number;
+  evidenceLevel?: string;
+  advicePolicyReason?: string;
 }
 
 let compiledModelPromise: Promise<CompiledModel | null> | null = null;
@@ -618,12 +625,45 @@ export async function runNeuralDiseaseInference(
           );
 
       // ─────────────────────────────────────────────────────────────────────────
-      // 3-TIER SELECTIVE CONFIDENCE GATING
+      // 3-TIER SELECTIVE CONFIDENCE & UNCERTAINTY-AWARE GATING
       // ─────────────────────────────────────────────────────────────────────────
 
-      // TIER 1 (Calibrated Confidence >= tau_high): Specific Diagnosis + Remedy Allowed
-      if (maxCalibratedProb >= thresholds.tau_high) {
-        if (!IS_G4_FIELD_VALIDATED) {
+      // 1. Determine preliminary tier from confidence
+      const preliminaryTier = maxCalibratedProb >= thresholds.tau_high
+        ? "TIER_1_CONFIDENT"
+        : maxCalibratedProb >= thresholds.tau_low
+          ? "TIER_2_MODERATE"
+          : "TIER_3_INCONCLUSIVE";
+
+      // 2. Assess uncertainty across full probability distribution
+      const uncertaintyAssessment = assessUncertainty(
+        calibratedProbs,
+        loadedMetadata.classes,
+        preliminaryTier
+      );
+
+      // 3. Determine tier ceiling from Evidence Registry
+      const advicePolicyDecision = determineAdviceTier(
+        maxCalibratedProb,
+        predictedClass,
+        selectedCrop
+      );
+
+      // 4. Combine evidence tier with uncertainty demotion
+      const demotionResult = applyUncertaintyDemotion(advicePolicyDecision.tier, uncertaintyAssessment);
+      const effectiveTier = demotionResult.finalTier;
+
+      const uncertaintyMetrics = {
+        uncertaintyScore: Math.round(uncertaintyAssessment.combinedScore * 1000) / 1000,
+        entropyScore: Math.round(uncertaintyAssessment.entropy * 1000) / 1000,
+        marginUncertainty: Math.round(uncertaintyAssessment.marginUncertainty * 1000) / 1000,
+        evidenceLevel: advicePolicyDecision.evidenceLevel,
+        advicePolicyReason: demotionResult.reason
+      };
+
+      // TIER 1 (Calibrated Confidence >= tau_high & Field Validated & Low Uncertainty)
+      if (effectiveTier === "TIER_1_CONFIDENT") {
+        if (!IS_G4_FIELD_VALIDATED || !advicePolicyDecision.chemicalAdviceAllowed) {
           return {
             source: "LITERT_NEURAL_MODEL",
             tier: "TIER_2_MODERATE",
@@ -648,7 +688,8 @@ export async function runNeuralDiseaseInference(
             productLabelClaim: remedy.productLabelClaim,
             reviewerName: remedy.reviewerName,
             reviewerDate: remedy.reviewerDate,
-            verificationStatus: "UNVERIFIED (Tier 1 Chemical Advice Disabled Pending Gate G4 Field Validation)"
+            verificationStatus: "UNVERIFIED (Tier 1 Chemical Advice Disabled Pending Gate G4 Field Validation)",
+            ...uncertaintyMetrics
           };
         }
         return {
@@ -673,12 +714,13 @@ export async function runNeuralDiseaseInference(
           productLabelClaim: remedy.productLabelClaim,
           reviewerName: remedy.reviewerName,
           reviewerDate: remedy.reviewerDate,
-          verificationStatus: remedy.verificationStatus
+          verificationStatus: remedy.verificationStatus,
+          ...uncertaintyMetrics
         };
       }
 
-      // TIER 2 (tau_low <= Calibrated Confidence < tau_high): Cultural & Monitoring Only (NO CHEMICALS)
-      if (maxCalibratedProb >= thresholds.tau_low) {
+      // TIER 2 (Cultural & Monitoring Only, NO CHEMICALS)
+      if (effectiveTier === "TIER_2_MODERATE") {
         return {
           source: "LITERT_NEURAL_MODEL",
           tier: "TIER_2_MODERATE",
@@ -710,28 +752,40 @@ export async function runNeuralDiseaseInference(
             "Avoid direct harsh sunlight glare or heavy dark shadows.",
             "Frame a single affected leaf with no soil or hands behind it.",
             "Ensure the leaf is in crisp optical focus."
-          ]
+          ],
+          ...uncertaintyMetrics
         };
       }
 
-      // TIER 3 (Calibrated Confidence < tau_low): "Cannot Tell" (NO DIAGNOSIS, NO CHEMICALS)
+      // TIER 3 (Inconclusive / High Uncertainty / Unsupported: NO DIAGNOSIS, NO CHEMICALS)
+      const isDemotedByUncertainty = demotionResult.wasDemotedByUncertainty;
       return {
         source: "LOW_CONFIDENCE",
         tier: "TIER_3_INCONCLUSIVE",
         calibratedConfidence: calibratedPercent,
         rawConfidence: rawPercent,
         temperatureApplied: temperature,
-        labelStatus: "cannot tell, photo saved for expert",
+        labelStatus: isDemotedByUncertainty ? "high uncertainty, officer review required" : "cannot tell, photo saved for expert",
         isReliable: false,
-        diseaseName: "Cannot Tell / உறுதிப்படுத்த முடியவில்லை (Expert Review Suggested)",
-        scientificName: "Below Calibrated Optical Confidence Gate (tau_low)",
+        diseaseName: isDemotedByUncertainty
+          ? "High Uncertainty / சந்தேகம் (Officer Review Required)"
+          : "Cannot Tell / உறுதிப்படுத்த முடியவில்லை (Expert Review Suggested)",
+        scientificName: isDemotedByUncertainty
+          ? `High Diagnostic Ambiguity (Uncertainty: ${(uncertaintyAssessment.combinedScore * 100).toFixed(1)}%)`
+          : "Below Calibrated Optical Confidence Gate (tau_low)",
         crop: selectedCrop,
         confidence: calibratedPercent,
         allProbabilities: allResults.slice(0, 3),
-        symptoms: [
-          `Calibrated confidence is ${calibratedPercent}%, which is below the minimum advisory threshold (tau_low = ${Math.round(thresholds.tau_low * 100)}%).`,
-          "Lesion pattern is too ambiguous for reliable computer vision diagnosis."
-        ],
+        symptoms: isDemotedByUncertainty
+          ? [
+              `High prediction uncertainty detected (${(uncertaintyAssessment.combinedScore * 100).toFixed(1)}%).`,
+              "Top candidates have overlapping probabilities; model cannot safely separate them.",
+              "Specimen has been flagged for prioritized extension officer review."
+            ]
+          : [
+              `Calibrated confidence is ${calibratedPercent}%, which is below the minimum advisory threshold (tau_low = ${Math.round(thresholds.tau_low * 100)}%).`,
+              "Lesion pattern is too ambiguous for reliable computer vision diagnosis."
+            ],
         immediateAction: "Photo saved for agricultural officer verification. Contact nearest AAO or KVK helpline.",
         organicTreatment: ["No treatment advised until confirmed by field inspection."],
         chemicalTreatment: ["No chemical recommendations for inconclusive scans."],
@@ -740,7 +794,8 @@ export async function runNeuralDiseaseInference(
           "Hold camera 10 - 15 cm from leaf surface.",
           "Ensure the leaf blade fills at least 70% of the camera frame.",
           "Avoid direct midday sun glare."
-        ]
+        ],
+        ...uncertaintyMetrics
       };
     } catch (inferErr) {
       console.error("[LiteRT] Inference execution error:", inferErr);
