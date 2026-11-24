@@ -1,0 +1,164 @@
+{
+  "crops": {
+    "Tomato": [
+      {
+        "id": "q1_plant_part",
+        "questionEn": "Which part of the tomato plant shows symptoms?",
+        "questionTa": "தக்காளி செடியின் எந்த பகுதியில் அறிகுறிகள் உள்ளன?",
+        "options": [
+          { "id": "leaves_lower", "labelEn": "Lower leaves (near ground)", "labelTa": "கீழ் இலைகள் (தரைக்கு அருகில்)", "supports": ["Tomato___Early_blight", "Tomato___Septoria_leaf_spot"] },
+          { "id": "leaves_upper", "labelEn": "Young upper leaves / tips", "labelTa": "மேல் இலைகள் / தளிர்கள்", "supports": ["Tomato___Tomato_Yellow_Leaf_Curl_Virus", "Tomato___Leaf_Mold"] },
+          { "id": "fruit_stem", "labelEn": "Fruit, stem, or whole branch wilt", "labelTa": "காய், தண்டு அல்லது முழு கிளை வாடல்", "supports": ["Tomato___Late_blight", "Tomato___Bacterial_spot"] },
+          { "id": "whole_plant", "labelEn": "Entire plant suddenly collapsed", "labelTa": "முழு செடியும் திடீரென வாடியது", "supports": ["bacterial_wilt", "root_rot"] }
+        ]
+      },
+      {
+        "id": "q2_lesion_appearance",
+        "questionEn": "What do the spots or discoloration look like?",
+        "questionTa": "புள்ளிகள் அல்லது நிறமாற்றம் எவ்வாறு தெரிகிறது?",
+        "options": [
+          { "id": "target_rings", "labelEn": "Brown spots with concentric rings (target board)", "labelTa": "வட்ட வளையங்கள் கொண்ட பழுப்பு புள்ளிகள்", "supports": ["Tomato___Early_blight"] },
+          { "id": "water_soaked", "labelEn": "Dark water-soaked patches / white mould underneath", "labelTa": "ஈரப்பதமான கரும்பச்சை திட்டுகள் / கீழ் வெள்ளை பூஞ்சை", "supports": ["Tomato___Late_blight"] },
+          { "id": "yellow_curling", "labelEn": "Severe yellowing and upward leaf curling", "labelTa": "கடுமையான மஞ்சள் நிறம் மற்றும் மேல்நோக்கிய சுருட்டல்", "supports": ["Tomato___Tomato_Yellow_Leaf_Curl_Virus"] },
+          { "id": "tiny_dark_spots", "labelEn": "Many tiny dark brown spots with gray centres", "labelTa": "சாம்பல் நிற மையத்துடன் கூடிய சிறிய கரும்பழுப்பு புள்ளிகள்", "supports": ["Tomato___Septoria_leaf_spot", "Tomato___Bacterial_spot"] }
+        ]
+      },
+      {
+        "id": "q3_onset_weather",
+        "questionEn": "When did symptoms appear and what was the recent weather?",
+        "questionTa": "அறிகுறிகள் எப்போது தோன்றின? சமீபத்திய வானிலை என்ன?",
+        "options": [
+          { "id": "after_heavy_rain", "labelEn": "After heavy rains / high humidity (>80%)", "labelTa": "கனமழை அல்லது அதிக ஈரப்பதத்திற்குப் பிறகு", "supports": ["Tomato___Late_blight", "Tomato___Leaf_Mold"] },
+          { "id": "warm_humid", "labelEn": "Warm weather (24-30°C) with morning dew", "labelTa": "காலை பனி மற்றும் மிதமான வெப்பம்", "supports": ["Tomato___Early_blight"] },
+          { "id": "dry_hot", "labelEn": "Dry, hot weather with whitefly insects visible", "labelTa": "வெப்பமான உலர் வானிலை மற்றும் வெள்ளை ஈக்கள்", "supports": ["Tomato___Tomato_Yellow_Leaf_Curl_Virus"] },
+          { "id": "after_flooding", "labelEn": "Immediately after water stagnation / flooding", "labelTa": "தண்ணீர் தேங்கிய உடனேயே", "supports": ["damping_off", "waterlogging"] }
+        ]
+      }
+    ],
+    "Potato": [
+      {
+        "id": "q1_plant_part",
+        "questionEn": "Where are the primary potato leaf lesions located?",
+        "questionTa": "உருளைக்கிழங்கு இலையில் முக்கிய புள்ளிகள் எங்குள்ளன?",
+        "options": [
+          { "id": "lower_canopy", "labelEn": "Old lower leaves first", "labelTa": "முதலில் கீழ் முதிர்ந்த இலைகளில்", "supports": ["Potato___Early_blight"] },
+          { "id": "upper_margins", "labelEn": "Leaf tips and margins spreading rapidly", "labelTa": "இலை நுனிகள் மற்றும் விளிம்புகளில் வேகமாக பரவுதல்", "supports": ["Potato___Late_blight"] },
+          { "id": "tubers_stem", "labelEn": "Dark lesions on stem or visible tubers", "labelTa": "தண்டு அல்லது கிழங்குகளில் கரும் புள்ளிகள்", "supports": ["Potato___Late_blight", "blackleg"] }
+        ]
+      },
+      {
+        "id": "q2_lesion_appearance",
+        "questionEn": "What is the texture and appearance of the spots?",
+        "questionTa": "புள்ளிகளின் அமைப்பு மற்றும் நிறம் என்ன?",
+        "options": [
+          { "id": "concentric_rings", "labelEn": "Dry concentric rings within brown spots", "labelTa": "பழுப்பு புள்ளிகளுக்குள் உலர் வளையங்கள்", "supports": ["Potato___Early_blight"] },
+          { "id": "water_soaked_mold", "labelEn": "Water-soaked dark lesions with whitish mold in cool mornings", "labelTa": "குளிர்ந்த காலையில் வெண் பூஞ்சையுடன் கூடிய ஈர கரும் புள்ளிகள்", "supports": ["Potato___Late_blight"] },
+          { "id": "uniform_yellow", "labelEn": "Uniform yellowing without distinct spot borders", "labelTa": "தெளிவான விளிம்புகள் இல்லாத சீரான மஞ்சள் நிறம்", "supports": ["nitrogen_deficiency", "Potato___healthy"] }
+        ]
+      },
+      {
+        "id": "q3_onset_weather",
+        "questionEn": "What were temperature and rainfall in the past 5 days?",
+        "questionTa": "கடந்த 5 நாட்களில் வெப்பநிலை மற்றும் மழை அளவு என்ன?",
+        "options": [
+          { "id": "cool_wet", "labelEn": "Cool (15-22°C) and cloudy with frequent drizzle", "labelTa": "குளிர்ந்த (15-22°C) மேகமூட்டம் மற்றும் தூறல்", "supports": ["Potato___Late_blight"] },
+          { "id": "warm_dry", "labelEn": "Moderate to warm (24-30°C) with dry intervals", "labelTa": "மிதமான வெப்பம் மற்றும் உலர் இடைவெளிகள்", "supports": ["Potato___Early_blight"] }
+        ]
+      }
+    ],
+    "Pepper": [
+      {
+        "id": "q1_plant_part",
+        "questionEn": "Which part of the chilli/pepper plant is affected?",
+        "questionTa": "மிளகாய் செடியின் எந்த பகுதி பாதிக்கப்பட்டுள்ளது?",
+        "options": [
+          { "id": "leaves_drop", "labelEn": "Leaves with small spots that turn yellow and drop", "labelTa": "மஞ்சளாகி உதிரும் சிறிய புள்ளிகள் கொண்ட இலைகள்", "supports": ["Pepper,_bell___Bacterial_spot"] },
+          { "id": "fruit_sunken", "labelEn": "Sunken circular dark spots on fruits (anthracnose)", "labelTa": "காய்களில் குழிவான வட்ட வடிவ கரும் புள்ளிகள்", "supports": ["anthracnose"] },
+          { "id": "curled_narrow", "labelEn": "Leaves curled upwards, crinkled and small", "labelTa": "மேல்நோக்கி சுருண்டு குறுகிய இலைகள்", "supports": ["thrips_mites", "leaf_curl"] }
+        ]
+      },
+      {
+        "id": "q2_lesion_appearance",
+        "questionEn": "Describe the spots on leaves or pods:",
+        "questionTa": "இலை அல்லது காய்களில் உள்ள புள்ளிகளை விவரிக்கவும்:",
+        "options": [
+          { "id": "scabby_blister", "labelEn": "Water-soaked then rough, scabby dark blisters", "labelTa": "நீர்க்கோர்த்த பின் கரடுமுரடான கொப்புள புள்ளிகள்", "supports": ["Pepper,_bell___Bacterial_spot"] },
+          { "id": "white_powdery", "labelEn": "White powdery coating on leaf underside", "labelTa": "இலையின் அடிப்பகுதியில் வெள்ளை மாவுப் பூச்சு", "supports": ["powdery_mildew"] },
+          { "id": "mosaic_mottle", "labelEn": "Mottled light and dark green mosaic pattern", "labelTa": "வெளிர் மற்றும் கரும்பச்சை கலந்த வண்ணக் கோலம்", "supports": ["mosaic_virus"] }
+        ]
+      },
+      {
+        "id": "q3_onset_weather",
+        "questionEn": "Did symptoms begin after overhead watering or monsoon storms?",
+        "questionTa": "மழை அல்லது தெளிப்பு நீர்ப்பாசனத்திற்கு பின் அறிகுறிகள் தொடங்கினவா?",
+        "options": [
+          { "id": "after_driving_rain", "labelEn": "Yes, after heavy driving rain or sprinkler irrigation", "labelTa": "ஆம், கனமழை அல்லது தெளிப்பு பாசனத்திற்குப் பின்", "supports": ["Pepper,_bell___Bacterial_spot"] },
+          { "id": "dry_weather", "labelEn": "No, during continuous dry and sunny conditions", "labelTa": "இல்லை, தொடர்ச்சியான உலர் வெயில் காலத்தில்", "supports": ["mites", "nutrient_stress"] }
+        ]
+      }
+    ],
+    "Corn": [
+      {
+        "id": "q1_plant_part",
+        "questionEn": "Where on the maize plant are the symptoms visible?",
+        "questionTa": "மக்காச்சோள செடியில் அறிகுறிகள் எங்கு தெரிகின்றன?",
+        "options": [
+          { "id": "leaf_blade", "labelEn": "Elongated lesions across leaf blades", "labelTa": "இலைகளில் நீண்ட வடிவ புள்ளிகள்", "supports": ["Corn___Northern_Leaf_Blight", "Corn___Cercospora_leaf_spot Gray_leaf_spot"] },
+          { "id": "upper_pustules", "labelEn": "Golden-brown raised pustules on both leaf surfaces", "labelTa": "இருபுறமும் தடித்த பொன்னிற கொப்புளங்கள்", "supports": ["Corn___Common_rust"] },
+          { "id": "whorl_borer", "labelEn": "Shot holes and chewed leaves in the central whorl", "labelTa": "மைய குருத்தில் துளைகள் மற்றும் மெல்லப்பட்ட இலைகள்", "supports": ["fall_armyworm"] }
+        ]
+      },
+      {
+        "id": "q2_lesion_appearance",
+        "questionEn": "What shape are the leaf lesions?",
+        "questionTa": "இலை புள்ளிகள் என்ன வடிவத்தில் உள்ளன?",
+        "options": [
+          { "id": "cigar_shaped", "labelEn": "Large, cigar-shaped grayish-green to tan lesions", "labelTa": "பெரிய சுருட்டு வடிவ சாம்பல்-பச்சை புள்ளிகள்", "supports": ["Corn___Northern_Leaf_Blight"] },
+          { "id": "rectangular", "labelEn": "Narrow rectangular lesions bounded by leaf veins", "labelTa": "நரம்புகளுக்கு இடையில் செவ்வக வடிவ புள்ளிகள்", "supports": ["Corn___Cercospora_leaf_spot Gray_leaf_spot"] },
+          { "id": "powdery_pustules", "labelEn": "Small powdery cinnamon-brown pustules", "labelTa": "சிறிய பழுப்பு தூள் போன்ற கொப்புளங்கள்", "supports": ["Corn___Common_rust"] }
+        ]
+      },
+      {
+        "id": "q3_onset_weather",
+        "questionEn": "What are current weather and field conditions?",
+        "questionTa": "தற்போதைய வானிலை மற்றும் வயல் சூழல் என்ன?",
+        "options": [
+          { "id": "cool_humid", "labelEn": "Cool temperatures (18-24°C) with extended leaf wetness", "labelTa": "குளிர்ந்த வெப்பநிலை (18-24°C) மற்றும் நீண்ட இலை ஈரம்", "supports": ["Corn___Common_rust", "Corn___Northern_Leaf_Blight"] },
+          { "id": "warm_humid_overcast", "labelEn": "Warm and persistently humid overcast days", "labelTa": "வெப்பமான தொடர் ஈரப்பதம் கொண்ட மேகமூட்ட நாட்கள்", "supports": ["Corn___Cercospora_leaf_spot Gray_leaf_spot"] }
+        ]
+      }
+    ],
+    "Paddy": [
+      {
+        "id": "q1_plant_part",
+        "questionEn": "Which paddy plant part shows primary symptoms?",
+        "questionTa": "நெற்பயிரில் எந்த பகுதியில் முக்கிய அறிகுறிகள் உள்ளன?",
+        "options": [
+          { "id": "leaf_blade", "labelEn": "Spindle-shaped spots on leaf blades", "labelTa": "இலைகளில் கதிர் வடிவப் புள்ளிகள்", "supports": ["Paddy___Blast"] },
+          { "id": "leaf_tip_margin", "labelEn": "Wavy lesions starting from leaf tips and margins downward", "labelTa": "இலை நுனி மற்றும் விளிம்பிலிருந்து கீழ்நோக்கி அலையலையான கருகல்", "supports": ["bacterial_leaf_blight"] },
+          { "id": "sheath_waterline", "labelEn": "Snake-skin spots on leaf sheath near waterline", "labelTa": "நீர் மட்டத்திற்கு அருகில் உள்ள தாள் உறைப் புள்ளிகள்", "supports": ["sheath_blight"] }
+        ]
+      },
+      {
+        "id": "q2_lesion_appearance",
+        "questionEn": "What do the spots look like?",
+        "questionTa": "புள்ளிகள் எவ்வாறு காட்சியளிக்கின்றன?",
+        "options": [
+          { "id": "spindle_eye", "labelEn": "Spindle/eye-shaped with gray centre and brown border", "labelTa": "சாம்பல் மையம் மற்றும் பழுப்பு விளிம்புடன் கதிர் வடிவம்", "supports": ["Paddy___Blast"] },
+          { "id": "yellow_stripe", "labelEn": "Yellowish wavy water-soaked edge with milky bacterial ooze in morning", "labelTa": "காலையில் பாக்டீரியா கசிவு கொண்ட மஞ்சள் அலையலை கோடுகள்", "supports": ["bacterial_leaf_blight"] },
+          { "id": "round_brown", "labelEn": "Circular to oval dark brown spots resembling sesame seeds", "labelTa": "எள் போன்ற வட்ட வடிவ கரும்பழுப்பு புள்ளிகள்", "supports": ["brown_spot"] }
+        ]
+      },
+      {
+        "id": "q3_onset_weather",
+        "questionEn": "What field conditions preceded this symptom?",
+        "questionTa": "இந்த அறிகுறிக்கு முன் வயல் சூழல் எவ்வாறு இருந்தது?",
+        "options": [
+          { "id": "excess_nitrogen_dew", "labelEn": "Heavy urea application with morning fog/dew and cool nights", "labelTa": "அதிக யூரியா பயன்பாடு மற்றும் காலை பனிமூட்டம்", "supports": ["Paddy___Blast"] },
+          { "id": "cyclonic_winds_rain", "labelEn": "Strong winds, cyclonic rains, or bruised leaves", "labelTa": "சூறாவளிக் காற்று, பலத்த மழை அல்லது சேதமடைந்த இலைகள்", "supports": ["bacterial_leaf_blight"] },
+          { "id": "water_deficit_poor_soil", "labelEn": "Sandy/poor soil with prolonged dry spell", "labelTa": "மணல் பாங்கான நிலம் மற்றும் வறட்சி நிலை", "supports": ["brown_spot"] }
+        ]
+      }
+    ]
+  }
+}

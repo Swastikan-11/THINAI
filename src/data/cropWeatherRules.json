@@ -1,0 +1,114 @@
+{
+  "rules": {
+    "Tomato": {
+      "crop": "Tomato",
+      "diseaseRisk": {
+        "fungalHumidityThreshold": 80,
+        "fungalTempMin": 18,
+        "fungalTempMax": 28,
+        "rain48hThresholdMm": 5,
+        "highRiskDiseases": ["Late Blight (Phytophthora infestans)", "Early Blight (Alternaria solani)"],
+        "advisoryHighRisk": "High fungal blight risk due to combined high humidity (>80%) and cool-to-warm temperatures. Inspect lower foliage daily and consult your extension officer.",
+        "advisoryModerateRisk": "Moderate foliar risk: maintain adequate plant spacing, weed control, and monitor canopy.",
+        "advisoryLowRisk": "Low weather-induced disease pressure. Continue regular preventive monitoring."
+      },
+      "sprayWindow": {
+        "maxWindSpeedKmh": 15,
+        "maxRainProbabilityPct": 40,
+        "maxRainfallExpectedMm": 2,
+        "maxTemperatureC": 35,
+        "minTemperatureC": 12,
+        "idealSprayHours": "6:00 AM - 9:30 AM or 4:30 PM - 6:30 PM",
+        "guidelines": "Do not spray when foliage is wet with morning dew. Avoid spraying during peak sunshine (>35°C) to prevent phytotoxic leaf scorch."
+      }
+    },
+    "Potato": {
+      "crop": "Potato",
+      "diseaseRisk": {
+        "fungalHumidityThreshold": 85,
+        "fungalTempMin": 15,
+        "fungalTempMax": 23,
+        "rain48hThresholdMm": 4,
+        "highRiskDiseases": ["Late Blight (Phytophthora infestans)"],
+        "advisoryHighRisk": "Critical late blight weather window: persistent relative humidity >85% and cool temperatures (15-23°C). Immediate field inspection recommended.",
+        "advisoryModerateRisk": "Moderate risk: monitor field borders and shaded canopy spots.",
+        "advisoryLowRisk": "Favorable dry conditions. Disease development inhibited by sunshine."
+      },
+      "sprayWindow": {
+        "maxWindSpeedKmh": 14,
+        "maxRainProbabilityPct": 35,
+        "maxRainfallExpectedMm": 2,
+        "maxTemperatureC": 32,
+        "minTemperatureC": 10,
+        "idealSprayHours": "7:00 AM - 10:00 AM",
+        "guidelines": "Spray early morning after dew dries. Ensure complete underside coverage of canopy."
+      }
+    },
+    "Pepper": {
+      "crop": "Pepper",
+      "diseaseRisk": {
+        "fungalHumidityThreshold": 75,
+        "fungalTempMin": 22,
+        "fungalTempMax": 32,
+        "rain48hThresholdMm": 6,
+        "highRiskDiseases": ["Bacterial Leaf Spot (Xanthomonas)", "Anthracnose Fruit Rot"],
+        "advisoryHighRisk": "Warm wet weather creates high risk for bacterial spot spread via rain splashes. Inspect foliage and consult extension officer.",
+        "advisoryModerateRisk": "Moderate risk: avoid sprinkler irrigation to prevent leaf wetness duration.",
+        "advisoryLowRisk": "Dry conditions reduce bacterial and fungal leaf spot multiplication."
+      },
+      "sprayWindow": {
+        "maxWindSpeedKmh": 15,
+        "maxRainProbabilityPct": 40,
+        "maxRainfallExpectedMm": 2,
+        "maxTemperatureC": 35,
+        "minTemperatureC": 15,
+        "idealSprayHours": "6:30 AM - 9:30 AM or 5:00 PM - 6:30 PM",
+        "guidelines": "Avoid spraying during active bee foraging hours."
+      }
+    },
+    "Paddy": {
+      "crop": "Paddy",
+      "diseaseRisk": {
+        "fungalHumidityThreshold": 85,
+        "fungalTempMin": 20,
+        "fungalTempMax": 28,
+        "rain48hThresholdMm": 8,
+        "highRiskDiseases": ["Paddy Blast (Magnaporthe oryzae)", "Sheath Blight (Rhizoctonia solani)"],
+        "advisoryHighRisk": "High blast / sheath blight weather index: night temperature below 24°C with relative humidity >85% and persistent dew. Inspect tillers immediately.",
+        "advisoryModerateRisk": "Moderate disease pressure. Drain excess standing water if sheath blight is suspected.",
+        "advisoryLowRisk": "Weather conditions unfavorable for rapid fungal spore germination."
+      },
+      "sprayWindow": {
+        "maxWindSpeedKmh": 16,
+        "maxRainProbabilityPct": 40,
+        "maxRainfallExpectedMm": 3,
+        "maxTemperatureC": 35,
+        "minTemperatureC": 18,
+        "idealSprayHours": "7:00 AM - 10:30 AM",
+        "guidelines": "Maintain water level at 2-3 cm during spraying. Target the lower leaf sheaths for sheath blight."
+      }
+    },
+    "Corn": {
+      "crop": "Corn",
+      "diseaseRisk": {
+        "fungalHumidityThreshold": 80,
+        "fungalTempMin": 18,
+        "fungalTempMax": 30,
+        "rain48hThresholdMm": 5,
+        "highRiskDiseases": ["Northern Corn Leaf Blight", "Common Rust"],
+        "advisoryHighRisk": "High foliar blight risk due to continuous leaf wetness and moderate temperatures. Inspect lower and middle leaves.",
+        "advisoryModerateRisk": "Moderate foliar risk. Monitor upper ear leaves.",
+        "advisoryLowRisk": "Low foliar disease pressure."
+      },
+      "sprayWindow": {
+        "maxWindSpeedKmh": 15,
+        "maxRainProbabilityPct": 40,
+        "maxRainfallExpectedMm": 2,
+        "maxTemperatureC": 36,
+        "minTemperatureC": 14,
+        "idealSprayHours": "6:30 AM - 9:30 AM",
+        "guidelines": "Direct spray towards upper whorl and ear leaves."
+      }
+    }
+  }
+}
